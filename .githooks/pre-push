@@ -1,0 +1,27 @@
+#!/bin/sh
+#
+# Bloqueia push direto na branch 'main' (producao).
+# Fluxo correto: trabalhe em 'dev' (ou feature/*) e abra Pull Request para 'main'.
+#
+# Para pular em uma emergencia consciente: git push --no-verify
+
+protected="main"
+
+while read local_ref local_sha remote_ref remote_sha
+do
+    case "$remote_ref" in
+        refs/heads/"$protected")
+            echo ""
+            echo "  X  Push direto na branch '$protected' (producao) esta bloqueado."
+            echo ""
+            echo "     Faca assim:"
+            echo "       1. Trabalhe na 'dev':      git checkout dev"
+            echo "       2. Suba suas mudancas:     git push origin dev"
+            echo "       3. Abra um Pull Request de 'dev' -> 'main' no GitHub."
+            echo ""
+            exit 1
+            ;;
+    esac
+done
+
+exit 0

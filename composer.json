@@ -1,0 +1,25 @@
+{
+    "name": "gabrielvanzella1/php-mvc-starter",
+    "description": "Base profissional em PHP + MySQL: MVC proprio, migrations versionadas e logging/auditoria.",
+    "type": "project",
+    "license": "MIT",
+    "require": {
+        "php": ">=8.1",
+        "vlucas/phpdotenv": "^5.6"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/"
+        }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "git config core.hooksPath .githooks"
+        ],
+        "migrate": "php database/migrate.php"
+    }
+}

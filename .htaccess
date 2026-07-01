@@ -1,0 +1,11 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Se o document root do hosting NAO estiver apontando para /public,
+    # este .htaccess na raiz redireciona tudo para dentro da pasta public/.
+    # Sempre que possivel, prefira apontar o "document root" do dominio
+    # diretamente para /public no painel do seu hosting. Se isso nao for
+    # possivel no seu plano, deixe este arquivo ativo.
+    RewriteCond %{REQUEST_URI} !^/public/
+    RewriteRule ^(.*)$ /public/$1 [L]
+</IfModule>
