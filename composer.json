@@ -5,6 +5,8 @@
     "license": "MIT",
     "require": {
         "php": ">=8.1",
+        "anthropic-ai/sdk": "^0.38.0",
+        "guzzlehttp/guzzle": "^8.0",
         "vlucas/phpdotenv": "^5.6"
     },
     "autoload": {
