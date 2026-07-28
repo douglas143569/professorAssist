@@ -42,6 +42,44 @@ class CalendarioController extends AppController
         ]);
     }
 
+    /** Aba "Eventos criados": visão visual agrupada por situação. */
+    public function eventos(): void
+    {
+        $prof = $this->professor();
+
+        $tipo = in_array($_GET['tipo'] ?? '', ['prova', 'trabalho', 'lembrete', 'aula'], true)
+            ? $_GET['tipo'] : '';
+
+        $eventos = (new Evento())->allByUser($prof['id'], $tipo);
+        $hoje = date('Y-m-d');
+
+        $grupos = ['atrasados' => [], 'hoje' => [], 'proximos' => [], 'concluidos' => []];
+        $resumo = ['prova' => 0, 'trabalho' => 0, 'lembrete' => 0, 'aula' => 0];
+
+        foreach ($eventos as $e) {
+            if (isset($resumo[$e['tipo']])) {
+                $resumo[$e['tipo']]++;
+            }
+            if ($e['concluido']) {
+                $grupos['concluidos'][] = $e;
+            } elseif ($e['data_evento'] < $hoje) {
+                $grupos['atrasados'][] = $e;
+            } elseif ($e['data_evento'] === $hoje) {
+                $grupos['hoje'][] = $e;
+            } else {
+                $grupos['proximos'][] = $e;
+            }
+        }
+
+        $this->view('calendario.eventos', [
+            'title' => 'Eventos criados',
+            'grupos' => $grupos,
+            'resumo' => $resumo,
+            'total' => count($eventos),
+            'filtroTipo' => $tipo,
+        ]);
+    }
+
     public function store(): void
     {
         $prof = $this->professor();
@@ -107,9 +145,13 @@ class CalendarioController extends AppController
         $this->redirect($this->voltarPara());
     }
 
-    /** Preserva o mes que estava sendo visto (enviado num campo oculto). */
+    /** Volta para a tela de origem (calendário do mês ou aba de eventos). */
     private function voltarPara(): string
     {
+        $voltar = $_POST['voltar'] ?? '';
+        if (is_string($voltar) && str_starts_with($voltar, '/calendario')) {
+            return $voltar;
+        }
         $ano = (int) ($_POST['ano'] ?? date('Y'));
         $mes = (int) ($_POST['mes'] ?? date('n'));
         return '/calendario?ano=' . $ano . '&mes=' . $mes;

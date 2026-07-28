@@ -152,7 +152,7 @@ class AI
 
         $texto = $this->gerar('atividade', $system, $prompt, $userId);
 
-        $dados = json_decode($this->extrairJson($texto), true);
+        $dados = $this->decodeLista($texto);
         if (!is_array($dados)) {
             throw new AIException('A IA nao retornou as atividades em formato valido. Tente novamente.');
         }
@@ -192,7 +192,7 @@ class AI
 
         $texto = $this->gerar('creche_atividade', $system, $prompt, $userId);
 
-        $dados = json_decode($this->extrairJson($texto), true);
+        $dados = $this->decodeLista($texto);
         if (!is_array($dados)) {
             throw new AIException('A IA nao retornou as atividades em formato valido. Tente novamente.');
         }
@@ -232,7 +232,7 @@ class AI
 
         $texto = $this->gerar('creche_cronograma', $system, $prompt, $userId);
 
-        $dados = json_decode($this->extrairJson($texto), true);
+        $dados = $this->decodeLista($texto);
         if (!is_array($dados)) {
             throw new AIException('A IA nao retornou o cronograma em formato valido. Tente novamente.');
         }
@@ -241,9 +241,10 @@ class AI
     }
 
     /**
-     * Monta um pacote completo de atividades sobre um tema, com TIPOS VARIADOS
-     * (memoria, pintura, musica, movimento, historia...). Devolve array:
-     *   ['tipo','titulo','descricao','materiais','duracao']
+     * Monta um pacote de FOLHAS de atividades IMPRIMIVEIS para Educacao Infantil,
+     * em dois formatos claros: 'escrever' (figura -> quadro) e 'circular'
+     * (linha de opcoes -> circular a certa). Devolve array de atividades:
+     *   ['titulo','tipo','formato','instrucao','itens'=>[...]]
      */
     public function gerarPacoteAtividades(
         string $tema,
@@ -251,30 +252,62 @@ class AI
         int $quantidade = 6,
         ?int $userId = null
     ): array {
-        $quantidade = max(3, min($quantidade, 12));
+        $quantidade = max(3, min($quantidade, 10));
 
-        $system = 'Voce e um assistente pedagogico de Educacao Infantil no Brasil. Monta '
-            . 'pacotes tematicos de atividades ludicas SEGURAS e adequadas a faixa etaria, '
-            . 'variando os TIPOS de atividade. Responde SEMPRE com JSON valido, sem texto fora '
-            . 'do JSON e sem blocos de codigo markdown.';
+        $system = 'Voce e um especialista em Educacao Infantil no Brasil que cria FOLHAS de '
+            . 'atividades imprimiveis de alta qualidade, no estilo de apostilas profissionais. '
+            . 'As instrucoes sao curtas, claras e diretas para a crianca. Usa emojis simples e '
+            . 'reconheciveis como figuras. Responde SEMPRE com JSON valido, sem texto fora do '
+            . 'JSON e sem blocos de codigo markdown.';
 
-        $prompt = "Monte um pacote completo de {$quantidade} atividades sobre o tema \"{$tema}\" "
-            . "para a faixa \"{$faixaEtaria}\".\n"
-            . 'Varie os TIPOS de atividade ao longo do pacote, por exemplo: brincadeira de '
-            . 'memoria, desenho para pintar/colorir, musica ou cantiga, atividade de movimento, '
-            . 'historia/roda de conversa, artesanato/colagem, jogo sensorial. '
-            . 'Responda um array JSON. Cada item deve ter: "tipo" (categoria curta da atividade, '
-            . 'ex: "Brincadeira de memoria"), "titulo", "descricao" (passo a passo), "materiais" '
-            . 'e "duracao" (ex: "15 min").';
+        $prompt = "Crie {$quantidade} atividades imprimiveis de OTIMA QUALIDADE sobre o tema "
+            . "\"{$tema}\", para a faixa \"{$faixaEtaria}\".\n\n"
+            . "Cada atividade usa UM destes cinco formatos (varie bastante entre eles):\n\n"
+            . "1) formato \"escrever\": a crianca observa uma FIGURA e escreve a resposta num "
+            . "quadro. Bom para: escrever a letra inicial; contar e escrever o numero (repita o "
+            . "emoji, ex \"🐶🐶🐶\"); escrever quantas silabas; escrever o numero que vem depois. "
+            . "itens = lista de {\"figura\": \"emoji(s)\", \"rotulo\": \"nome\", \"resposta\": "
+            . "\"letra/numero esperado\"}.\n\n"
+            . "2) formato \"circular\": cada linha tem VARIAS opcoes (emojis) e a crianca circula "
+            . "a correta. Bom para: circular o diferente; circular o maior/menor; circular o que "
+            . "comeca com a letra X; circular o que pertence ao grupo. itens = lista de "
+            . "{\"rotulo\": \"Linha 1\", \"opcoes\": [\"emoji\",\"emoji\",\"emoji\"], \"correta\": "
+            . "numero da posicao correta comecando em 1}.\n\n"
+            . "3) formato \"ligar\": duas colunas; a crianca LIGA cada figura da esquerda ao seu "
+            . "par na direita. Bom para: ligar o animal ao seu filhote; ao seu alimento; ao seu "
+            . "habitat; a sua sombra; a quantidade (numero) certa; a letra inicial. itens = lista "
+            . "de PARES {\"esquerda\": \"emoji\", \"esq_rotulo\": \"nome\", \"direita\": \"emoji ou "
+            . "texto curto\", \"dir_rotulo\": \"\"}, onde esquerda casa com direita.\n\n"
+            . "4) formato \"pintar\": a crianca PINTA/colore figuras. Bom para: pintar apenas os "
+            . "de uma categoria; pintar a quantidade pedida; pintar da cor certa. itens = lista de "
+            . "{\"figura\": \"emoji\", \"rotulo\": \"nome\", \"pintar\": true se essa figura deve "
+            . "ser pintada (serve de gabarito)}.\n\n"
+            . "5) formato \"sequencia\": completar uma sequencia ou padrao. A crianca olha a "
+            . "sequencia e descobre o que vem DEPOIS. Bom para: padroes (AB AB A_), sequencia "
+            . "numerica, sequencia de tamanhos. itens = lista de {\"rotulo\": \"Linha 1\", "
+            . "\"sequencia\": [\"emoji\",\"emoji\",\"emoji\"], \"resposta\": \"emoji/valor que vem "
+            . "depois\"}.\n\n"
+            . "REGRAS DE QUALIDADE:\n"
+            . "- A instrucao deve deixar CLARO o que fazer (ex: \"Ligue cada animal ao seu "
+            . "filhote.\").\n"
+            . "- Use figuras coerentes com o tema e faceis de reconhecer.\n"
+            . "- 'escrever': 4 a 6 itens. 'circular': 3 a 5 linhas com 3 ou 4 opcoes. 'ligar': 3 a "
+            . "5 pares. 'pintar': 4 a 8 figuras. 'sequencia': 3 a 5 linhas, cada uma com 3 a 5 "
+            . "elementos.\n"
+            . "- Cada atividade tem um proposito unico e simples, adequado a idade.\n\n"
+            . 'Responda um array JSON. Cada atividade: {"titulo": "titulo curto", "tipo": '
+            . '"categoria (ex: Letra inicial)", "formato": "escrever", "circular", "ligar", '
+            . '"pintar" ou "sequencia", "instrucao": "instrucao clara", "itens": [...conforme o '
+            . 'formato...]}.';
 
         $texto = $this->gerar('creche_pacote', $system, $prompt, $userId);
 
-        $dados = json_decode($this->extrairJson($texto), true);
-        if (!is_array($dados)) {
+        $dados = $this->decodeLista($texto);
+        if (empty($dados)) {
             throw new AIException('A IA nao retornou o pacote em formato valido. Tente novamente.');
         }
 
-        return $this->normalizarPacoteItens($dados);
+        return $this->normalizarPacoteWorksheets($dados);
     }
 
     /**
@@ -322,7 +355,7 @@ class AI
 
         $texto = $this->gerar('questao', $system, $prompt, $userId);
 
-        $dados = json_decode($this->extrairJson($texto), true);
+        $dados = $this->decodeLista($texto);
         if (!is_array($dados)) {
             throw new AIException('A IA nao retornou as questoes em formato valido. Tente novamente.');
         }
@@ -409,22 +442,41 @@ class AI
     }
 
     /**
-     * Extrai o array JSON de uma resposta, tolerando cercas ```json e texto
-     * antes/depois (pega do primeiro '[' ao ultimo ']').
+     * Decodifica a lista de itens de uma resposta da IA, de forma robusta.
+     * Aceita: (a) array JSON puro; (b) objeto que embrulha a lista numa chave
+     * (ex: {"atividades": [...]}); tolera cercas ```json. Devolve [] se nada.
      */
-    private function extrairJson(string $texto): string
+    private function decodeLista(string $texto): array
     {
-        $texto = trim($texto);
-        $texto = preg_replace('/^```(?:json)?\s*/i', '', $texto);
-        $texto = preg_replace('/\s*```$/', '', (string) $texto);
+        $t = trim($texto);
+        $t = preg_replace('/^```(?:json)?\s*/i', '', $t);
+        $t = trim((string) preg_replace('/\s*```$/', '', (string) $t));
 
-        $ini = strpos((string) $texto, '[');
-        $fim = strrpos((string) $texto, ']');
+        $decoded = json_decode($t, true);
+
+        // Ja veio como lista de itens.
+        if (is_array($decoded) && array_is_list($decoded)) {
+            return $decoded;
+        }
+        // Veio como objeto: usa a primeira propriedade que seja uma lista.
+        if (is_array($decoded)) {
+            foreach ($decoded as $valor) {
+                if (is_array($valor) && $valor !== [] && array_is_list($valor)) {
+                    return $valor;
+                }
+            }
+        }
+        // Fallback: recorta do primeiro '[' ao ultimo ']'.
+        $ini = strpos($t, '[');
+        $fim = strrpos($t, ']');
         if ($ini !== false && $fim !== false && $fim > $ini) {
-            return substr((string) $texto, $ini, $fim - $ini + 1);
+            $sub = json_decode(substr($t, $ini, $fim - $ini + 1), true);
+            if (is_array($sub) && array_is_list($sub)) {
+                return $sub;
+            }
         }
 
-        return (string) $texto;
+        return [];
     }
 
     /**
@@ -527,22 +579,107 @@ class AI
         return $out;
     }
 
-    /** Sanitiza os itens de um pacote (inclui o campo "tipo"). */
-    private function normalizarPacoteItens(array $dados): array
+    /** Sanitiza as folhas imprimiveis de um pacote (2 formatos). */
+    private function normalizarPacoteWorksheets(array $dados): array
     {
         $out = [];
         foreach ($dados as $a) {
             if (!is_array($a) || empty($a['titulo'])) {
                 continue;
             }
+
+            $formato = in_array($a['formato'] ?? '', ['circular', 'ligar', 'pintar', 'sequencia'], true)
+                ? $a['formato'] : 'escrever';
+            $itens = [];
+
+            if (!empty($a['itens']) && is_array($a['itens'])) {
+                foreach ($a['itens'] as $it) {
+                    if (!is_array($it)) {
+                        continue;
+                    }
+
+                    if ($formato === 'sequencia') {
+                        $seq = [];
+                        foreach ((array) ($it['sequencia'] ?? []) as $s) {
+                            $s = trim((string) $s);
+                            if ($s !== '') {
+                                $seq[] = mb_substr($s, 0, 16);
+                            }
+                        }
+                        if (empty($seq)) {
+                            continue;
+                        }
+                        $itens[] = [
+                            'rotulo' => mb_substr(trim((string) ($it['rotulo'] ?? '')), 0, 40),
+                            'sequencia' => $seq,
+                            'resposta' => mb_substr(trim((string) ($it['resposta'] ?? '')), 0, 16),
+                        ];
+                    } elseif ($formato === 'pintar') {
+                        $figura = trim((string) ($it['figura'] ?? ''));
+                        $rotulo = trim((string) ($it['rotulo'] ?? ''));
+                        if ($figura === '' && $rotulo === '') {
+                            continue;
+                        }
+                        $itens[] = [
+                            'figura' => mb_substr($figura, 0, 16),
+                            'rotulo' => mb_substr($rotulo, 0, 40),
+                            'pintar' => !empty($it['pintar']),
+                        ];
+                    } elseif ($formato === 'ligar') {
+                        $esq = trim((string) ($it['esquerda'] ?? ''));
+                        $dir = trim((string) ($it['direita'] ?? ''));
+                        if ($esq === '' || $dir === '') {
+                            continue;
+                        }
+                        $itens[] = [
+                            'esquerda' => mb_substr($esq, 0, 16),
+                            'esq_rotulo' => mb_substr(trim((string) ($it['esq_rotulo'] ?? '')), 0, 40),
+                            'direita' => mb_substr($dir, 0, 40),
+                            'dir_rotulo' => mb_substr(trim((string) ($it['dir_rotulo'] ?? '')), 0, 40),
+                        ];
+                    } elseif ($formato === 'circular') {
+                        $opcoes = [];
+                        foreach ((array) ($it['opcoes'] ?? []) as $op) {
+                            $op = trim((string) $op);
+                            if ($op !== '') {
+                                $opcoes[] = mb_substr($op, 0, 16);
+                            }
+                        }
+                        if (count($opcoes) < 2) {
+                            continue;
+                        }
+                        $correta = (int) ($it['correta'] ?? 1);
+                        $correta = max(1, min($correta, count($opcoes)));
+                        $itens[] = [
+                            'rotulo' => mb_substr(trim((string) ($it['rotulo'] ?? '')), 0, 40),
+                            'opcoes' => $opcoes,
+                            'correta' => $correta,
+                        ];
+                    } else {
+                        $figura = trim((string) ($it['figura'] ?? ''));
+                        $rotulo = trim((string) ($it['rotulo'] ?? ''));
+                        if ($figura === '' && $rotulo === '') {
+                            continue;
+                        }
+                        $itens[] = [
+                            'figura' => mb_substr($figura, 0, 16),
+                            'rotulo' => mb_substr($rotulo, 0, 40),
+                            'resposta' => mb_substr(trim((string) ($it['resposta'] ?? '')), 0, 40),
+                        ];
+                    }
+                }
+            }
+
+            if (empty($itens)) {
+                continue;
+            }
+
             $out[] = [
+                'titulo' => mb_substr((string) $a['titulo'], 0, 200),
                 'tipo' => !empty($a['tipo']) ? mb_substr((string) $a['tipo'], 0, 60) : null,
-                'titulo' => (string) $a['titulo'],
-                'descricao' => isset($a['descricao']) ? (string) $a['descricao'] : null,
-                'materiais' => isset($a['materiais'])
-                    ? (is_array($a['materiais']) ? implode(', ', $a['materiais']) : (string) $a['materiais'])
-                    : null,
-                'duracao' => !empty($a['duracao']) ? mb_substr((string) $a['duracao'], 0, 60) : null,
+                'formato' => $formato,
+                'instrucao' => !empty($a['instrucao']) ? (string) $a['instrucao'] : null,
+                'itens' => $itens,
             ];
         }
 

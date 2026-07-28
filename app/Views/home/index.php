@@ -5,8 +5,8 @@
 
     <div class="stat-grid">
         <div class="stat">
-            <div class="stat__value"><?= (int) $stats['disciplinas'] ?></div>
-            <div class="stat__label">Disciplinas</div>
+            <div class="stat__value"><?= (int) $stats['turmas'] ?></div>
+            <div class="stat__label">Turmas</div>
         </div>
         <div class="stat">
             <div class="stat__value"><?= (int) $stats['planos'] ?></div>
@@ -35,38 +35,34 @@
 
     <h3>Ações rápidas</h3>
     <div class="quick">
-        <a href="/disciplinas">
+        <a href="/turmas">
             <span class="quick__icon">
-                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 19a2 2 0 0 1 2-2h13"/></svg>
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
             </span>
             <span>
-                <strong>Minhas disciplinas</strong>
-                <small>Criar disciplinas, módulos e conteúdo</small>
+                <strong>Minhas turmas</strong>
+                <small>Turma → matéria → tema da aula</small>
             </span>
         </a>
-        <?php if (!empty($disciplinas)): ?>
-            <a href="/disciplinas/<?= (int) $disciplinas[0]['id'] ?>/questoes">
-                <span class="quick__icon">
-                    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.9.4-1.5 1-1.5 2"/><path d="M11.5 17h.01"/><circle cx="12" cy="12" r="9"/></svg>
-                </span>
-                <span>
-                    <strong>Banco de questões</strong>
-                    <small>Revisar e filtrar questões</small>
-                </span>
-            </a>
-        <?php endif; ?>
+        <a href="/creche">
+            <span class="quick__icon">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a3 3 0 0 1 3 3c0 1.5-1 2-1 3h-4c0-1-1-1.5-1-3a3 3 0 0 1 3-3Z"/><path d="M5 21v-3a7 7 0 0 1 14 0v3"/></svg>
+            </span>
+            <span>
+                <strong>Creche</strong>
+                <small>Atividades, cronograma e pacotes</small>
+            </span>
+        </a>
     </div>
 
-    <?php if (!empty($disciplinas)): ?>
-        <h3 style="margin-top:32px;">Suas disciplinas</h3>
+    <?php if (!empty($turmas)): ?>
+        <h3 style="margin-top:32px;">Suas turmas</h3>
         <div class="card-grid">
-            <?php foreach ($disciplinas as $d): ?>
-                <a class="card card--link" href="/disciplinas/<?= (int) $d['id'] ?>">
-                    <span class="tag"><?= htmlspecialchars($d['etapa']) ?></span>
-                    <h3><?= htmlspecialchars($d['nome']) ?></h3>
-                    <?php if (!empty($d['ano_serie'])): ?>
-                        <p class="muted"><?= htmlspecialchars($d['ano_serie']) ?></p>
-                    <?php endif; ?>
+            <?php foreach ($turmas as $t): ?>
+                <a class="card card--link" href="/turmas/<?= (int) $t['id'] ?>">
+                    <?php if (!empty($t['etapa'])): ?><span class="tag"><?= htmlspecialchars($t['etapa']) ?></span><?php endif; ?>
+                    <h3><?= htmlspecialchars($t['nome']) ?></h3>
+                    <p class="muted"><?= (int) $t['n_materias'] ?> matéria(s)</p>
                 </a>
             <?php endforeach; ?>
         </div>

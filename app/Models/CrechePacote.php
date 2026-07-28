@@ -48,8 +48,8 @@ class CrechePacote extends Model
             $pacoteId = (int) $this->db->lastInsertId();
 
             $ins = $this->db->prepare(
-                'INSERT INTO creche_pacote_itens (pacote_id, tipo, titulo, descricao, materiais, duracao, ordem)
-                 VALUES (:p, :tipo, :titulo, :descricao, :materiais, :duracao, :ordem)'
+                'INSERT INTO creche_pacote_itens (pacote_id, tipo, formato, titulo, instrucao, itens_json, ordem)
+                 VALUES (:p, :tipo, :formato, :titulo, :instrucao, :itens_json, :ordem)'
             );
             $ordem = 0;
             foreach ($itens as $it) {
@@ -59,10 +59,10 @@ class CrechePacote extends Model
                 $ins->execute([
                     'p' => $pacoteId,
                     'tipo' => ($it['tipo'] ?? '') !== '' ? $it['tipo'] : null,
+                    'formato' => ($it['formato'] ?? '') !== '' ? $it['formato'] : 'escrever',
                     'titulo' => $it['titulo'],
-                    'descricao' => ($it['descricao'] ?? '') !== '' ? $it['descricao'] : null,
-                    'materiais' => ($it['materiais'] ?? '') !== '' ? $it['materiais'] : null,
-                    'duracao' => ($it['duracao'] ?? '') !== '' ? $it['duracao'] : null,
+                    'instrucao' => ($it['instrucao'] ?? '') !== '' ? $it['instrucao'] : null,
+                    'itens_json' => !empty($it['itens']) ? json_encode($it['itens'], JSON_UNESCAPED_UNICODE) : null,
                     'ordem' => $ordem++,
                 ]);
             }

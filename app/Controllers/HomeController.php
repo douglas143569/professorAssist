@@ -4,9 +4,9 @@ namespace App\Controllers;
 
 use App\Models\Atividade;
 use App\Models\Conteudo;
-use App\Models\Disciplina;
 use App\Models\PlanoAula;
 use App\Models\Questao;
+use App\Models\Turma;
 
 class HomeController extends AppController
 {
@@ -20,14 +20,14 @@ class HomeController extends AppController
             'title' => 'Início',
             'professor' => $prof,
             'stats' => [
-                'disciplinas' => (new Disciplina())->countByUser($prof['id']),
+                'turmas' => (new Turma())->countByUser($prof['id']),
                 'planos' => (new PlanoAula())->countByUser($prof['id']),
                 'atividades' => (new Atividade())->countByUser($prof['id']),
                 'conteudos' => (new Conteudo())->countByUser($prof['id']),
                 'questoes' => $questaoModel->countByUser($prof['id']),
                 'questoes_aprovadas' => $questaoModel->countByUser($prof['id'], 'aprovado'),
             ],
-            'disciplinas' => (new Disciplina())->byUser($prof['id']),
+            'turmas' => (new Turma())->byUser($prof['id']),
         ]);
     }
 }

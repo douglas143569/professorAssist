@@ -38,6 +38,26 @@ class Evento extends Model
         return $stmt->fetchAll();
     }
 
+    /** Todos os eventos do professor (para a aba "Eventos criados"). */
+    public function allByUser(int $userId, string $tipo = ''): array
+    {
+        $sql = 'SELECT e.*, d.nome AS disciplina_nome
+                  FROM eventos e
+                  LEFT JOIN disciplinas d ON d.id = e.disciplina_id
+                 WHERE e.user_id = :u';
+        $params = ['u' => $userId];
+
+        if ($tipo !== '') {
+            $sql .= ' AND e.tipo = :tipo';
+            $params['tipo'] = $tipo;
+        }
+        $sql .= ' ORDER BY e.data_evento, e.hora IS NULL, e.hora';
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll();
+    }
+
     public function find(int $id, int $userId): ?array
     {
         $stmt = $this->db->prepare('SELECT * FROM eventos WHERE id = :id AND user_id = :u');

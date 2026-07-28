@@ -88,6 +88,35 @@ class PacoteController extends AppController
         ]);
     }
 
+    /** Pagina de impressao no modelo de folha (todas ou as escolhidas via ?itens=). */
+    public function imprimir(string $id): void
+    {
+        $prof = $this->professor();
+        $pacote = (new CrechePacote())->find((int) $id, $prof['id']);
+
+        if (!$pacote) {
+            $this->notFound('Pacote nao encontrado.');
+            return;
+        }
+
+        $itens = (new CrechePacoteItem())->byPacote((int) $id);
+
+        // Filtro de selecao: ?itens=1,4,7
+        if (!empty($_GET['itens'])) {
+            $ids = array_filter(array_map('intval', explode(',', (string) $_GET['itens'])));
+            if ($ids) {
+                $itens = array_values(array_filter($itens, fn($it) => in_array((int) $it['id'], $ids, true)));
+            }
+        }
+
+        $this->view('creche.pacote_print', [
+            'title' => 'Imprimir — ' . $pacote['tema'],
+            'pacote' => $pacote,
+            'itens' => $itens,
+            'gabarito' => isset($_GET['gabarito']),
+        ]);
+    }
+
     public function excluir(string $id): void
     {
         $prof = $this->professor();
@@ -139,16 +168,145 @@ class PacoteController extends AppController
             return;
         }
 
+        $formato = in_array($_POST['formato'] ?? '', ['circular', 'ligar', 'pintar', 'sequencia'], true)
+            ? $_POST['formato'] : 'escrever';
+        $itens = match ($formato) {
+            'circular' => $this->parseCirculares($_POST['itens_texto'] ?? ''),
+            'ligar' => $this->parseLigar($_POST['itens_texto'] ?? ''),
+            'pintar' => $this->parsePintar($_POST['itens_texto'] ?? ''),
+            'sequencia' => $this->parseSequencia($_POST['itens_texto'] ?? ''),
+            default => $this->parseItens($_POST['itens_texto'] ?? ''),
+        };
+
         $model->update((int) $id, [
             'tipo' => trim($_POST['tipo'] ?? ''),
+            'formato' => $formato,
             'titulo' => $titulo,
-            'descricao' => $_POST['descricao'] ?? '',
-            'materiais' => $_POST['materiais'] ?? '',
-            'duracao' => trim($_POST['duracao'] ?? ''),
+            'instrucao' => trim($_POST['instrucao'] ?? ''),
+            'itens' => $itens,
         ]);
 
         $this->flash('Atividade atualizada.');
         $this->redirect('/creche/pacotes/' . (int) $item['pacote_id']);
+    }
+
+    /** Formato "escrever": uma linha por item, "figura | rotulo | resposta". */
+    private function parseItens(string $texto): array
+    {
+        $itens = [];
+        foreach (preg_split('/\r?\n/', $texto) as $linha) {
+            $linha = trim($linha);
+            if ($linha === '') {
+                continue;
+            }
+            $partes = array_map('trim', explode('|', $linha));
+            $figura = $partes[0] ?? '';
+            if ($figura === '' && ($partes[1] ?? '') === '') {
+                continue;
+            }
+            $itens[] = [
+                'figura' => mb_substr($figura, 0, 16),
+                'rotulo' => mb_substr($partes[1] ?? '', 0, 40),
+                'resposta' => mb_substr($partes[2] ?? '', 0, 40),
+            ];
+        }
+        return $itens;
+    }
+
+    /** Formato "circular": uma linha por linha da folha, "op1 op2 op3 | correta | rotulo". */
+    private function parseCirculares(string $texto): array
+    {
+        $itens = [];
+        foreach (preg_split('/\r?\n/', $texto) as $linha) {
+            $linha = trim($linha);
+            if ($linha === '') {
+                continue;
+            }
+            $partes = array_map('trim', explode('|', $linha));
+            $opcoes = array_values(array_filter(preg_split('/\s+/', $partes[0] ?? '')));
+            if (count($opcoes) < 2) {
+                continue;
+            }
+            $correta = max(1, min((int) ($partes[1] ?? 1), count($opcoes)));
+            $itens[] = [
+                'rotulo' => mb_substr($partes[2] ?? '', 0, 40),
+                'opcoes' => array_map(fn($o) => mb_substr($o, 0, 16), $opcoes),
+                'correta' => $correta,
+            ];
+        }
+        return $itens;
+    }
+
+    /** Formato "ligar": um par por linha, "esquerda | esq_rotulo | direita | dir_rotulo". */
+    private function parseLigar(string $texto): array
+    {
+        $itens = [];
+        foreach (preg_split('/\r?\n/', $texto) as $linha) {
+            $linha = trim($linha);
+            if ($linha === '') {
+                continue;
+            }
+            $partes = array_map('trim', explode('|', $linha));
+            $esq = $partes[0] ?? '';
+            $dir = $partes[2] ?? '';
+            if ($esq === '' || $dir === '') {
+                continue;
+            }
+            $itens[] = [
+                'esquerda' => mb_substr($esq, 0, 16),
+                'esq_rotulo' => mb_substr($partes[1] ?? '', 0, 40),
+                'direita' => mb_substr($dir, 0, 40),
+                'dir_rotulo' => mb_substr($partes[3] ?? '', 0, 40),
+            ];
+        }
+        return $itens;
+    }
+
+    /** Formato "pintar": um por linha, "figura | rotulo | pintar? (sim/nao)". */
+    private function parsePintar(string $texto): array
+    {
+        $itens = [];
+        foreach (preg_split('/\r?\n/', $texto) as $linha) {
+            $linha = trim($linha);
+            if ($linha === '') {
+                continue;
+            }
+            $partes = array_map('trim', explode('|', $linha));
+            $figura = $partes[0] ?? '';
+            if ($figura === '' && ($partes[1] ?? '') === '') {
+                continue;
+            }
+            $marca = mb_strtolower($partes[2] ?? '');
+            $itens[] = [
+                'figura' => mb_substr($figura, 0, 16),
+                'rotulo' => mb_substr($partes[1] ?? '', 0, 40),
+                'pintar' => in_array($marca, ['sim', 's', '1', 'x', 'true'], true),
+            ];
+        }
+        return $itens;
+    }
+
+    /** Formato "sequencia": uma linha por sequencia, "e1 e2 e3 | resposta | rotulo". */
+    private function parseSequencia(string $texto): array
+    {
+        $itens = [];
+        foreach (preg_split('/\r?\n/', $texto) as $linha) {
+            $linha = trim($linha);
+            if ($linha === '') {
+                continue;
+            }
+            $partes = array_map('trim', explode('|', $linha));
+            $seq = array_values(array_filter(preg_split('/\s+/', $partes[0] ?? '')));
+            if (empty($seq)) {
+                continue;
+            }
+            $itens[] = [
+                'rotulo' => mb_substr($partes[2] ?? '', 0, 40),
+                'sequencia' => array_map(fn($o) => mb_substr($o, 0, 16), $seq),
+                'resposta' => mb_substr($partes[1] ?? '', 0, 16),
+            ];
+        }
+        return $itens;
     }
 
     public function itemExcluir(string $id): void

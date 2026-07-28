@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Models\Conteudo;
 use App\Models\Disciplina;
 use App\Models\Modulo;
+use App\Models\Questao;
 use App\Services\AI;
 use App\Services\AIException;
 use App\Services\Logger;
@@ -64,6 +65,37 @@ class ModuloController extends AppController
             'atividades' => (new \App\Models\Atividade())->byModulo((int) $id),
             'conteudos' => (new Conteudo())->byModulo((int) $id),
             'questoes' => (new \App\Models\Questao())->byModulo((int) $id),
+        ]);
+    }
+
+    /**
+     * Folha de atividade para impressao: todas as questoes do tema numa pagina,
+     * com alternativas. ?gabarito=1 marca as respostas corretas.
+     */
+    public function atividade(string $id): void
+    {
+        $prof = $this->professor();
+        $modulo = (new Modulo())->find((int) $id, $prof['id']);
+
+        if (!$modulo) {
+            $this->notFound('Tema nao encontrado.');
+            return;
+        }
+
+        $questaoModel = new Questao();
+        $questoes = $questaoModel->byModulo((int) $id);
+        foreach ($questoes as &$q) {
+            $q['alternativas'] = $q['tipo'] === 'dissertativa'
+                ? []
+                : $questaoModel->alternativas((int) $q['id']);
+        }
+        unset($q);
+
+        $this->view('modulos.atividade', [
+            'title' => 'Atividade — ' . $modulo['titulo'],
+            'modulo' => $modulo,
+            'questoes' => $questoes,
+            'gabarito' => isset($_GET['gabarito']),
         ]);
     }
 

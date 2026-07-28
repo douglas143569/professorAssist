@@ -1,4 +1,10 @@
-    <p class="breadcrumb"><a href="/disciplinas">Disciplinas</a> / <?= htmlspecialchars($disciplina['nome']) ?></p>
+    <p class="breadcrumb">
+        <a href="/turmas">Turmas</a> /
+        <?php if (!empty($disciplina['turma_id'])): ?>
+            <a href="/turmas/<?= (int) $disciplina['turma_id'] ?>"><?= htmlspecialchars($disciplina['turma_nome'] ?? 'Turma') ?></a> /
+        <?php endif; ?>
+        <?= htmlspecialchars($disciplina['nome']) ?>
+    </p>
 
     <div class="page-header">
         <div>
@@ -8,21 +14,22 @@
                 <?= htmlspecialchars($disciplina['ano_serie'] ?? '') ?>
             </p>
         </div>
+        <a href="/disciplinas/<?= (int) $disciplina['id'] ?>/questoes" class="btn btn--ghost">Banco de questões</a>
     </div>
 
     <div class="split">
         <section>
-            <h2>Módulos</h2>
+            <h2>Temas da aula</h2>
             <?php if (empty($modulos)): ?>
                 <div class="card card--empty">
-                    <p>Nenhum módulo ainda. Crie um ao lado para começar a gerar conteúdo.</p>
+                    <p>Nenhum tema ainda. Crie um ao lado para começar a gerar conteúdo, planos, atividades e questões.</p>
                 </div>
             <?php else: ?>
                 <ul class="list">
                     <?php foreach ($modulos as $m): ?>
                         <li>
-                            <a href="/modulos/<?= (int) $m['id'] ?>">
-                                <strong><?= htmlspecialchars($m['titulo']) ?></strong>
+                            <a href="/modulos/<?= (int) $m['id'] ?>" class="list__main">
+                                <?= htmlspecialchars($m['titulo']) ?>
                             </a>
                             <?php if (!empty($m['codigos_bncc'])): ?>
                                 <span class="tag tag--bncc"><?= htmlspecialchars($m['codigos_bncc']) ?></span>
@@ -35,7 +42,7 @@
 
         <aside>
             <div class="card">
-                <h3>Novo módulo</h3>
+                <h3>Novo tema da aula</h3>
                 <form method="post" action="/disciplinas/<?= (int) $disciplina['id'] ?>/modulos" class="form">
                     <label>Título
                         <input type="text" name="titulo" placeholder="Ex: Frações" required>
@@ -46,8 +53,14 @@
                     <label>Objetivos <span class="muted">(opcional)</span>
                         <textarea name="objetivos" rows="3" placeholder="Objetivos de aprendizagem"></textarea>
                     </label>
-                    <button type="submit" class="btn btn--primary">Criar módulo</button>
+                    <button type="submit" class="btn btn--primary">Criar tema</button>
                 </form>
             </div>
+
+            <form method="post" action="/disciplinas/<?= (int) $disciplina['id'] ?>/excluir"
+                  onsubmit="return confirm('Excluir a matéria &quot;<?= htmlspecialchars($disciplina['nome'], ENT_QUOTES) ?>&quot; e todos os seus temas, conteúdos e questões?');"
+                  style="margin-top:12px;">
+                <button type="submit" class="btn btn--danger btn--sm">Excluir matéria</button>
+            </form>
         </aside>
     </div>

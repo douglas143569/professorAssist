@@ -6,14 +6,22 @@ use App\Core\Router;
 
 $router->get('/', 'HomeController@index');
 
-// Disciplinas
-$router->get('/disciplinas', 'DisciplinaController@index');
-$router->post('/disciplinas', 'DisciplinaController@store');
-$router->get('/disciplinas/{id}', 'DisciplinaController@show');
+// Turmas (topo) > Materias (disciplinas) > Temas (modulos)
+$router->get('/turmas', 'TurmaController@index');
+$router->post('/turmas', 'TurmaController@store');
+$router->get('/turmas/{id}', 'TurmaController@show');
+$router->post('/turmas/{id}/excluir', 'TurmaController@excluir');
+$router->post('/turmas/{id}/materias', 'DisciplinaController@store');
 
-// Modulos (dentro de uma disciplina)
+// Materias (tabela disciplinas)
+$router->get('/disciplinas', 'DisciplinaController@index'); // redireciona para /turmas
+$router->get('/disciplinas/{id}', 'DisciplinaController@show');
+$router->post('/disciplinas/{id}/excluir', 'DisciplinaController@excluir');
+
+// Temas da aula (dentro de uma materia)
 $router->post('/disciplinas/{id}/modulos', 'ModuloController@store');
 $router->get('/modulos/{id}', 'ModuloController@show');
+$router->get('/modulos/{id}/atividade', 'ModuloController@atividade');
 $router->post('/modulos/{id}/conteudos/gerar', 'ModuloController@gerarConteudo');
 
 // Conteudos
@@ -37,6 +45,7 @@ $router->get('/creche/pacote-itens/{id}', 'PacoteController@itemShow');
 $router->post('/creche/pacote-itens/{id}', 'PacoteController@itemUpdate');
 $router->post('/creche/pacote-itens/{id}/excluir', 'PacoteController@itemExcluir');
 $router->get('/creche/pacotes/{id}', 'PacoteController@show');
+$router->get('/creche/pacotes/{id}/imprimir', 'PacoteController@imprimir');
 $router->post('/creche/pacotes/{id}/excluir', 'PacoteController@excluir');
 $router->post('/creche/atividades/gerar', 'CrecheController@gerar');
 $router->get('/creche/atividades/{id}', 'CrecheController@show');
@@ -46,6 +55,7 @@ $router->post('/creche/atividades/{id}/excluir', 'CrecheController@excluir');
 
 // Calendario
 $router->get('/calendario', 'CalendarioController@index');
+$router->get('/calendario/eventos', 'CalendarioController@eventos');
 $router->post('/calendario', 'CalendarioController@store');
 $router->post('/eventos/{id}/concluir', 'CalendarioController@concluir');
 $router->post('/eventos/{id}/excluir', 'CalendarioController@excluir');

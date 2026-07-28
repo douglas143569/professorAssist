@@ -1,8 +1,10 @@
     <p class="breadcrumb">
-        <a href="/disciplinas">Disciplinas</a> /
+        <a href="/turmas">Turmas</a> /
         <a href="/disciplinas/<?= (int) $modulo['disciplina_id'] ?>"><?= htmlspecialchars($modulo['disciplina_nome']) ?></a> /
         <?= htmlspecialchars($modulo['titulo']) ?>
     </p>
+
+    <p class="muted" style="margin:-6px 0 14px;font-size:0.85rem;">Tema da aula</p>
 
     <div class="page-header">
         <div>
@@ -125,6 +127,9 @@
         <div class="actions">
             <a href="/modulos/<?= (int) $modulo['id'] ?>/questoes/nova" class="btn btn--ghost">+ Adicionar manual</a>
             <a href="/disciplinas/<?= (int) $modulo['disciplina_id'] ?>/questoes" class="btn btn--ghost">Banco da disciplina</a>
+            <?php if (!empty($questoes)): ?>
+                <a href="/modulos/<?= (int) $modulo['id'] ?>/atividade" class="btn btn--primary">Entrar na atividade →</a>
+            <?php endif; ?>
         </div>
     </div>
 
