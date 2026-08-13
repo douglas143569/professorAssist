@@ -6,9 +6,16 @@ use App\Core\Router;
 
 $router->get('/', 'HomeController@index');
 
-// Turmas (topo) > Materias (disciplinas) > Temas (modulos)
+// Escolas (topo) > Turmas > Materias (disciplinas) > Temas (modulos)
+$router->get('/escolas', 'EscolaController@index');
+$router->post('/escolas', 'EscolaController@store');
+$router->get('/escolas/{id}', 'EscolaController@show');
+$router->post('/escolas/{id}', 'EscolaController@update');
+$router->post('/escolas/{id}/excluir', 'EscolaController@excluir');
+$router->post('/escolas/{id}/turmas', 'TurmaController@store');
+
+// Turmas (dentro de uma escola)
 $router->get('/turmas', 'TurmaController@index');
-$router->post('/turmas', 'TurmaController@store');
 $router->get('/turmas/{id}', 'TurmaController@show');
 $router->post('/turmas/{id}/excluir', 'TurmaController@excluir');
 $router->post('/turmas/{id}/materias', 'DisciplinaController@store');

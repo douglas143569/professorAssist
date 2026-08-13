@@ -1,19 +1,38 @@
+<?php
+    // Agrupa as turmas por escola (byUser ja vem ordenado por escola, depois nome).
+    $porEscola = [];
+    foreach ($turmas as $t) {
+        $porEscola[(int) $t['escola_id']][] = $t;
+    }
+?>
     <div class="page-header">
         <div>
             <h1>Turmas</h1>
-            <p class="muted">Organize por turma → matéria → tema da aula.</p>
+            <p class="muted">Todas as suas turmas, agrupadas por escola.</p>
         </div>
+        <a href="/escolas" class="btn btn--primary">Escolas</a>
     </div>
 
-    <div class="split">
-        <section>
-            <?php if (empty($turmas)): ?>
+    <?php if (empty($escolas)): ?>
+        <div class="card card--empty">
+            <p>Você ainda não cadastrou nenhuma escola. A turma é criada dentro de uma escola.</p>
+            <p><a href="/escolas" class="btn btn--primary">Cadastrar escola</a></p>
+        </div>
+    <?php else: ?>
+        <?php foreach ($escolas as $e): ?>
+            <h2 style="margin-top:24px;">
+                <a href="/escolas/<?= (int) $e['id'] ?>"><?= htmlspecialchars($e['nome']) ?></a>
+            </h2>
+            <?php $lista = $porEscola[(int) $e['id']] ?? []; ?>
+            <?php if (empty($lista)): ?>
                 <div class="card card--empty">
-                    <p>Nenhuma turma ainda. Crie a primeira ao lado.</p>
+                    <p>Nenhuma turma nesta escola.
+                        <a href="/escolas/<?= (int) $e['id'] ?>">Criar turma</a>
+                    </p>
                 </div>
             <?php else: ?>
                 <div class="card-grid">
-                    <?php foreach ($turmas as $t): ?>
+                    <?php foreach ($lista as $t): ?>
                         <div class="card turma-card">
                             <a class="turma-card__main" href="/turmas/<?= (int) $t['id'] ?>">
                                 <?php if (!empty($t['etapa'])): ?><span class="tag"><?= htmlspecialchars($t['etapa']) ?></span><?php endif; ?>
@@ -34,26 +53,5 @@
                     <?php endforeach; ?>
                 </div>
             <?php endif; ?>
-        </section>
-
-        <aside>
-            <div class="card">
-                <h3>Nova turma</h3>
-                <form method="post" action="/turmas" class="form">
-                    <label>Nome da turma
-                        <input type="text" name="nome" placeholder="Ex: 6º ano A" required>
-                    </label>
-                    <label>Etapa
-                        <select name="etapa">
-                            <option value="EF">Ensino Fundamental</option>
-                            <option value="EM">Ensino Médio</option>
-                        </select>
-                    </label>
-                    <label>Ano / Série <span class="muted">(opcional)</span>
-                        <input type="text" name="ano_serie" placeholder="Ex: 6º ano">
-                    </label>
-                    <button type="submit" class="btn btn--primary">Criar turma</button>
-                </form>
-            </div>
-        </aside>
-    </div>
+        <?php endforeach; ?>
+    <?php endif; ?>

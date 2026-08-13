@@ -1,5 +1,5 @@
     <p class="breadcrumb">
-        <a href="/disciplinas">Disciplinas</a> /
+        <a href="/turmas">Turmas</a> /
         <a href="/modulos/<?= (int) $conteudo['modulo_id'] ?>"><?= htmlspecialchars($conteudo['modulo_titulo']) ?></a> /
         Conteúdo
     </p>

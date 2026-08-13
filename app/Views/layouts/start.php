@@ -1,7 +1,9 @@
 <?php
     $__path = '/' . trim(parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH), '/');
     $__isHome = ($__path === '/');
-    $__isDisc = !$__isHome && (
+    // Escolas cobre toda a hierarquia abaixo dela: turmas > materias > temas.
+    $__isEscola = !$__isHome && (
+        str_starts_with($__path, '/escolas') ||
         str_starts_with($__path, '/turmas') ||
         str_starts_with($__path, '/disciplinas') ||
         str_starts_with($__path, '/modulos') ||
@@ -36,9 +38,9 @@
                     <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5 12 3l9 6.5"/><path d="M5 10v10h14V10"/></svg>
                     <span>Início</span>
                 </a>
-                <a href="/turmas" class="navitem <?= $__isDisc ? 'is-active' : '' ?>">
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                    <span>Turmas</span>
+                <a href="/escolas" class="navitem <?= $__isEscola ? 'is-active' : '' ?>">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 8h20L12 3Z"/><path d="M4 8v11h16V8"/><path d="M9 19v-5h6v5"/></svg>
+                    <span>Escolas</span>
                 </a>
                 <a href="/calendario" class="navitem <?= $__isCal ? 'is-active' : '' ?>">
                     <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>

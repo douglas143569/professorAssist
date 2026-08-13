@@ -3,7 +3,7 @@
     $sel = fn(string $campo, string $valor): string => ($filtros[$campo] ?? '') === $valor ? 'selected' : '';
 ?>
     <p class="breadcrumb">
-        <a href="/disciplinas">Disciplinas</a> /
+        <a href="/turmas">Turmas</a> /
         <a href="/disciplinas/<?= (int) $disciplina['id'] ?>"><?= htmlspecialchars($disciplina['nome']) ?></a> /
         Banco de questões
     </p>

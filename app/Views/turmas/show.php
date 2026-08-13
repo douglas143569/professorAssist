@@ -1,4 +1,8 @@
-    <p class="breadcrumb"><a href="/turmas">Turmas</a> / <?= htmlspecialchars($turma['nome']) ?></p>
+    <p class="breadcrumb">
+        <a href="/escolas">Escolas</a> /
+        <a href="/escolas/<?= (int) $turma['escola_id'] ?>"><?= htmlspecialchars($turma['escola_nome'] ?? 'Escola') ?></a> /
+        <?= htmlspecialchars($turma['nome']) ?>
+    </p>
 
     <div class="page-header">
         <div>

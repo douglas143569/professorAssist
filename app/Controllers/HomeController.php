@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Models\Atividade;
 use App\Models\Conteudo;
+use App\Models\Escola;
 use App\Models\PlanoAula;
 use App\Models\Questao;
 use App\Models\Turma;
@@ -20,6 +21,7 @@ class HomeController extends AppController
             'title' => 'Início',
             'professor' => $prof,
             'stats' => [
+                'escolas' => (new Escola())->countByUser($prof['id']),
                 'turmas' => (new Turma())->countByUser($prof['id']),
                 'planos' => (new PlanoAula())->countByUser($prof['id']),
                 'atividades' => (new Atividade())->countByUser($prof['id']),

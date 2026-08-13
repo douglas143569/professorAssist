@@ -3,11 +3,13 @@
 namespace App\Controllers;
 
 use App\Models\Disciplina;
+use App\Models\Escola;
 use App\Models\Turma;
 use App\Services\Logger;
 
 class TurmaController extends AppController
 {
+    /** Lista todas as turmas do professor, agrupadas por escola. */
     public function index(): void
     {
         $prof = $this->professor();
@@ -15,12 +17,20 @@ class TurmaController extends AppController
             'title' => 'Turmas',
             'professor' => $prof,
             'turmas' => (new Turma())->byUser($prof['id']),
+            'escolas' => (new Escola())->byUser($prof['id']),
         ]);
     }
 
-    public function store(): void
+    /** Cria uma turma dentro de uma escola. */
+    public function store(string $escolaId): void
     {
         $prof = $this->professor();
+        $escola = (new Escola())->find((int) $escolaId, $prof['id']);
+
+        if (!$escola) {
+            $this->notFound('Escola nao encontrada.');
+            return;
+        }
 
         $nome = trim($_POST['nome'] ?? '');
         $etapa = ($_POST['etapa'] ?? '') === 'EM' ? 'EM' : 'EF';
@@ -28,12 +38,13 @@ class TurmaController extends AppController
 
         if ($nome === '') {
             $this->flash('Informe o nome da turma.');
-            $this->redirect('/turmas');
+            $this->redirect('/escolas/' . (int) $escolaId);
             return;
         }
 
         $id = (new Turma())->create([
             'user_id' => $prof['id'],
+            'escola_id' => (int) $escolaId,
             'nome' => $nome,
             'etapa' => $etapa,
             'ano_serie' => $anoSerie,
@@ -70,14 +81,15 @@ class TurmaController extends AppController
     {
         $prof = $this->professor();
         $model = new Turma();
+        $turma = $model->find((int) $id, $prof['id']);
 
-        if (!$model->find((int) $id, $prof['id'])) {
+        if (!$turma) {
             $this->notFound('Turma nao encontrada.');
             return;
         }
 
         $model->delete((int) $id);
         $this->flash('Turma excluída.');
-        $this->redirect('/turmas');
+        $this->redirect('/escolas/' . (int) $turma['escola_id']);
     }
 }

@@ -9,19 +9,40 @@ class Turma extends Model
     public function byUser(int $userId): array
     {
         $stmt = $this->db->prepare(
-            'SELECT t.*,
+            'SELECT t.*, e.nome AS escola_nome,
                     (SELECT COUNT(*) FROM disciplinas d WHERE d.turma_id = t.id) AS n_materias
                FROM turmas t
+               LEFT JOIN escolas e ON e.id = t.escola_id
               WHERE t.user_id = :u
-              ORDER BY t.nome'
+              ORDER BY e.nome, t.nome'
         );
         $stmt->execute(['u' => $userId]);
         return $stmt->fetchAll();
     }
 
+    /** Turmas de uma escola. */
+    public function byEscola(int $escolaId): array
+    {
+        $stmt = $this->db->prepare(
+            'SELECT t.*,
+                    (SELECT COUNT(*) FROM disciplinas d WHERE d.turma_id = t.id) AS n_materias
+               FROM turmas t
+              WHERE t.escola_id = :e
+              ORDER BY t.nome'
+        );
+        $stmt->execute(['e' => $escolaId]);
+        return $stmt->fetchAll();
+    }
+
+    /** Busca uma turma garantindo o dono; traz o nome da escola (breadcrumb). */
     public function find(int $id, int $userId): ?array
     {
-        $stmt = $this->db->prepare('SELECT * FROM turmas WHERE id = :id AND user_id = :u');
+        $stmt = $this->db->prepare(
+            'SELECT t.*, e.nome AS escola_nome
+               FROM turmas t
+               LEFT JOIN escolas e ON e.id = t.escola_id
+              WHERE t.id = :id AND t.user_id = :u'
+        );
         $stmt->execute(['id' => $id, 'u' => $userId]);
         return $stmt->fetch() ?: null;
     }
@@ -29,11 +50,12 @@ class Turma extends Model
     public function create(array $data): int
     {
         $stmt = $this->db->prepare(
-            'INSERT INTO turmas (user_id, nome, etapa, ano_serie)
-             VALUES (:u, :nome, :etapa, :ano)'
+            'INSERT INTO turmas (user_id, escola_id, nome, etapa, ano_serie)
+             VALUES (:u, :escola, :nome, :etapa, :ano)'
         );
         $stmt->execute([
             'u' => $data['user_id'],
+            'escola' => $data['escola_id'],
             'nome' => $data['nome'],
             'etapa' => $data['etapa'],
             'ano' => ($data['ano_serie'] ?? '') !== '' ? $data['ano_serie'] : null,
