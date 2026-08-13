@@ -1,27 +1,44 @@
-# PHP MVC Starter
+# Assistente para Professores
 
-Base **profissional** para iniciar projetos em PHP + MySQL. Já vem com um
-micro-framework MVC próprio, migrations versionadas e um padrão de
-**logging/auditoria** pronto para usar. É o ponto de partida — clone, renomeie
-e comece a construir sua aplicação em cima.
+Aplicação web que ajuda o professor a **preparar aula**: gera conteúdo, planos de
+aula, atividades, banco de questões e folhas imprimíveis com apoio de IA
+(Claude / Anthropic), sempre com o professor revisando e aprovando antes de usar.
 
-## O que já vem pronto
+Construído em PHP 8.3 + MySQL 8.4 sobre um micro-framework MVC próprio.
 
-- MVC próprio (Router, Controller/Model base, Database via PDO)
-- Autoload PSR-4 via Composer
-- Configuração por ambiente (`.env` com phpdotenv)
-- Sistema de **migrations** versionadas (`database/migrations`)
-- Padrão de **logging e auditoria** (`App\Services\Logger` + tabelas
-  `activity_logs` e `access_logs`)
-- Fluxo Git com branches `dev`/`main` e hook que bloqueia push direto na `main`
-- Convenções documentadas em [CLAUDE.md](CLAUDE.md)
+## Princípios do projeto
+
+- **Só o professor usa o sistema.** Não existe portal do aluno e nenhum dado
+  pessoal de menor de idade é armazenado — provas e atividades saem em PDF.
+- **Human-in-the-loop.** Tudo que a IA gera nasce como `rascunho` e só vira
+  `aprovado` depois que o professor revisa e edita.
+- **Alinhado à BNCC.** Ensino Fundamental/Médio usa códigos de habilidade
+  (ex: `EF67LP08`); Educação Infantil usa campos de experiência e faixa etária.
+
+## Funcionalidades
+
+Hierarquia pedagógica: **Escola → Turma → Matéria → Tema da aula**.
+
+| Módulo | O que faz |
+| --- | --- |
+| Escolas / Turmas / Matérias | Organização das aulas do professor (só dado institucional) |
+| Conteúdo do tema | Geração do conteúdo da aula com IA, editável e aprovável |
+| Plano de aula | Objetivos, metodologia (introdução/desenvolvimento/fechamento), recursos e avaliação |
+| Banco de questões | Geração em lote, alternativas, dificuldade, habilidade BNCC, filtros |
+| Atividade impressa | Folha de exercícios do tema, numerada, com versão gabarito |
+| Atividades sugeridas | Formatos variados (individual, grupo, discussão, prática, projeto, jogo) |
+| Calendário | Provas, trabalhos, lembretes e aulas, com aba de eventos criados |
+| Creche (Ed. Infantil) | Atividades lúdicas, cronograma semanal e pacotes de folhas imprimíveis |
+
+As folhas da creche saem em 5 formatos (`escrever`, `ligar`, `pintar`,
+`sequencia`, `circular`), prontas para imprimir ou salvar em PDF.
 
 ## Stack
 
-- PHP 8.1+
-- MySQL 5.7+ / 8.x
-- Composer
+- PHP 8.3, MySQL 8.4, Composer
+- SDK oficial `anthropic-ai/sdk` + `guzzlehttp/guzzle`
 - Apache (ou o servidor embutido do PHP para desenvolvimento)
+- Sem framework de front-end: PHP nas views + CSS próprio (`public/assets/css/app.css`)
 
 ## Estrutura de pastas
 
@@ -31,8 +48,7 @@ app/
   Models/        -> Models (acesso a dados)
   Views/         -> Views (HTML/PHP)
   Core/          -> Router, Controller/Model base, Database (PDO), Request
-  Services/      -> Regras de negócio / integrações (ex: Logger)
-config/          -> Configurações da aplicação
+  Services/      -> Regras de negócio e integrações (AI, Logger)
 routes/web.php   -> Definição de rotas
 database/
   migrations/    -> Scripts .sql versionados
@@ -41,27 +57,39 @@ public/          -> Document root (index.php, css, js, imagens)
 storage/         -> Logs e cache (não versionado)
 ```
 
-## Como começar um projeto novo a partir daqui
+## Como rodar localmente
 
-1. Clone e renomeie a pasta para o seu projeto.
-2. Copie o ambiente e ajuste os dados do banco:
-   ```
-   copy .env.example .env
-   ```
-3. Instale as dependências (isso também ativa o hook de proteção da `main`):
+1. Instale as dependências (isso também ativa o hook de proteção da `main`):
    ```
    composer install
    ```
-4. Crie o banco e as tabelas base:
+2. Copie o ambiente e ajuste banco e chave de API:
+   ```
+   copy .env.example .env
+   ```
+   Preencha `ANTHROPIC_API_KEY` com a sua chave. O `.env` **nunca** é commitado.
+3. Crie o banco `app` e aplique as migrations:
    ```
    composer migrate
    ```
-5. Suba localmente para testar:
+4. Suba o servidor de desenvolvimento:
    ```
-   php -S 127.0.0.1:8000 -t public
+   php -S 127.0.0.1:8000 -t public router.php
    ```
-6. Ajuste `composer.json` (`name`), `.env.example` e o conteúdo de `Views`
-   para a sua aplicação, e comece a codar.
+   O `router.php` é necessário porque o servidor embutido do PHP não lê o
+   `.htaccess` e não sabe rotear URLs amigáveis sozinho. Sob Apache/Laragon,
+   o `.htaccess` já resolve e o `router.php` não é usado.
+
+## Estado atual
+
+Funcionando: escolas, turmas, matérias, temas, conteúdo com IA, planos de aula,
+banco de questões, atividades sugeridas, atividade impressa, calendário e o
+módulo completo da creche (atividades lúdicas, cronograma semanal, pacotes de
+folhas imprimíveis).
+
+Pendente: login real (hoje há um professor demo fixo), gerador de provas com
+versões embaralhadas e correção objetiva, rubricas digitais e renderização de
+markdown nas telas de conteúdo.
 
 ## Fluxo de trabalho no Git
 
