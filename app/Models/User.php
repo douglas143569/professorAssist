@@ -41,12 +41,30 @@ class User extends Model
         return $stmt->fetch() ?: null;
     }
 
-    /** Base da futura pagina de controle de acessos. */
+    /**
+     * Todas as contas, para a pagina de administracao. Traz quanto cada
+     * professor tem no sistema -- desativar alguem com muito conteudo e uma
+     * decisao diferente de desativar uma conta vazia.
+     */
     public function all(): array
     {
-        $sql = 'SELECT ' . self::CAMPOS . ' FROM users ORDER BY role = \'admin\' DESC, name';
+        $sql = 'SELECT ' . self::CAMPOS . ',
+                    (SELECT COUNT(*) FROM escolas e WHERE e.user_id = users.id) AS n_escolas,
+                    (SELECT COUNT(*) FROM disciplinas d WHERE d.user_id = users.id) AS n_materias
+                  FROM users
+                 ORDER BY role = \'admin\' DESC, name';
 
         return $this->db->query($sql)->fetchAll();
+    }
+
+    public function definirRole(int $id, string $role): void
+    {
+        if (!in_array($role, [self::ROLE_ADMIN, self::ROLE_PROFESSOR], true)) {
+            return;
+        }
+
+        $stmt = $this->db->prepare('UPDATE users SET role = :role WHERE id = :id');
+        $stmt->execute(['role' => $role, 'id' => $id]);
     }
 
     public function create(string $nome, string $email, string $senha, string $role = self::ROLE_PROFESSOR): int

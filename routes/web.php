@@ -11,6 +11,13 @@ $router->post('/logout', 'AuthController@sair');
 
 $router->get('/', 'HomeController@index');
 
+// Administracao de contas (so admin; a checagem esta no ContaController)
+$router->get('/admin/contas', 'ContaController@index');
+$router->post('/admin/contas', 'ContaController@criar');
+$router->post('/admin/contas/{id}/ativo', 'ContaController@alternarAtivo');
+$router->post('/admin/contas/{id}/papel', 'ContaController@alternarPapel');
+$router->post('/admin/contas/{id}/senha', 'ContaController@trocarSenha');
+
 // Escolas (topo) > Turmas > Materias (disciplinas) > Temas (modulos)
 $router->get('/escolas', 'EscolaController@index');
 $router->post('/escolas', 'EscolaController@store');

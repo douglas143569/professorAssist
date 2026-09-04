@@ -860,3 +860,36 @@ label.mini input { padding: 6px 8px; font-size: 0.85rem; }
     background: var(--border); overflow: hidden;
 }
 .barra-teto span { display: block; height: 100%; background: var(--primary); border-radius: 999px; }
+
+/* ==========================================================================
+   Administracao de contas
+   ========================================================================== */
+
+.contas { display: flex; flex-direction: column; gap: 14px; }
+.conta { margin-bottom: 0; }
+.conta--inativa { opacity: .68; background: var(--surface-2); }
+
+.conta__topo { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; }
+.conta__topo h3 { margin: 0 0 3px; display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+.conta__uso { margin: 0; font-size: 0.78rem; text-align: right; line-height: 1.5; }
+
+.conta__acoes {
+    display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+    margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border);
+}
+.conta__acoes form { margin: 0; }
+.conta__acoes .btn[disabled] { opacity: .4; cursor: not-allowed; pointer-events: none; }
+
+.conta__senha { display: flex; gap: 7px; align-items: center; margin-left: auto; }
+.conta__senha input {
+    font: inherit; font-size: 0.84rem; padding: 6px 10px; width: 200px;
+    border: 1px solid var(--border-strong); border-radius: var(--radius-sm);
+    background: var(--surface); color: var(--text);
+}
+.conta__senha input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-ring); }
+
+@media (max-width: 700px) {
+    .conta__senha { margin-left: 0; width: 100%; }
+    .conta__senha input { flex: 1 1 auto; width: auto; }
+    .conta__uso { text-align: left; }
+}
