@@ -2,7 +2,6 @@
 
 namespace App\Controllers;
 
-use App\Models\AiGeracao;
 use App\Models\Atividade;
 use App\Models\Conteudo;
 use App\Models\Escola;
@@ -31,8 +30,6 @@ class HomeController extends AppController
                 'questoes' => $questaoModel->countByUser($prof['id']),
                 'questoes_aprovadas' => $questaoModel->countByUser($prof['id'], 'aprovado'),
                 'provas' => (new Prova())->countByUser($prof['id']),
-                'ia_gasto' => (new AiGeracao())->custoTotalUsuario($prof['id']),
-                'ia_teto' => max(0, (float) ($_ENV['AI_TETO_USD'] ?? 0)),
             ],
             'turmas' => (new Turma())->byUser($prof['id']),
         ]);

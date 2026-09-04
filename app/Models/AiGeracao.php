@@ -71,6 +71,41 @@ class AiGeracao extends Model
     }
 
     /**
+     * Gasto de CADA professor, em USD. Alimenta a tela de administracao --
+     * o custo da IA sai da mesma chave da API, entao o admin precisa ver
+     * quem esta consumindo.
+     *
+     * Respostas servidas do cache entram como status 'cache' com custo zero,
+     * logo nao somam aqui.
+     *
+     * @return array<int, float> user_id => total
+     */
+    public function custoPorUsuario(): array
+    {
+        $linhas = $this->db->query(
+            'SELECT user_id, SUM(custo_estimado) AS total
+               FROM ai_geracoes
+              WHERE status = "ok" AND user_id IS NOT NULL
+              GROUP BY user_id'
+        )->fetchAll();
+
+        $porUsuario = [];
+        foreach ($linhas as $linha) {
+            $porUsuario[(int) $linha['user_id']] = (float) $linha['total'];
+        }
+
+        return $porUsuario;
+    }
+
+    /** Gasto somado de todas as contas, em USD. */
+    public function custoTotal(): float
+    {
+        return (float) $this->db->query(
+            'SELECT COALESCE(SUM(custo_estimado), 0) FROM ai_geracoes WHERE status = "ok"'
+        )->fetchColumn();
+    }
+
+    /**
      * Soma o custo estimado (USD) gasto por um professor. Usado para aplicar
      * o teto de gasto por usuario (RF-20).
      */

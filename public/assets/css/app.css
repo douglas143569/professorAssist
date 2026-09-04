@@ -897,3 +897,12 @@ label.mini input { padding: 6px 8px; font-size: 0.85rem; }
 /* Cadastro: card um pouco mais largo e dicas sob os campos */
 .login-card--largo { max-width: 440px; }
 .campo-dica { font-weight: 400; font-size: 0.76rem; color: var(--muted); margin-top: -2px; }
+
+/* Gasto com IA na tela de administracao */
+.card--ia { border-left: 4px solid var(--primary); }
+.ia-total { font-size: 1.9rem; font-weight: 800; letter-spacing: -.02em; margin: 0 0 6px; color: var(--primary-700); }
+
+.conta__ia { display: block; margin-top: 6px; font-size: 0.78rem; }
+.conta__ia strong { color: var(--text-2); }
+.barra-teto--mini { display: block; width: 130px; margin-top: 4px; margin-left: auto; }
+@media (max-width: 700px) { .barra-teto--mini { margin-left: 0; } }

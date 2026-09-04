@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Models\AiGeracao;
 use App\Models\User;
 use App\Services\Logger;
 
@@ -24,10 +25,17 @@ class ContaController extends AppController
     {
         $this->exigirAdmin();
 
+        $ia = new AiGeracao();
+
         $this->view('contas.index', [
             'title' => 'Contas',
             'contas' => (new User())->all(),
             'eu' => $this->professor(),
+            // O gasto com IA so aparece aqui: sai da mesma chave da API para
+            // todo mundo, entao e informacao de administracao, nao do professor.
+            'gastos' => $ia->custoPorUsuario(),
+            'gasto_total' => $ia->custoTotal(),
+            'teto' => max(0, (float) ($_ENV['AI_TETO_USD'] ?? 0)),
         ]);
     }
 

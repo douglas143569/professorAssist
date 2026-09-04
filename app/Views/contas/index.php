@@ -39,6 +39,35 @@
         </form>
     </div>
 
+    <?php
+        // Geracoes antigas ou de contas ja removidas ficam sem dono (a FK usa
+        // ON DELETE SET NULL). O total continua certo -- e dinheiro gasto --
+        // mas nao aparece na soma das contas abaixo. Sem esta nota, os numeros
+        // parecem nao fechar.
+        $semDono = round($gasto_total - array_sum($gastos), 2);
+    ?>
+    <div class="card card--ia">
+        <h3>Gasto com IA</h3>
+        <p class="ia-total">US$ <?= number_format($gasto_total, 2, ',', '.') ?></p>
+        <?php if ($semDono >= 0.01): ?>
+            <p class="muted" style="margin:-2px 0 8px; font-size:0.8rem;">
+                Inclui US$ <?= number_format($semDono, 2, ',', '.') ?> de gerações sem conta
+                vinculada (feitas antes do login existir ou por contas já removidas).
+            </p>
+        <?php endif; ?>
+        <p class="muted" style="margin:0; font-size:0.85rem; line-height:1.6;">
+            Somado de todas as contas. Sai da <strong>mesma chave da API</strong> — a sua —
+            independentemente de quem gerou.
+            <?php if ($teto > 0): ?>
+                O teto de <strong>US$ <?= number_format($teto, 2, ',', '.') ?></strong> vale
+                <strong>por conta</strong>: com <?= count($contas) ?> conta(s), o gasto máximo
+                possível hoje é US$ <?= number_format($teto * count($contas), 2, ',', '.') ?>.
+            <?php else: ?>
+                Não há teto configurado (<code>AI_TETO_USD=0</code>).
+            <?php endif; ?>
+        </p>
+    </div>
+
     <h2 style="margin-top:32px;"><?= count($contas) ?> conta(s)</h2>
 
     <div class="contas">
@@ -64,6 +93,10 @@
                             <?php endif; ?>
                         </p>
                     </div>
+                    <?php
+                        $gasto = $gastos[(int) $c['id']] ?? 0.0;
+                        $pct = $teto > 0 ? min(100, (int) round($gasto / $teto * 100)) : 0;
+                    ?>
                     <p class="muted conta__uso">
                         <?= (int) $c['n_escolas'] ?> escola(s) · <?= (int) $c['n_materias'] ?> matéria(s)<br>
                         <?php if (!empty($c['last_login_at'])): ?>
@@ -71,6 +104,13 @@
                         <?php else: ?>
                             nunca entrou
                         <?php endif; ?>
+                        <span class="conta__ia">
+                            IA: <strong>US$ <?= number_format($gasto, 2, ',', '.') ?></strong>
+                            <?php if ($teto > 0): ?>
+                                de US$ <?= number_format($teto, 2, ',', '.') ?>
+                                <span class="barra-teto barra-teto--mini"><span style="width:<?= $pct ?>%"></span></span>
+                            <?php endif; ?>
+                        </span>
                     </p>
                 </div>
 
