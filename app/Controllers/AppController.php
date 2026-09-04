@@ -4,28 +4,62 @@ namespace App\Controllers;
 
 use App\Core\Controller;
 use App\Models\User;
+use App\Services\Auth;
 
 /**
- * Base dos controllers da aplicacao. Resolve o professor logado e oferece
- * mensagens flash.
+ * Base dos controllers da area logada.
  *
- * MVP: ainda nao ha tela de login (RF-01). Enquanto isso, usamos um
- * "Professor Demo" fixo para satisfazer o vinculo user_id. Quando o login
- * existir, troque professor() por quem estiver na sessao autenticada.
+ * A checagem de login mora no CONSTRUTOR de proposito: como todo controller
+ * da aplicacao estende esta classe, qualquer acao nova ja nasce protegida,
+ * mesmo que o autor esqueca de chamar professor(). Quem NAO deve exigir
+ * login (ex: AuthController) estende App\Core\Controller direto.
  */
 abstract class AppController extends Controller
 {
+    protected array $usuario;
+
+    public function __construct()
+    {
+        Auth::iniciarSessao();
+
+        $usuario = Auth::usuario();
+
+        if ($usuario === null) {
+            $this->exigirLogin();
+        }
+
+        $this->usuario = $usuario;
+    }
+
+    /**
+     * Professor dono do conteudo desta requisicao.
+     */
     protected function professor(): array
     {
-        $this->bootSession();
-        $prof = (new User())->professorDemo();
-        $_SESSION['user_id'] = $prof['id']; // usado pelo Logger para auditoria
-        return $prof;
+        return $this->usuario;
+    }
+
+    protected function ehAdmin(): bool
+    {
+        return $this->usuario['role'] === User::ROLE_ADMIN;
+    }
+
+    /**
+     * Barra a acao para quem nao e administrador. Sera a base da futura
+     * pagina de controle de acessos.
+     */
+    protected function exigirAdmin(): void
+    {
+        if (!$this->ehAdmin()) {
+            http_response_code(403);
+            echo 'Acesso restrito ao administrador.';
+            exit;
+        }
     }
 
     protected function flash(string $mensagem): void
     {
-        $this->bootSession();
+        Auth::iniciarSessao();
         $_SESSION['flash'] = $mensagem;
     }
 
@@ -36,10 +70,15 @@ abstract class AppController extends Controller
         exit;
     }
 
-    private function bootSession(): void
+    /**
+     * Manda para o login guardando o destino, para voltar aqui depois de entrar.
+     */
+    private function exigirLogin(): void
     {
-        if (session_status() !== PHP_SESSION_ACTIVE) {
-            session_start();
+        if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'GET') {
+            $_SESSION['destino'] = $_SERVER['REQUEST_URI'] ?? '/';
         }
+
+        $this->redirect('/login');
     }
 }

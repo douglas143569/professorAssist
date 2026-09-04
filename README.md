@@ -21,6 +21,7 @@ Hierarquia pedagógica: **Escola → Turma → Matéria → Tema da aula**.
 
 | Módulo | O que faz |
 | --- | --- |
+| Login | Autenticação por e-mail e senha (bcrypt), papéis `admin`/`professor`, bloqueio por tentativas e auditoria de acesso |
 | Escolas / Turmas / Matérias | Organização das aulas do professor (só dado institucional) |
 | Conteúdo do tema | Geração do conteúdo da aula com IA, editável e aprovável |
 | Plano de aula | Objetivos, metodologia (introdução/desenvolvimento/fechamento), recursos e avaliação |
@@ -72,7 +73,11 @@ storage/         -> Logs e cache (não versionado)
    ```
    composer migrate
    ```
-4. Suba o servidor de desenvolvimento:
+4. Crie a conta administradora (a senha é digitada na hora, nunca fica no repo):
+   ```
+   php database/criar_admin.php "Seu Nome" voce@dominio.com
+   ```
+5. Suba o servidor de desenvolvimento:
    ```
    php -S 127.0.0.1:8000 -t public router.php
    ```
@@ -82,14 +87,15 @@ storage/         -> Logs e cache (não versionado)
 
 ## Estado atual
 
-Funcionando: escolas, turmas, matérias, temas, conteúdo com IA, planos de aula,
-banco de questões, atividades sugeridas, atividade impressa, calendário e o
-módulo completo da creche (atividades lúdicas, cronograma semanal, pacotes de
-folhas imprimíveis).
+Funcionando: login com papéis, escolas, turmas, matérias, temas, conteúdo com
+IA, planos de aula, banco de questões, atividades sugeridas, atividade
+impressa, calendário e o módulo completo da creche (atividades lúdicas,
+cronograma semanal, pacotes de folhas imprimíveis).
 
-Pendente: login real (hoje há um professor demo fixo), gerador de provas com
-versões embaralhadas e correção objetiva, rubricas digitais e renderização de
-markdown nas telas de conteúdo.
+Pendente: página de administração de contas (criar/desativar professores pela
+interface — hoje só pelo script de linha de comando), proteção CSRF nos
+formulários, gerador de provas com versões embaralhadas e correção objetiva,
+rubricas digitais e renderização de markdown nas telas de conteúdo.
 
 ## Fluxo de trabalho no Git
 

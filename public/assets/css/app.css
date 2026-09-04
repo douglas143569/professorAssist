@@ -633,3 +633,106 @@ textarea.mono { font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
     .folha-q { break-inside: avoid; }
     a[href]::after { content: ""; } /* nao imprime as URLs */
 }
+
+/* ==========================================================================
+   Login (tela fora do dashboard)
+   ========================================================================== */
+
+.login-body {
+    margin: 0;
+    min-height: 100vh;
+    background:
+        radial-gradient(900px 500px at 12% -10%, #dff0e7 0%, rgba(223, 240, 231, 0) 60%),
+        radial-gradient(760px 420px at 105% 110%, #e3efe9 0%, rgba(227, 239, 233, 0) 62%),
+        var(--bg);
+}
+
+.login-wrap {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    padding: 28px 20px;
+    box-sizing: border-box;
+}
+
+.login-card {
+    width: 100%;
+    max-width: 400px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+    padding: 32px 30px 26px;
+    box-sizing: border-box;
+}
+
+.login-brand { display: flex; align-items: center; gap: 11px; margin-bottom: 26px; }
+
+.login-logo {
+    width: 40px; height: 40px; flex: 0 0 40px;
+    display: grid; place-items: center;
+    background: var(--primary); color: #fff;
+    border-radius: 11px;
+    font-weight: 800; font-size: 0.95rem; letter-spacing: .5px;
+}
+
+.login-brandtext { font-size: 0.95rem; line-height: 1.25; color: var(--text-2); }
+.login-brandtext strong { display: block; color: var(--text); }
+
+.login-title { margin: 0 0 4px; font-size: 1.45rem; letter-spacing: -.02em; }
+.login-sub { margin: 0 0 22px; color: var(--muted); font-size: 0.9rem; }
+
+.login-erro {
+    display: flex; align-items: flex-start; gap: 9px;
+    background: var(--danger-bg);
+    border: 1px solid var(--danger-bd);
+    color: var(--danger);
+    border-radius: var(--radius-sm);
+    padding: 11px 13px;
+    margin-bottom: 18px;
+    font-size: 0.88rem;
+    line-height: 1.45;
+}
+.login-erro svg { flex: 0 0 18px; margin-top: 1px; }
+
+.login-form { gap: 16px; }
+.login-btn { width: 100%; justify-content: center; margin-top: 4px; padding: 12px 16px; }
+
+.login-rodape {
+    margin: 20px 0 0;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 0.82rem;
+    text-align: center;
+}
+
+.login-nota { color: var(--muted); font-size: 0.8rem; margin: 0; }
+
+/* Rodape da sidebar: usuario logado + sair */
+.sidebar__foot form { margin: 0; }
+.sidebar__foot .sidebar__user { flex: 1 1 auto; } /* empurra o botao Sair para a direita */
+
+.btn-sair {
+    background: none; border: none; padding: 4px; margin: 0;
+    color: var(--muted); cursor: pointer; border-radius: 8px;
+    display: grid; place-items: center;
+    transition: color .15s, background .15s;
+}
+.btn-sair:hover { color: var(--danger); background: var(--danger-bg); }
+
+.badge-admin {
+    display: inline-block;
+    background: var(--ok-bg); color: var(--ok);
+    border-radius: 999px;
+    padding: 1px 7px;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    vertical-align: middle;
+    margin-left: 5px;
+}

@@ -4,6 +4,11 @@ use App\Core\Router;
 
 /** @var Router $router */
 
+// Autenticacao (unicas rotas abertas: todo o resto exige login)
+$router->get('/login', 'AuthController@formulario');
+$router->post('/login', 'AuthController@entrar');
+$router->post('/logout', 'AuthController@sair');
+
 $router->get('/', 'HomeController@index');
 
 // Escolas (topo) > Turmas > Materias (disciplinas) > Temas (modulos)

@@ -14,6 +14,15 @@
     );
     $__isCal = str_starts_with($__path, '/calendario') || str_starts_with($__path, '/eventos');
     $__isCreche = str_starts_with($__path, '/creche');
+
+    // Quem esta logado (para o rodape da sidebar).
+    $__user = \App\Services\Auth::usuario() ?? ['name' => '', 'email' => '', 'role' => ''];
+    $__ehAdmin = ($__user['role'] ?? '') === \App\Models\User::ROLE_ADMIN;
+
+    $__partes = preg_split('/\s+/', trim((string) $__user['name']), -1, PREG_SPLIT_NO_EMPTY) ?: [];
+    $__iniciais = mb_strtoupper(
+        mb_substr($__partes[0] ?? '?', 0, 1) . (count($__partes) > 1 ? mb_substr(end($__partes), 0, 1) : '')
+    );
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -58,11 +67,16 @@
             </nav>
 
             <div class="sidebar__foot">
-                <span class="avatar">PD</span>
+                <span class="avatar"><?= htmlspecialchars($__iniciais) ?></span>
                 <span class="sidebar__user">
-                    <strong>Professor Demo</strong>
-                    <small class="muted">professor@demo.local</small>
+                    <strong><?= htmlspecialchars($__user['name']) ?><?php if ($__ehAdmin): ?><span class="badge-admin">admin</span><?php endif; ?></strong>
+                    <small class="muted"><?= htmlspecialchars($__user['email']) ?></small>
                 </span>
+                <form method="post" action="/logout">
+                    <button type="submit" class="btn-sair" title="Sair" aria-label="Sair">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg>
+                    </button>
+                </form>
             </div>
         </aside>
 
