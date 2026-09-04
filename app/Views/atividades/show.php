@@ -17,6 +17,7 @@
         </div>
         <?php if ($atividade['status'] !== 'aprovado'): ?>
             <form method="post" action="/atividades/<?= (int) $atividade['id'] ?>/aprovar">
+            <?= \App\Services\Csrf::campo() ?>
                 <button type="submit" class="btn btn--primary">✓ Aprovar</button>
             </form>
         <?php endif; ?>
@@ -27,6 +28,7 @@
     <?php endif; ?>
 
     <form method="post" action="/atividades/<?= (int) $atividade['id'] ?>" class="form">
+            <?= \App\Services\Csrf::campo() ?>
         <label>Título
             <input type="text" name="titulo" value="<?= htmlspecialchars($atividade['titulo']) ?>" required>
         </label>
@@ -54,5 +56,6 @@
 
     <form method="post" action="/atividades/<?= (int) $atividade['id'] ?>/excluir"
           onsubmit="return confirm('Excluir esta atividade?');" style="margin-top:12px;">
+            <?= \App\Services\Csrf::campo() ?>
         <button type="submit" class="btn btn--danger">Excluir atividade</button>
     </form>

@@ -15,6 +15,7 @@
         <h3>Criar pacote de atividades com IA</h3>
         <p class="muted" style="margin-top:-4px;">Digite um tema e a IA monta um pacote completo com atividades variadas (memória, pintura, música, movimento…).</p>
         <form method="post" action="/creche/pacotes/criar" class="form js-ai">
+            <?= \App\Services\Csrf::campo() ?>
             <label>Tema do pacote
                 <input type="text" name="tema" placeholder="Ex: fundo do mar, dinossauros, outono…" required>
             </label>

@@ -40,6 +40,7 @@
                                 <a href="/turmas/<?= (int) $t['id'] ?>" class="btn btn--ghost btn--sm">Abrir</a>
                                 <form method="post" action="/turmas/<?= (int) $t['id'] ?>/excluir"
                                       onsubmit="return confirm('Excluir a turma &quot;<?= htmlspecialchars($t['nome'], ENT_QUOTES) ?>&quot; e tudo dentro dela (matérias, temas, conteúdos e questões)?');">
+            <?= \App\Services\Csrf::campo() ?>
                                     <button type="submit" class="btn btn--danger btn--sm">Excluir</button>
                                 </form>
                             </div>
@@ -53,6 +54,7 @@
             <div class="card">
                 <h3>Nova turma</h3>
                 <form method="post" action="/escolas/<?= (int) $escola['id'] ?>/turmas" class="form">
+            <?= \App\Services\Csrf::campo() ?>
                     <label>Nome da turma
                         <input type="text" name="nome" placeholder="Ex: 6º ano A" required>
                     </label>
@@ -72,6 +74,7 @@
             <div class="card" style="margin-top:12px;">
                 <h3>Dados da escola</h3>
                 <form method="post" action="/escolas/<?= (int) $escola['id'] ?>" class="form">
+            <?= \App\Services\Csrf::campo() ?>
                     <label>Nome
                         <input type="text" name="nome" value="<?= htmlspecialchars($escola['nome']) ?>" required>
                     </label>
@@ -103,6 +106,7 @@
 
             <form method="post" action="/escolas/<?= (int) $escola['id'] ?>/excluir"
                   onsubmit="return confirm('Excluir a escola e tudo dentro dela?');" style="margin-top:12px;">
+            <?= \App\Services\Csrf::campo() ?>
                 <button type="submit" class="btn btn--danger btn--sm">Excluir escola</button>
             </form>
         </aside>

@@ -24,6 +24,7 @@
         </div>
         <?php if ($questao['status'] !== 'aprovado'): ?>
             <form method="post" action="/questoes/<?= (int) $questao['id'] ?>/aprovar">
+            <?= \App\Services\Csrf::campo() ?>
                 <button type="submit" class="btn btn--primary">✓ Aprovar</button>
             </form>
         <?php endif; ?>
@@ -34,6 +35,7 @@
     <?php endif; ?>
 
     <form method="post" action="/questoes/<?= (int) $questao['id'] ?>" class="form">
+            <?= \App\Services\Csrf::campo() ?>
         <label>Enunciado
             <textarea name="enunciado" rows="4" required><?= htmlspecialchars($questao['enunciado']) ?></textarea>
         </label>
@@ -79,5 +81,6 @@
 
     <form method="post" action="/questoes/<?= (int) $questao['id'] ?>/excluir"
           onsubmit="return confirm('Excluir esta questão?');" style="margin-top:12px;">
+            <?= \App\Services\Csrf::campo() ?>
         <button type="submit" class="btn btn--danger">Excluir questão</button>
     </form>

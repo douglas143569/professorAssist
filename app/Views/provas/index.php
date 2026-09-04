@@ -37,6 +37,7 @@
             <?php endif; ?>
 
             <form method="post" action="/provas" class="form">
+            <?= \App\Services\Csrf::campo() ?>
                 <div class="form--inline">
                     <label style="flex:1 1 260px;">Matéria
                         <select name="disciplina_id" required>

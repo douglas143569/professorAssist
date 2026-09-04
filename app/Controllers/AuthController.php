@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Core\Controller;
 use App\Services\Auth;
+use App\Services\Csrf;
 
 /**
  * Login e logout.
@@ -36,6 +37,15 @@ class AuthController extends Controller
     {
         Auth::iniciarSessao();
 
+        // Impede que outro site poste um login na sessao do visitante
+        // (login-CSRF: te loga numa conta do atacante sem voce perceber).
+        if (!Csrf::valido($_POST[Csrf::CAMPO] ?? null)) {
+            $this->voltarComErro(
+                'Sua sessão expirou enquanto a página estava aberta. Tente entrar de novo.',
+                trim((string) ($_POST['email'] ?? ''))
+            );
+        }
+
         $email = trim((string) ($_POST['email'] ?? ''));
         $senha = (string) ($_POST['senha'] ?? '');
 
@@ -58,6 +68,13 @@ class AuthController extends Controller
 
     public function sair(): void
     {
+        Auth::iniciarSessao();
+
+        // Sem token, outro site conseguiria deslogar voce no meio do trabalho.
+        if (!Csrf::valido($_POST[Csrf::CAMPO] ?? null)) {
+            $this->redirect('/');
+        }
+
         Auth::logout();
         $this->redirect('/login');
     }

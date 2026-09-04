@@ -18,6 +18,7 @@
         </div>
         <?php if (empty($conteudos)): ?>
             <form method="post" action="/modulos/<?= (int) $modulo['id'] ?>/conteudos/gerar" class="js-ai">
+            <?= \App\Services\Csrf::campo() ?>
                 <button type="submit" class="btn btn--primary" data-loading="Gerando conteúdo…">✦ Gerar conteúdo com IA</button>
             </form>
         <?php endif; ?>
@@ -34,6 +35,7 @@
     <div class="card">
         <h3><?= empty($planos) ? 'Gerar plano de aula com IA' : 'Criar mais um plano para este tema' ?></h3>
         <form method="post" action="/modulos/<?= (int) $modulo['id'] ?>/planos/gerar" class="form form--inline js-ai">
+            <?= \App\Services\Csrf::campo() ?>
             <label>Duração
                 <select name="duracao">
                     <option value="1 aula de 50 min">1 aula de 50 min</option>
@@ -90,6 +92,7 @@
         </ul>
 
         <form method="post" action="/modulos/<?= (int) $modulo['id'] ?>/conteudos/gerar" class="js-ai" style="margin-top:14px;">
+            <?= \App\Services\Csrf::campo() ?>
             <button type="submit" class="btn btn--primary" data-loading="Criando novo material…">
                 ✦ Criar mais conteúdo com este tema
             </button>
@@ -106,6 +109,7 @@
     <div class="card">
         <h3>Sugerir atividades com IA</h3>
         <form method="post" action="/modulos/<?= (int) $modulo['id'] ?>/atividades/gerar" class="form form--inline js-ai">
+            <?= \App\Services\Csrf::campo() ?>
             <label>Quantidade
                 <input type="number" name="quantidade" value="4" min="1" max="10">
             </label>
@@ -155,6 +159,7 @@
     <div class="card">
         <h3>Gerar questões com IA</h3>
         <form method="post" action="/modulos/<?= (int) $modulo['id'] ?>/questoes/gerar" class="form form--inline js-ai">
+            <?= \App\Services\Csrf::campo() ?>
             <label>Quantidade
                 <input type="number" name="quantidade" value="5" min="1" max="15">
             </label>

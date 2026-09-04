@@ -28,6 +28,7 @@
             <?php endif; ?>
 
             <form method="post" action="/login" class="form login-form">
+            <?= \App\Services\Csrf::campo() ?>
                 <label>
                     E-mail
                     <input type="email" name="email" value="<?= htmlspecialchars($email ?? '') ?>"

@@ -26,10 +26,12 @@
             <?php endif; ?>
             <div class="ev-card__foot">
                 <form method="post" action="/eventos/<?= (int) $e['id'] ?>/concluir">
+            <?= \App\Services\Csrf::campo() ?>
                     <input type="hidden" name="voltar" value="/calendario/eventos">
                     <button class="btn btn--ghost btn--sm" type="submit"><?= $done ? '↺ Reabrir' : '✓ Concluir' ?></button>
                 </form>
                 <form method="post" action="/eventos/<?= (int) $e['id'] ?>/excluir" onsubmit="return confirm('Excluir este evento?');">
+            <?= \App\Services\Csrf::campo() ?>
                     <input type="hidden" name="voltar" value="/calendario/eventos">
                     <button class="btn btn--danger btn--sm" type="submit">Excluir</button>
                 </form>

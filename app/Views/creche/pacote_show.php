@@ -81,5 +81,6 @@
 
     <form method="post" action="/creche/pacotes/<?= (int) $pacote['id'] ?>/excluir"
           onsubmit="return confirm('Excluir o pacote inteiro?');" style="margin-top:20px;">
+            <?= \App\Services\Csrf::campo() ?>
         <button type="submit" class="btn btn--danger">Excluir pacote</button>
     </form>

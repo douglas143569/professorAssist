@@ -49,6 +49,7 @@
     </div>
 
     <form method="post" action="/creche/pacote-itens/<?= (int) $item['id'] ?>" class="form">
+            <?= \App\Services\Csrf::campo() ?>
         <label>Título
             <input type="text" name="titulo" value="<?= htmlspecialchars($item['titulo']) ?>" required>
         </label>
@@ -82,5 +83,6 @@
 
     <form method="post" action="/creche/pacote-itens/<?= (int) $item['id'] ?>/excluir"
           onsubmit="return confirm('Remover esta atividade do pacote?');" style="margin-top:12px;">
+            <?= \App\Services\Csrf::campo() ?>
         <button type="submit" class="btn btn--danger">Remover do pacote</button>
     </form>

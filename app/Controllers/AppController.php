@@ -5,6 +5,8 @@ namespace App\Controllers;
 use App\Core\Controller;
 use App\Models\User;
 use App\Services\Auth;
+use App\Services\Csrf;
+use App\Services\Logger;
 
 /**
  * Base dos controllers da area logada.
@@ -29,6 +31,11 @@ abstract class AppController extends Controller
         }
 
         $this->usuario = $usuario;
+
+        // Toda escrita passa por aqui: uma rota POST nova ja nasce protegida.
+        if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
+            $this->exigirTokenValido();
+        }
     }
 
     /**
@@ -67,6 +74,40 @@ abstract class AppController extends Controller
     {
         http_response_code(404);
         echo htmlspecialchars($mensagem);
+        exit;
+    }
+
+    /**
+     * Recusa POSTs sem token valido (CSRF).
+     *
+     * Falha fechada: sem token valido, nada e gravado. Na pratica isso
+     * acontece em dois casos -- um site de terceiros tentando disparar uma
+     * acao na sua sessao, ou uma aba que ficou aberta tempo demais.
+     */
+    private function exigirTokenValido(): void
+    {
+        if (Csrf::valido($_POST[Csrf::CAMPO] ?? null)) {
+            return;
+        }
+
+        Logger::warning('POST recusado por token CSRF invalido', [
+            'rota' => $_SERVER['REQUEST_URI'] ?? '',
+            'user_id' => $this->usuario['id'] ?? null,
+        ]);
+
+        http_response_code(403);
+
+        echo '<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8">'
+            . '<title>Pedido nao autorizado</title>'
+            . '<link rel="stylesheet" href="/assets/css/app.css"></head><body>'
+            . '<div style="max-width:520px;margin:80px auto;padding:0 20px;font-family:system-ui">'
+            . '<h1>Pedido não autorizado</h1>'
+            . '<p>Este envio não trouxe o código de segurança da sua sessão, então nada foi alterado.</p>'
+            . '<p>Isso costuma acontecer quando a página ficou aberta por muito tempo. '
+            . 'Volte, recarregue a página e tente de novo.</p>'
+            . '<p><a href="/">Voltar ao início</a></p>'
+            . '</div></body></html>';
+
         exit;
     }
 

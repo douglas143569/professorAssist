@@ -8,6 +8,7 @@
     </div>
 
     <form method="post" action="/modulos/<?= (int) $modulo['id'] ?>/questoes" class="form">
+            <?= \App\Services\Csrf::campo() ?>
         <label>Enunciado
             <textarea name="enunciado" rows="4" required placeholder="Escreva o enunciado da questão"></textarea>
         </label>

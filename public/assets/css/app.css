@@ -853,3 +853,10 @@ label.mini input { padding: 6px 8px; font-size: 0.85rem; }
 }
 .aviso-vazio strong { display: block; margin-bottom: 4px; color: var(--warn); }
 .aviso-vazio p { margin: 0 0 8px; }
+
+/* Barra de consumo do teto de IA */
+.barra-teto {
+    margin-top: 8px; height: 5px; border-radius: 999px;
+    background: var(--border); overflow: hidden;
+}
+.barra-teto span { display: block; height: 100%; background: var(--primary); border-radius: 999px; }

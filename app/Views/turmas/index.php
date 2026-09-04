@@ -46,6 +46,7 @@
                                 <a href="/turmas/<?= (int) $t['id'] ?>" class="btn btn--ghost btn--sm">Abrir</a>
                                 <form method="post" action="/turmas/<?= (int) $t['id'] ?>/excluir"
                                       onsubmit="return confirm('Excluir a turma &quot;<?= htmlspecialchars($t['nome'], ENT_QUOTES) ?>&quot; e tudo dentro dela (matérias, temas, conteúdos e questões)?');">
+            <?= \App\Services\Csrf::campo() ?>
                                     <button type="submit" class="btn btn--danger btn--sm">Excluir</button>
                                 </form>
                             </div>

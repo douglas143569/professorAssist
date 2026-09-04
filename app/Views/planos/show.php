@@ -16,6 +16,7 @@
         </div>
         <?php if ($plano['status'] !== 'aprovado'): ?>
             <form method="post" action="/planos/<?= (int) $plano['id'] ?>/aprovar">
+            <?= \App\Services\Csrf::campo() ?>
                 <button type="submit" class="btn btn--primary">✓ Aprovar</button>
             </form>
         <?php endif; ?>
@@ -26,6 +27,7 @@
     <?php endif; ?>
 
     <form method="post" action="/planos/<?= (int) $plano['id'] ?>" class="form">
+            <?= \App\Services\Csrf::campo() ?>
         <div class="form--inline">
             <label style="flex:1 1 auto;">Título
                 <input type="text" name="titulo" value="<?= htmlspecialchars($plano['titulo']) ?>" required>
@@ -45,5 +47,6 @@
 
     <form method="post" action="/planos/<?= (int) $plano['id'] ?>/excluir"
           onsubmit="return confirm('Excluir este plano de aula?');" style="margin-top:12px;">
+            <?= \App\Services\Csrf::campo() ?>
         <button type="submit" class="btn btn--danger">Excluir plano</button>
     </form>

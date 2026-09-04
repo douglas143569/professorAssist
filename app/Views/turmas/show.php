@@ -33,6 +33,7 @@
                                 <a href="/disciplinas/<?= (int) $m['id'] ?>" class="btn btn--ghost btn--sm">Abrir</a>
                                 <form method="post" action="/disciplinas/<?= (int) $m['id'] ?>/excluir"
                                       onsubmit="return confirm('Excluir a matéria &quot;<?= htmlspecialchars($m['nome'], ENT_QUOTES) ?>&quot; e todos os seus temas, conteúdos e questões?');">
+            <?= \App\Services\Csrf::campo() ?>
                                     <button type="submit" class="btn btn--danger btn--sm">Excluir</button>
                                 </form>
                             </div>
@@ -46,6 +47,7 @@
             <div class="card">
                 <h3>Nova matéria</h3>
                 <form method="post" action="/turmas/<?= (int) $turma['id'] ?>/materias" class="form">
+            <?= \App\Services\Csrf::campo() ?>
                     <label>Nome da matéria
                         <input type="text" name="nome" placeholder="Ex: Matemática" required>
                     </label>
@@ -56,6 +58,7 @@
 
             <form method="post" action="/turmas/<?= (int) $turma['id'] ?>/excluir"
                   onsubmit="return confirm('Excluir a turma e tudo dentro dela?');" style="margin-top:12px;">
+            <?= \App\Services\Csrf::campo() ?>
                 <button type="submit" class="btn btn--danger btn--sm">Excluir turma</button>
             </form>
         </aside>

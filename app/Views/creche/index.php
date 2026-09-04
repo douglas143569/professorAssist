@@ -14,6 +14,7 @@
     <div class="card">
         <h3>Sugerir atividades lúdicas com IA</h3>
         <form method="post" action="/creche/atividades/gerar" class="form js-ai">
+            <?= \App\Services\Csrf::campo() ?>
             <div class="form--inline">
                 <label style="flex:1 1 220px;">Faixa etária
                     <select name="faixa_etaria" required>

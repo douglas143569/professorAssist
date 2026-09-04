@@ -31,6 +31,7 @@
                                 <a href="/escolas/<?= (int) $e['id'] ?>" class="btn btn--ghost btn--sm">Abrir</a>
                                 <form method="post" action="/escolas/<?= (int) $e['id'] ?>/excluir"
                                       onsubmit="return confirm('Excluir a escola &quot;<?= htmlspecialchars($e['nome'], ENT_QUOTES) ?>&quot; e tudo dentro dela (turmas, matérias, temas, conteúdos e questões)?');">
+            <?= \App\Services\Csrf::campo() ?>
                                     <button type="submit" class="btn btn--danger btn--sm">Excluir</button>
                                 </form>
                             </div>
@@ -44,6 +45,7 @@
             <div class="card">
                 <h3>Nova escola</h3>
                 <form method="post" action="/escolas" class="form">
+            <?= \App\Services\Csrf::campo() ?>
                     <label>Nome da escola
                         <input type="text" name="nome" placeholder="Ex: EMEF Machado de Assis" required>
                     </label>

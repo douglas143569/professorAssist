@@ -86,6 +86,10 @@ class Auth
         // Troca o id da sessao no login (evita fixacao de sessao).
         session_regenerate_id(true);
 
+        // Token novo para a sessao nova: a sessao autenticada nao herda o
+        // token que estava valendo antes de entrar.
+        Csrf::esquecer();
+
         $_SESSION[self::CHAVE] = $id;
         $_SESSION['user_id'] = $id; // usado pelo Logger para auditoria
         self::$cache = null;

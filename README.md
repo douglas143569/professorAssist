@@ -22,6 +22,7 @@ Hierarquia pedagógica: **Escola → Turma → Matéria → Tema da aula**.
 | Módulo | O que faz |
 | --- | --- |
 | Login | Autenticação por e-mail e senha (bcrypt), papéis `admin`/`professor`, bloqueio por tentativas e auditoria de acesso |
+| Controle de custo da IA | Cache de prompts, teto de gasto por professor (`AI_TETO_USD`) e consumo visível no painel |
 | Escolas / Turmas / Matérias | Organização das aulas do professor (só dado institucional) |
 | Conteúdo do tema | Geração do conteúdo da aula com IA, editável e aprovável |
 | Plano de aula | Objetivos, metodologia (introdução/desenvolvimento/fechamento), recursos e avaliação |
@@ -94,9 +95,9 @@ sugeridas, atividade impressa, calendário e o módulo completo da creche
 (atividades lúdicas, cronograma semanal, pacotes de folhas imprimíveis).
 
 Pendente: página de administração de contas (criar/desativar professores pela
-interface — hoje só pelo script de linha de comando), proteção CSRF nos
-formulários, rubricas digitais e renderização de markdown nas telas de
-conteúdo.
+interface — hoje só pelo script de linha de comando), rubricas digitais,
+renderização de markdown nas telas de conteúdo, paginação nas listagens e
+testes automatizados.
 
 Fora de escopo por decisão de projeto: correção automática com nota por aluno.
 Ela exigiria cadastrar alunos e guardar suas respostas — dado pessoal de menor

@@ -35,6 +35,15 @@
             <div class="stat__value"><?= (int) $stats['provas'] ?></div>
             <div class="stat__label">Provas</div>
         </div>
+        <?php if ($stats['ia_teto'] > 0): ?>
+            <?php $pct = min(100, (int) round($stats['ia_gasto'] / $stats['ia_teto'] * 100)); ?>
+            <div class="stat">
+                <div class="stat__value">US$ <?= number_format($stats['ia_gasto'], 2, ',', '.') ?></div>
+                <div class="stat__label">Gasto com IA</div>
+                <div class="stat__sub">de US$ <?= number_format($stats['ia_teto'], 2, ',', '.') ?> (<?= $pct ?>%)</div>
+                <div class="barra-teto"><span style="width:<?= $pct ?>%"></span></div>
+            </div>
+        <?php endif; ?>
     </div>
 
     <h3>Ações rápidas</h3>

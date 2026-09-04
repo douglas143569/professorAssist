@@ -44,6 +44,7 @@
             <div class="card">
                 <h3>Novo tema da aula</h3>
                 <form method="post" action="/disciplinas/<?= (int) $disciplina['id'] ?>/modulos" class="form">
+            <?= \App\Services\Csrf::campo() ?>
                     <label>Título
                         <input type="text" name="titulo" placeholder="Ex: Frações" required>
                     </label>
@@ -60,6 +61,7 @@
             <form method="post" action="/disciplinas/<?= (int) $disciplina['id'] ?>/excluir"
                   onsubmit="return confirm('Excluir a matéria &quot;<?= htmlspecialchars($disciplina['nome'], ENT_QUOTES) ?>&quot; e todos os seus temas, conteúdos e questões?');"
                   style="margin-top:12px;">
+            <?= \App\Services\Csrf::campo() ?>
                 <button type="submit" class="btn btn--danger btn--sm">Excluir matéria</button>
             </form>
         </aside>

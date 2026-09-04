@@ -21,6 +21,7 @@
     <div class="card">
         <h3>Criar cronograma da semana com IA</h3>
         <form method="post" action="/creche/cronograma/criar" class="form js-ai">
+            <?= \App\Services\Csrf::campo() ?>
             <input type="hidden" name="inicio" value="<?= htmlspecialchars($inicio) ?>">
             <div class="form--inline">
                 <label style="flex:1 1 220px;">Faixa etária
@@ -55,6 +56,7 @@
         </div>
         <?php if ($temItens): ?>
             <form method="post" action="/creche/cronograma/limpar" onsubmit="return confirm('Limpar todas as atividades desta semana?');">
+            <?= \App\Services\Csrf::campo() ?>
                 <input type="hidden" name="inicio" value="<?= htmlspecialchars($inicio) ?>">
                 <button type="submit" class="btn btn--danger btn--sm">Limpar semana</button>
             </form>

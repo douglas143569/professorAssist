@@ -30,6 +30,7 @@
             <div class="card">
                 <h3>Nova disciplina</h3>
                 <form method="post" action="/disciplinas" class="form">
+            <?= \App\Services\Csrf::campo() ?>
                     <label>Nome
                         <input type="text" name="nome" placeholder="Ex: Matemática" required>
                     </label>

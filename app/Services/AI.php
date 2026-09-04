@@ -27,6 +27,9 @@ class AI
     private int $maxTokens;
     private bool $cacheLigado;
 
+    /** Teto de gasto por professor, em USD. 0 = sem teto. */
+    private float $tetoUsd;
+
     /**
      * Tipos de geracao que reaproveitam uma resposta ja gerada.
      *
@@ -61,6 +64,7 @@ class AI
         $this->model = $_ENV['ANTHROPIC_MODEL'] ?? 'claude-haiku-4-5-20251001';
         $this->maxTokens = (int) ($_ENV['AI_MAX_TOKENS'] ?? 4096);
         $this->cacheLigado = filter_var($_ENV['AI_CACHE'] ?? 'true', FILTER_VALIDATE_BOOLEAN);
+        $this->tetoUsd = max(0, (float) ($_ENV['AI_TETO_USD'] ?? 0));
     }
 
     /* ---------------------------------------------------------------------
@@ -428,6 +432,10 @@ class AI
                 return $emCache;
             }
         }
+
+        // O teto e checado DEPOIS do cache: reaproveitar uma resposta ja paga
+        // nao custa nada, entao nao faz sentido barrar quem so repete um pedido.
+        $this->exigirDentroDoTeto($userId);
 
         try {
             $message = $this->client->messages->create(
@@ -799,6 +807,42 @@ class AI
             . "Produza um {$oQue} NOVO e COMPLEMENTAR aos que ja existem: escolha outro "
             . "recorte do tema, use outros exemplos e contextos, e proponha outra atividade. "
             . "Nao repita os titulos de secao, os exemplos nem a abordagem acima.";
+    }
+
+    /**
+     * Barra a geracao se o professor ja gastou o teto configurado (RF-20).
+     *
+     * Sem isto, um dedo pesado no botao "Gerar com IA" -- ou um laco
+     * acidental -- consome a chave da API ate o limite da conta. O gasto ja
+     * era medido em ai_geracoes; aqui ele finalmente e CONTROLADO.
+     *
+     * AI_TETO_USD=0 (padrao) desliga o limite.
+     */
+    private function exigirDentroDoTeto(?int $userId): void
+    {
+        if ($this->tetoUsd <= 0 || $userId === null) {
+            return;
+        }
+
+        $gasto = (new AiGeracao())->custoTotalUsuario($userId);
+
+        if ($gasto < $this->tetoUsd) {
+            return;
+        }
+
+        Logger::warning('Geracao bloqueada: teto de gasto com IA atingido', [
+            'user_id' => $userId,
+            'gasto_usd' => $gasto,
+            'teto_usd' => $this->tetoUsd,
+        ]);
+
+        throw new AIException(sprintf(
+            'Limite de gasto com IA atingido (US$ %s de US$ %s). '
+            . 'O conteudo ja gerado continua disponivel; para gerar mais, aumente o '
+            . 'AI_TETO_USD no .env.',
+            number_format($gasto, 2, ',', '.'),
+            number_format($this->tetoUsd, 2, ',', '.')
+        ));
     }
 
     /**

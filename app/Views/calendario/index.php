@@ -101,10 +101,12 @@
                             </span>
                             <span class="agenda-actions">
                                 <form method="post" action="/eventos/<?= (int) $e['id'] ?>/concluir">
+            <?= \App\Services\Csrf::campo() ?>
                                     <input type="hidden" name="ano" value="<?= $ano ?>"><input type="hidden" name="mes" value="<?= $mes ?>">
                                     <button class="btn btn--ghost btn--sm" type="submit" title="Marcar como concluído">✓</button>
                                 </form>
                                 <form method="post" action="/eventos/<?= (int) $e['id'] ?>/excluir" onsubmit="return confirm('Excluir este evento?');">
+            <?= \App\Services\Csrf::campo() ?>
                                     <input type="hidden" name="ano" value="<?= $ano ?>"><input type="hidden" name="mes" value="<?= $mes ?>">
                                     <button class="btn btn--danger btn--sm" type="submit" title="Excluir">✕</button>
                                 </form>
@@ -119,6 +121,7 @@
             <div class="card">
                 <h3>Novo evento</h3>
                 <form method="post" action="/calendario" class="form">
+            <?= \App\Services\Csrf::campo() ?>
                     <label>Título
                         <input type="text" name="titulo" placeholder="Ex: Prova de frações" required>
                     </label>

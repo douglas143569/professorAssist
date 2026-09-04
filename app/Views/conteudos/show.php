@@ -14,6 +14,7 @@
         </div>
         <?php if ($conteudo['status'] !== 'aprovado'): ?>
             <form method="post" action="/conteudos/<?= (int) $conteudo['id'] ?>/aprovar">
+            <?= \App\Services\Csrf::campo() ?>
                 <button type="submit" class="btn btn--primary">✓ Aprovar</button>
             </form>
         <?php endif; ?>
@@ -26,6 +27,7 @@
     <?php endif; ?>
 
     <form method="post" action="/conteudos/<?= (int) $conteudo['id'] ?>" class="form">
+            <?= \App\Services\Csrf::campo() ?>
         <label>Título
             <input type="text" name="titulo" value="<?= htmlspecialchars($conteudo['titulo']) ?>" required>
         </label>

@@ -55,6 +55,7 @@
         <?php endif; ?>
 
         <form method="post" action="/provas/<?= (int) $prova['id'] ?>/versoes" class="form form--inline" style="margin-top:16px;">
+            <?= \App\Services\Csrf::campo() ?>
             <label style="flex:0 1 200px;">Quantas versões
                 <select name="quantidade">
                     <?php foreach ($rotulos as $i => $r): ?>
@@ -79,6 +80,7 @@
     <h2 style="margin-top:32px;">Questões da prova</h2>
 
     <form method="post" action="/provas/<?= (int) $prova['id'] ?>" class="form">
+            <?= \App\Services\Csrf::campo() ?>
         <div class="form--inline">
             <label style="flex:2 1 320px;">Título
                 <input type="text" name="titulo" value="<?= htmlspecialchars($prova['titulo']) ?>" required>
@@ -133,6 +135,7 @@
         <div class="actions" style="margin-top:12px;">
             <?php foreach ($questoes as $q): ?>
                 <form method="post" action="/provas/<?= (int) $prova['id'] ?>/questoes/<?= (int) $q['id'] ?>/remover" style="display:inline;">
+            <?= \App\Services\Csrf::campo() ?>
                     <button type="submit" class="btn btn--danger btn--sm"
                             onclick="return confirm('Remover a questão nº <?= (int) $q['ordem'] ?> desta prova?');">
                         Remover nº <?= (int) $q['ordem'] ?>
@@ -156,6 +159,7 @@
     <?php else: ?>
         <div class="card">
             <form method="post" action="/provas/<?= (int) $prova['id'] ?>/questoes" class="form form--inline">
+            <?= \App\Services\Csrf::campo() ?>
                 <label style="flex:1 1 420px;">Questão aprovada
                     <select name="questao_id" required>
                         <?php foreach ($disponiveis as $d): ?>
@@ -173,6 +177,7 @@
 
     <div class="actions" style="margin-top:32px;">
         <form method="post" action="/provas/<?= (int) $prova['id'] ?>/excluir">
+            <?= \App\Services\Csrf::campo() ?>
             <button type="submit" class="btn btn--danger"
                     onclick="return confirm('Excluir esta prova? As questões continuam no banco.');">
                 Excluir prova
