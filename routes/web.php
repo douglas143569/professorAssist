@@ -7,6 +7,8 @@ use App\Core\Router;
 // Autenticacao (unicas rotas abertas: todo o resto exige login)
 $router->get('/login', 'AuthController@formulario');
 $router->post('/login', 'AuthController@entrar');
+$router->get('/cadastro', 'AuthController@formularioCadastro');
+$router->post('/cadastro', 'AuthController@cadastrar');
 $router->post('/logout', 'AuthController@sair');
 
 $router->get('/', 'HomeController@index');

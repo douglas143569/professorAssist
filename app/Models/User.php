@@ -10,7 +10,39 @@ class User extends Model
     public const ROLE_PROFESSOR = 'professor';
 
     /** Colunas seguras para trafegar na aplicacao (sem o hash da senha). */
-    private const CAMPOS = 'id, name, email, role, ativo, last_login_at, created_at';
+    private const CAMPOS = 'id, name, email, celular, role, ativo, last_login_at, created_at';
+
+    /**
+     * Deixa so os digitos do celular. Aceita "(11) 98765-4321", "11987654321"
+     * e afins; devolve null se nao sobrar um numero brasileiro plausivel
+     * (10 digitos para fixo antigo, 11 para celular com o 9).
+     */
+    public static function normalizarCelular(?string $celular): ?string
+    {
+        $digitos = preg_replace('/\D/', '', (string) $celular);
+
+        if ($digitos === '' || strlen($digitos) < 10 || strlen($digitos) > 11) {
+            return null;
+        }
+
+        return $digitos;
+    }
+
+    /** Formata para exibicao: (11) 98765-4321 */
+    public static function formatarCelular(?string $celular): string
+    {
+        $d = preg_replace('/\D/', '', (string) $celular);
+
+        if (strlen($d) === 11) {
+            return sprintf('(%s) %s-%s', substr($d, 0, 2), substr($d, 2, 5), substr($d, 7));
+        }
+
+        if (strlen($d) === 10) {
+            return sprintf('(%s) %s-%s', substr($d, 0, 2), substr($d, 2, 4), substr($d, 6));
+        }
+
+        return (string) $celular;
+    }
 
     public function find(int $id): ?array
     {
@@ -67,17 +99,25 @@ class User extends Model
         $stmt->execute(['role' => $role, 'id' => $id]);
     }
 
-    public function create(string $nome, string $email, string $senha, string $role = self::ROLE_PROFESSOR): int
-    {
+    public function create(
+        string $nome,
+        string $email,
+        string $senha,
+        string $role = self::ROLE_PROFESSOR,
+        ?string $celular = null,
+        bool $ativo = true
+    ): int {
         $stmt = $this->db->prepare(
-            'INSERT INTO users (name, email, password_hash, role, ativo)
-             VALUES (:name, :email, :hash, :role, 1)'
+            'INSERT INTO users (name, email, celular, password_hash, role, ativo)
+             VALUES (:name, :email, :celular, :hash, :role, :ativo)'
         );
         $stmt->execute([
             'name' => $nome,
             'email' => $email,
+            'celular' => self::normalizarCelular($celular),
             'hash' => password_hash($senha, PASSWORD_DEFAULT),
             'role' => $role,
+            'ativo' => $ativo ? 1 : 0,
         ]);
 
         return (int) $this->db->lastInsertId();

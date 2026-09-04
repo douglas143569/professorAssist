@@ -10,6 +10,13 @@ Construído em PHP 8.3 + MySQL 8.4 sobre um micro-framework MVC próprio.
 
 - **Só o professor usa o sistema.** Não existe portal do aluno e nenhum dado
   pessoal de menor de idade é armazenado — provas e atividades saem em PDF.
+  Os únicos dados pessoais guardados são de professores adultos: nome, e-mail
+  e celular de contato.
+- **Cadastro aberto.** Qualquer pessoa com o endereço do sistema cria a própria
+  conta e entra na hora, sempre como `professor`. Contas de administrador só
+  são criadas por outro administrador. Se o sistema for publicado na internet,
+  reveja essa decisão: o controle de quem entra passa a ser só o teto de gasto
+  com IA por conta (`AI_TETO_USD`) e o limite de 3 cadastros por IP por hora.
 - **Human-in-the-loop.** Tudo que a IA gera nasce como `rascunho` e só vira
   `aprovado` depois que o professor revisa e edita.
 - **Alinhado à BNCC.** Ensino Fundamental/Médio usa códigos de habilidade
@@ -21,7 +28,7 @@ Hierarquia pedagógica: **Escola → Turma → Matéria → Tema da aula**.
 
 | Módulo | O que faz |
 | --- | --- |
-| Login | Autenticação por e-mail e senha (bcrypt), papéis `admin`/`professor`, bloqueio por tentativas e auditoria de acesso |
+| Login e cadastro | Autenticação por e-mail e senha (bcrypt), cadastro do próprio professor (nome, e-mail, celular), papéis `admin`/`professor`, bloqueio por tentativas e auditoria de acesso |
 | Administração de contas | Tela do admin: cria contas, ativa/desativa acesso, promove a admin e redefine senhas |
 | Controle de custo da IA | Cache de prompts, teto de gasto por professor (`AI_TETO_USD`) e consumo visível no painel |
 | Escolas / Turmas / Matérias | Organização das aulas do professor (só dado institucional) |

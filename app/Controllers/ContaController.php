@@ -58,7 +58,7 @@ class ContaController extends AppController
             $this->voltar('Já existe uma conta com esse e-mail.');
         }
 
-        $id = $users->create($nome, $email, $senha, $role);
+        $id = $users->create($nome, $email, $senha, $role, $_POST['celular'] ?? null);
 
         Logger::activity('conta.created', [
             'entity_type' => 'user',

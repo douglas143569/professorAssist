@@ -893,3 +893,7 @@ label.mini input { padding: 6px 8px; font-size: 0.85rem; }
     .conta__senha input { flex: 1 1 auto; width: auto; }
     .conta__uso { text-align: left; }
 }
+
+/* Cadastro: card um pouco mais largo e dicas sob os campos */
+.login-card--largo { max-width: 440px; }
+.campo-dica { font-weight: 400; font-size: 0.76rem; color: var(--muted); margin-top: -2px; }

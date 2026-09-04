@@ -16,6 +16,9 @@
                 <label style="flex:1 1 240px;">E-mail
                     <input type="email" name="email" required placeholder="maria@escola.com.br">
                 </label>
+                <label style="flex:0 1 180px;">Celular <span class="muted">(opcional)</span>
+                    <input type="tel" name="celular" placeholder="(11) 98765-4321">
+                </label>
                 <label style="flex:1 1 180px;">Senha inicial
                     <input type="text" name="senha" required minlength="8" placeholder="mínimo 8 caracteres">
                 </label>
@@ -54,7 +57,12 @@
                             <?php if ($souEu): ?><span class="tag tag--origem">você</span><?php endif; ?>
                             <?php if (!$ativo): ?><span class="badge badge--rascunho">desativada</span><?php endif; ?>
                         </h3>
-                        <p class="muted" style="margin:0; font-size:0.86rem;"><?= htmlspecialchars($c['email']) ?></p>
+                        <p class="muted" style="margin:0; font-size:0.86rem;">
+                            <?= htmlspecialchars($c['email']) ?>
+                            <?php if (!empty($c['celular'])): ?>
+                                · <?= htmlspecialchars(\App\Models\User::formatarCelular($c['celular'])) ?>
+                            <?php endif; ?>
+                        </p>
                     </div>
                     <p class="muted conta__uso">
                         <?= (int) $c['n_escolas'] ?> escola(s) · <?= (int) $c['n_materias'] ?> matéria(s)<br>

@@ -45,7 +45,8 @@
             </form>
 
             <p class="login-rodape">
-                Esqueceu a senha? Fale com o administrador do sistema.
+                Ainda não tem conta? <a href="/cadastro"><strong>Criar conta</strong></a><br>
+                <span style="font-size:0.95em;">Esqueceu a senha? Fale com o administrador do sistema.</span>
             </p>
         </div>
 
