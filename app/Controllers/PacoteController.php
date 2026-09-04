@@ -168,8 +168,7 @@ class PacoteController extends AppController
             return;
         }
 
-        $formato = in_array($_POST['formato'] ?? '', ['circular', 'ligar', 'pintar', 'sequencia'], true)
-            ? $_POST['formato'] : 'escrever';
+        $formato = CrechePacoteItem::normalizarFormato($_POST['formato'] ?? null);
         $itens = match ($formato) {
             'circular' => $this->parseCirculares($_POST['itens_texto'] ?? ''),
             'ligar' => $this->parseLigar($_POST['itens_texto'] ?? ''),

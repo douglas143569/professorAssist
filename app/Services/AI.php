@@ -4,6 +4,7 @@ namespace App\Services;
 
 use Anthropic\Client;
 use App\Models\AiGeracao;
+use App\Models\CrechePacoteItem;
 use Throwable;
 
 /**
@@ -642,8 +643,7 @@ class AI
                 continue;
             }
 
-            $formato = in_array($a['formato'] ?? '', ['circular', 'ligar', 'pintar', 'sequencia'], true)
-                ? $a['formato'] : 'escrever';
+            $formato = CrechePacoteItem::normalizarFormato($a['formato'] ?? null);
             $itens = [];
 
             if (!empty($a['itens']) && is_array($a['itens'])) {

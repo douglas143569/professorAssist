@@ -6,6 +6,25 @@ use App\Core\Model;
 
 class CrechePacoteItem extends Model
 {
+    /**
+     * Formatos de folha aceitos -- FONTE UNICA da verdade.
+     *
+     * Esta lista ja esteve duplicada no controller, no gerador de IA e aqui,
+     * e a copia daqui tinha ficado para tras com apenas 2 formatos: salvar
+     * uma folha 'ligar', 'pintar' ou 'sequencia' a rebaixava para 'escrever'
+     * e quebrava a impressao. Quem precisar validar formato usa esta
+     * constante ou normalizarFormato(); nunca escreva a lista de novo.
+     */
+    public const FORMATOS = ['escrever', 'circular', 'ligar', 'pintar', 'sequencia'];
+
+    public const FORMATO_PADRAO = 'escrever';
+
+    /** Devolve o formato se for valido; se nao, o padrao. */
+    public static function normalizarFormato(?string $formato): string
+    {
+        return in_array($formato, self::FORMATOS, true) ? $formato : self::FORMATO_PADRAO;
+    }
+
     public function byPacote(int $pacoteId): array
     {
         $stmt = $this->db->prepare(
@@ -40,7 +59,7 @@ class CrechePacoteItem extends Model
         $stmt->execute([
             'id' => $id,
             'tipo' => ($data['tipo'] ?? '') !== '' ? $data['tipo'] : null,
-            'formato' => ($data['formato'] ?? '') === 'circular' ? 'circular' : 'escrever',
+            'formato' => self::normalizarFormato($data['formato'] ?? null),
             'titulo' => $data['titulo'],
             'instrucao' => ($data['instrucao'] ?? '') !== '' ? $data['instrucao'] : null,
             'itens_json' => !empty($data['itens']) ? json_encode($data['itens'], JSON_UNESCAPED_UNICODE) : null,

@@ -59,7 +59,7 @@ class CrechePacote extends Model
                 $ins->execute([
                     'p' => $pacoteId,
                     'tipo' => ($it['tipo'] ?? '') !== '' ? $it['tipo'] : null,
-                    'formato' => ($it['formato'] ?? '') !== '' ? $it['formato'] : 'escrever',
+                    'formato' => CrechePacoteItem::normalizarFormato($it['formato'] ?? null),
                     'titulo' => $it['titulo'],
                     'instrucao' => ($it['instrucao'] ?? '') !== '' ? $it['instrucao'] : null,
                     'itens_json' => !empty($it['itens']) ? json_encode($it['itens'], JSON_UNESCAPED_UNICODE) : null,
