@@ -48,9 +48,17 @@ class AI
      * estimar o custo gravado em ai_geracoes. Ajuste se trocar de modelo.
      */
     private const PRECOS = [
-        'claude-haiku-4-5'  => ['in' => 1.00, 'out' => 5.00],
-        'claude-sonnet-5'   => ['in' => 3.00, 'out' => 15.00],
-        'claude-opus-4-8'   => ['in' => 5.00, 'out' => 25.00],
+        // Ordem importa: o prefixo mais longo primeiro, senao 'claude-fable-5'
+        // casaria tambem com 'claude-fable-5-1'.
+        'claude-fable-5-1'  => ['in' => 10.00, 'out' => 50.00],
+        'claude-fable-5'    => ['in' => 10.00, 'out' => 50.00],
+        'claude-opus-5'     => ['in' => 5.00,  'out' => 25.00],
+        'claude-opus-4-8'   => ['in' => 5.00,  'out' => 25.00],
+        'claude-opus-4-7'   => ['in' => 5.00,  'out' => 25.00],
+        'claude-opus-4-6'   => ['in' => 5.00,  'out' => 25.00],
+        'claude-sonnet-5'   => ['in' => 2.00,  'out' => 10.00],
+        'claude-sonnet-4-6' => ['in' => 3.00,  'out' => 15.00],
+        'claude-haiku-4-5'  => ['in' => 1.00,  'out' => 5.00],
     ];
 
     public function __construct(?Client $client = null)

@@ -913,3 +913,11 @@ label.mini input { padding: 6px 8px; font-size: 0.85rem; }
 .card--ia-alerta { border-left-color: var(--warn); }
 .card--ia-alerta .ia-total { color: var(--warn); }
 .card--ia-alerta .barra-teto span { background: var(--warn); }
+
+.ia-aviso {
+    margin-top: 12px; padding: 10px 12px;
+    border: 1px dashed var(--border-strong); border-radius: var(--radius-sm);
+    background: var(--surface-2); color: var(--text-2);
+    font-size: 0.8rem; line-height: 1.6;
+}
+.ia-aviso strong { display: block; color: var(--text); margin-bottom: 2px; }

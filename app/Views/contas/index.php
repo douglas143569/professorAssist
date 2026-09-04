@@ -57,7 +57,10 @@
         <?php if ($caixa > 0): ?>
             <p class="ia-total">
                 US$ <?= number_format($restante, 2, ',', '.') ?>
-                <span class="ia-total__resto">restantes de US$ <?= number_format($caixa, 2, ',', '.') ?></span>
+                <span class="ia-total__resto">
+                    restantes do caixa de US$ <?= number_format($caixa, 2, ',', '.') ?>
+                    que você definiu · valores estimados
+                </span>
             </p>
             <div class="barra-teto barra-teto--grande"><span style="width:<?= $pctCaixa ?>%"></span></div>
             <p class="muted" style="margin:8px 0 0; font-size:0.85rem; line-height:1.6;">
@@ -66,6 +69,16 @@
                 Quando ele zerar, <strong>ninguém gera</strong> até você aumentar o
                 <code>AI_TETO_TOTAL_USD</code> no <code>.env</code>.
             </p>
+
+            <div class="ia-aviso">
+                <strong>Estes números são deste sistema, não da Anthropic.</strong>
+                O caixa é o limite que <em>você</em> definiu no <code>.env</code> — não é o saldo
+                da sua conta. E o gasto é <em>estimado</em> aqui, multiplicando os tokens de cada
+                geração pela tabela de preços do modelo.
+                O saldo e a fatura reais ficam em
+                <a href="https://platform.claude.com/cost" target="_blank" rel="noopener">platform.claude.com/cost</a>
+                — não há API que devolva saldo restante, só o Console mostra.
+            </div>
         <?php else: ?>
             <p class="ia-total">US$ <?= number_format($gasto_total, 2, ',', '.') ?></p>
             <p class="muted" style="margin:0; font-size:0.85rem; line-height:1.6;">
