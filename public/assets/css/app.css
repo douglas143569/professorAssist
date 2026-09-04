@@ -736,3 +736,120 @@ textarea.mono { font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
     vertical-align: middle;
     margin-left: 5px;
 }
+
+/* ==========================================================================
+   Provas: montagem, folha impressa e cartao-resposta
+   ========================================================================== */
+
+.prova-criterios {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px 16px;
+    margin: 2px 0;
+}
+.prova-criterios legend { font-weight: 700; font-size: 0.88rem; color: var(--text-2); padding: 0 6px; }
+
+.tabela-versoes { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+.tabela-versoes th, .tabela-versoes td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); }
+.tabela-versoes th { color: var(--muted); font-size: 0.78rem; text-transform: uppercase; letter-spacing: .04em; }
+
+.list--prova li { display: block; padding: 14px 0; }
+.prova-q { display: flex; gap: 16px; align-items: flex-start; }
+.prova-q__campos { display: flex; gap: 10px; flex: 0 0 auto; }
+.prova-q__corpo { flex: 1 1 auto; min-width: 0; }
+.prova-q__corpo p { margin: 0 0 6px; }
+
+label.mini { font-size: 0.72rem; width: 74px; }
+label.mini input { padding: 6px 8px; font-size: 0.85rem; }
+
+/* ---- Folha da prova ---- */
+
+.prova-folha { max-width: 780px; }
+
+.prova-cab { border-bottom: 2px solid var(--text); padding-bottom: 14px; margin-bottom: 20px; }
+.prova-cab__topo { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+.prova-cab__topo h1 { margin: 2px 0 4px; font-size: 1.4rem; }
+.prova-cab__escola { margin: 0; font-size: 0.8rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+.prova-cab__meta { margin: 0; font-size: 0.9rem; color: var(--text-2); }
+
+.prova-cab__versao {
+    flex: 0 0 auto; text-align: center; border: 2px solid var(--text);
+    border-radius: 8px; padding: 6px 14px; line-height: 1.1;
+}
+.prova-cab__versao span { display: block; font-size: 0.62rem; text-transform: uppercase; letter-spacing: .1em; }
+.prova-cab__versao strong { font-size: 1.5rem; }
+
+.prova-cab__campos { display: flex; gap: 18px; margin: 16px 0 10px; font-size: 0.9rem; flex-wrap: wrap; }
+.campo { display: flex; align-items: baseline; gap: 6px; flex: 0 1 auto; }
+.campo i { display: block; border-bottom: 1px solid var(--text); min-width: 90px; height: 1em; }
+.campo--nome { flex: 1 1 320px; }
+.campo--nome i { width: 100%; }
+
+.prova-cab__valor { margin: 6px 0 0; font-size: 0.82rem; color: var(--muted); }
+
+.prova-instrucoes {
+    margin-top: 12px; padding: 10px 12px; font-size: 0.86rem; line-height: 1.5;
+    border-left: 3px solid var(--primary); background: var(--surface-2);
+}
+
+.prova-gabarito {
+    border: 2px dashed var(--danger); border-radius: var(--radius-sm);
+    padding: 12px 14px; margin-bottom: 22px; background: var(--danger-bg);
+}
+.prova-gabarito > strong { display: block; color: var(--danger); font-size: 0.82rem; letter-spacing: .06em; }
+.prova-gabarito__linha { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 6px; }
+.prova-gabarito__linha span { font-size: 0.82rem; color: var(--text-2); }
+.prova-gabarito__linha i { font-style: normal; font-weight: 800; color: var(--danger); margin-left: 3px; }
+.prova-gabarito p { margin: 0; font-size: 0.76rem; color: var(--danger); }
+
+.prova-questoes { list-style: none; margin: 0; padding: 0; counter-reset: none; }
+.prova-questao { margin-bottom: 22px; break-inside: avoid; }
+.prova-questao__enunciado { display: flex; gap: 10px; line-height: 1.55; }
+.prova-questao__num { font-weight: 800; flex: 0 0 auto; }
+.prova-questao__pontos { color: var(--muted); font-size: 0.8rem; white-space: nowrap; }
+
+.prova-alts { list-style: none; margin: 8px 0 0 26px; padding: 0; }
+.prova-alts li { display: flex; gap: 8px; padding: 3px 0; line-height: 1.5; }
+.prova-alts__letra { font-weight: 700; flex: 0 0 auto; }
+.prova-alts li.is-correta { background: var(--ok-bg); border-radius: 6px; padding: 3px 6px; margin-left: -6px; }
+.prova-alts__check { color: var(--ok); font-weight: 800; }
+
+.prova-linhas { margin: 10px 0 0 26px; }
+.prova-linhas span { display: block; border-bottom: 1px solid #b9c2be; height: 26px; }
+
+/* ---- Cartao-resposta ---- */
+
+.cartao-folha { max-width: 700px; }
+.cartao-cab { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+.cartao-cab h1 { margin: 2px 0 4px; font-size: 1.3rem; }
+.cartao-instrucao {
+    font-size: 0.82rem; color: var(--text-2); border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm); padding: 9px 12px; margin: 14px 0 18px;
+}
+
+.cartao-grade { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 8px 22px; }
+.cartao-linha { display: flex; align-items: center; gap: 7px; padding: 4px 0; }
+.cartao-num { width: 26px; text-align: right; font-weight: 700; font-size: 0.88rem; }
+.cartao-bolha {
+    width: 22px; height: 22px; border: 1.5px solid var(--text); border-radius: 50%;
+    display: grid; place-items: center; font-size: 0.68rem; color: var(--muted);
+}
+.cartao-bolha.is-vazia { border-style: dotted; opacity: .3; }
+.cartao-dissertativa { font-size: 0.72rem; color: var(--muted); font-style: italic; }
+
+@media print {
+    .prova-folha, .cartao-folha { max-width: none; }
+    .prova-questao { break-inside: avoid; }
+    .prova-gabarito { border-color: #000; background: none; }
+    .prova-gabarito > strong, .prova-gabarito i, .prova-gabarito p { color: #000; }
+    .prova-alts li.is-correta { background: #e7f6ee; }
+}
+
+.aviso-vazio {
+    border: 1px solid var(--warn); border-left-width: 4px;
+    background: var(--warn-bg); color: #7c3f06;
+    border-radius: var(--radius-sm); padding: 14px 16px; margin-bottom: 18px;
+    font-size: 0.88rem; line-height: 1.55;
+}
+.aviso-vazio strong { display: block; margin-bottom: 4px; color: var(--warn); }
+.aviso-vazio p { margin: 0 0 8px; }

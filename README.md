@@ -26,6 +26,7 @@ Hierarquia pedagógica: **Escola → Turma → Matéria → Tema da aula**.
 | Conteúdo do tema | Geração do conteúdo da aula com IA, editável e aprovável |
 | Plano de aula | Objetivos, metodologia (introdução/desenvolvimento/fechamento), recursos e avaliação |
 | Banco de questões | Geração em lote, alternativas, dificuldade, habilidade BNCC, filtros |
+| Gerador de provas | Monta sorteando do banco por dificuldade, ajuste manual de ordem e pontuação, versões embaralhadas (A/B/C/D) com gabarito próprio e cartão-resposta |
 | Atividade impressa | Folha de exercícios do tema, numerada, com versão gabarito |
 | Atividades sugeridas | Formatos variados (individual, grupo, discussão, prática, projeto, jogo) |
 | Calendário | Provas, trabalhos, lembretes e aulas, com aba de eventos criados |
@@ -88,14 +89,18 @@ storage/         -> Logs e cache (não versionado)
 ## Estado atual
 
 Funcionando: login com papéis, escolas, turmas, matérias, temas, conteúdo com
-IA, planos de aula, banco de questões, atividades sugeridas, atividade
-impressa, calendário e o módulo completo da creche (atividades lúdicas,
-cronograma semanal, pacotes de folhas imprimíveis).
+IA, planos de aula, banco de questões, gerador de provas, atividades
+sugeridas, atividade impressa, calendário e o módulo completo da creche
+(atividades lúdicas, cronograma semanal, pacotes de folhas imprimíveis).
 
 Pendente: página de administração de contas (criar/desativar professores pela
 interface — hoje só pelo script de linha de comando), proteção CSRF nos
-formulários, gerador de provas com versões embaralhadas e correção objetiva,
-rubricas digitais e renderização de markdown nas telas de conteúdo.
+formulários, rubricas digitais e renderização de markdown nas telas de
+conteúdo.
+
+Fora de escopo por decisão de projeto: correção automática com nota por aluno.
+Ela exigiria cadastrar alunos e guardar suas respostas — dado pessoal de menor
+de idade. A correção é feita pelo professor com o gabarito de cada versão.
 
 ## Fluxo de trabalho no Git
 

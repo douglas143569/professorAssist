@@ -86,6 +86,18 @@ $router->post('/planos/{id}', 'PlanoAulaController@update');
 $router->post('/planos/{id}/aprovar', 'PlanoAulaController@aprovar');
 $router->post('/planos/{id}/excluir', 'PlanoAulaController@excluir');
 
+// Provas (RF-15 a RF-18)
+$router->get('/provas', 'ProvaController@index');
+$router->post('/provas', 'ProvaController@store');
+$router->get('/provas/{id}', 'ProvaController@show');
+$router->post('/provas/{id}', 'ProvaController@update');
+$router->get('/provas/{id}/imprimir', 'ProvaController@imprimir');
+$router->get('/provas/{id}/cartao', 'ProvaController@cartaoResposta');
+$router->post('/provas/{id}/versoes', 'ProvaController@gerarVersoes');
+$router->post('/provas/{id}/questoes', 'ProvaController@adicionarQuestao');
+$router->post('/provas/{id}/questoes/{questaoId}/remover', 'ProvaController@removerQuestao');
+$router->post('/provas/{id}/excluir', 'ProvaController@excluir');
+
 // Banco de questoes
 $router->get('/disciplinas/{id}/questoes', 'QuestaoController@banco');
 $router->post('/modulos/{id}/questoes/gerar', 'QuestaoController@gerar');

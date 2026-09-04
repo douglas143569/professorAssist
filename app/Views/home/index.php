@@ -32,8 +32,8 @@
             <?php endif; ?>
         </div>
         <div class="stat">
-            <div class="stat__value">—</div>
-            <div class="stat__label">Provas <span class="soon">em breve</span></div>
+            <div class="stat__value"><?= (int) $stats['provas'] ?></div>
+            <div class="stat__label">Provas</div>
         </div>
     </div>
 
