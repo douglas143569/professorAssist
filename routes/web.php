@@ -13,6 +13,10 @@ $router->post('/logout', 'AuthController@sair');
 
 $router->get('/', 'HomeController@index');
 
+// Fila de revisao (rascunhos da IA esperando aprovacao)
+$router->get('/revisar', 'RevisaoController@index');
+$router->post('/revisar/aprovar', 'RevisaoController@aprovarLote');
+
 // Administracao de contas (so admin; a checagem esta no ContaController)
 $router->get('/admin/contas', 'ContaController@index');
 $router->post('/admin/contas', 'ContaController@criar');

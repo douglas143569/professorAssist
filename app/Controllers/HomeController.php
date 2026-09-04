@@ -8,6 +8,7 @@ use App\Models\Escola;
 use App\Models\PlanoAula;
 use App\Models\Prova;
 use App\Models\Questao;
+use App\Models\Revisao;
 use App\Models\Turma;
 
 class HomeController extends AppController
@@ -32,6 +33,10 @@ class HomeController extends AppController
                 'provas' => (new Prova())->countByUser($prof['id']),
             ],
             'turmas' => (new Turma())->byUser($prof['id']),
+            // Fila de revisao em destaque: sem isso, os rascunhos da IA
+            // ficavam invisiveis e o gerador de provas parecia quebrado por
+            // falta de questao aprovada.
+            'revisao' => (new Revisao())->contar($prof['id']),
         ]);
     }
 }

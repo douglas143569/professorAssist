@@ -3,6 +3,29 @@
         <p class="muted">Prepare conteúdos e provas com apoio de IA — você revisa e aprova.</p>
     </div>
 
+    <?php if ($revisao['total'] > 0): ?>
+        <a class="chamada-revisao" href="/revisar">
+            <span class="chamada-revisao__num"><?= (int) $revisao['total'] ?></span>
+            <span class="chamada-revisao__texto">
+                <strong>
+                    <?= $revisao['total'] === 1 ? 'item espera' : 'itens esperam' ?> sua revisão
+                </strong>
+                <small>
+                    <?php
+                        $partes = [];
+                        foreach ($revisao['por_tipo'] as $chave => $n) {
+                            if ($n > 0) {
+                                $partes[] = $n . ' ' . mb_strtolower(\App\Models\Revisao::TIPOS[$chave]['rotulo']);
+                            }
+                        }
+                        echo htmlspecialchars(implode(' · ', $partes));
+                    ?>
+                </small>
+            </span>
+            <span class="chamada-revisao__cta">Revisar e aprovar →</span>
+        </a>
+    <?php endif; ?>
+
     <div class="stat-grid">
         <div class="stat">
             <div class="stat__value"><?= (int) $stats['escolas'] ?></div>

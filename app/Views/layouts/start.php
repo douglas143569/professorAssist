@@ -16,10 +16,18 @@
     $__isCreche = str_starts_with($__path, '/creche');
     $__isProva = str_starts_with($__path, '/provas');
     $__isConta = str_starts_with($__path, '/admin/contas');
+    $__isRevisar = str_starts_with($__path, '/revisar');
 
     // Quem esta logado (para o rodape da sidebar).
     $__user = \App\Services\Auth::usuario() ?? ['name' => '', 'email' => '', 'role' => ''];
     $__ehAdmin = ($__user['role'] ?? '') === \App\Models\User::ROLE_ADMIN;
+
+    // Quantos rascunhos esperam revisao: o numero fica visivel em toda tela,
+    // porque e o passo que estava sendo esquecido.
+    // (Depende de $__user -- precisa vir depois da linha acima.)
+    $__pendentes = !empty($__user['id'])
+        ? (new \App\Models\Revisao())->contar((int) $__user['id'])['total']
+        : 0;
 
     $__partes = preg_split('/\s+/', trim((string) $__user['name']), -1, PREG_SPLIT_NO_EMPTY) ?: [];
     $__iniciais = mb_strtoupper(
@@ -48,6 +56,13 @@
                 <a href="/" class="navitem <?= $__isHome ? 'is-active' : '' ?>">
                     <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5 12 3l9 6.5"/><path d="M5 10v10h14V10"/></svg>
                     <span>Início</span>
+                </a>
+                <a href="/revisar" class="navitem <?= $__isRevisar ? 'is-active' : '' ?>">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                    <span>Revisar</span>
+                    <?php if ($__pendentes > 0): ?>
+                        <span class="contador-nav"><?= $__pendentes ?></span>
+                    <?php endif; ?>
                 </a>
                 <a href="/escolas" class="navitem <?= $__isEscola ? 'is-active' : '' ?>">
                     <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 8h20L12 3Z"/><path d="M4 8v11h16V8"/><path d="M9 19v-5h6v5"/></svg>
