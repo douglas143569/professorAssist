@@ -906,3 +906,10 @@ label.mini input { padding: 6px 8px; font-size: 0.85rem; }
 .conta__ia strong { color: var(--text-2); }
 .barra-teto--mini { display: block; width: 130px; margin-top: 4px; margin-left: auto; }
 @media (max-width: 700px) { .barra-teto--mini { margin-left: 0; } }
+
+/* Caixa de IA */
+.ia-total__resto { display: block; font-size: 0.82rem; font-weight: 600; color: var(--muted); letter-spacing: 0; }
+.barra-teto--grande { height: 9px; }
+.card--ia-alerta { border-left-color: var(--warn); }
+.card--ia-alerta .ia-total { color: var(--warn); }
+.card--ia-alerta .barra-teto span { background: var(--warn); }

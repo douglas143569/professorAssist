@@ -35,6 +35,7 @@ class ContaController extends AppController
             // todo mundo, entao e informacao de administracao, nao do professor.
             'gastos' => $ia->custoPorUsuario(),
             'gasto_total' => $ia->custoTotal(),
+            'caixa' => max(0, (float) ($_ENV['AI_TETO_TOTAL_USD'] ?? 0)),
             'teto' => max(0, (float) ($_ENV['AI_TETO_USD'] ?? 0)),
         ]);
     }

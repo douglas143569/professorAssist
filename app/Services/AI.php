@@ -27,7 +27,10 @@ class AI
     private int $maxTokens;
     private bool $cacheLigado;
 
-    /** Teto de gasto por professor, em USD. 0 = sem teto. */
+    /** Caixa total de IA do sistema, em USD. 0 = sem limite. */
+    private float $caixaUsd;
+
+    /** Teto adicional por professor, em USD. 0 = desligado. */
     private float $tetoUsd;
 
     /**
@@ -64,6 +67,7 @@ class AI
         $this->model = $_ENV['ANTHROPIC_MODEL'] ?? 'claude-haiku-4-5-20251001';
         $this->maxTokens = (int) ($_ENV['AI_MAX_TOKENS'] ?? 4096);
         $this->cacheLigado = filter_var($_ENV['AI_CACHE'] ?? 'true', FILTER_VALIDATE_BOOLEAN);
+        $this->caixaUsd = max(0, (float) ($_ENV['AI_TETO_TOTAL_USD'] ?? 0));
         $this->tetoUsd = max(0, (float) ($_ENV['AI_TETO_USD'] ?? 0));
     }
 
@@ -810,36 +814,63 @@ class AI
     }
 
     /**
-     * Barra a geracao se o professor ja gastou o teto configurado (RF-20).
+     * Barra a geracao quando o dinheiro acabou (RF-20).
      *
-     * Sem isto, um dedo pesado no botao "Gerar com IA" -- ou um laco
-     * acidental -- consome a chave da API ate o limite da conta. O gasto ja
-     * era medido em ai_geracoes; aqui ele finalmente e CONTROLADO.
+     * Sao dois limites, e vale o primeiro que estourar:
      *
-     * AI_TETO_USD=0 (padrao) desliga o limite.
+     * 1. CAIXA (AI_TETO_TOTAL_USD) -- o total do sistema, somando todas as
+     *    contas. E o unico que limita a fatura de verdade: existe uma chave
+     *    de API so, e todo mundo gasta dela. Com cadastro aberto, sem o
+     *    caixa o gasto maximo cresce a cada pessoa que se cadastra.
+     *
+     * 2. TETO POR CONTA (AI_TETO_USD) -- opcional, desligado por padrao.
+     *    Serve para impedir que uma pessoa sozinha esvazie o caixa comum.
+     *
+     * Qualquer um dos dois em 0 fica desligado.
      */
     private function exigirDentroDoTeto(?int $userId): void
     {
+        $registro = new AiGeracao();
+
+        if ($this->caixaUsd > 0) {
+            $gastoTotal = $registro->custoTotal();
+
+            if ($gastoTotal >= $this->caixaUsd) {
+                Logger::warning('Geracao bloqueada: caixa de IA esgotado', [
+                    'user_id' => $userId,
+                    'gasto_total_usd' => $gastoTotal,
+                    'caixa_usd' => $this->caixaUsd,
+                ]);
+
+                throw new AIException(sprintf(
+                    'O caixa de IA do sistema acabou (US$ %s de US$ %s). '
+                    . 'Tudo que ja foi gerado continua disponivel. '
+                    . 'Para liberar mais, o administrador aumenta o AI_TETO_TOTAL_USD no .env.',
+                    number_format($gastoTotal, 2, ',', '.'),
+                    number_format($this->caixaUsd, 2, ',', '.')
+                ));
+            }
+        }
+
         if ($this->tetoUsd <= 0 || $userId === null) {
             return;
         }
 
-        $gasto = (new AiGeracao())->custoTotalUsuario($userId);
+        $gasto = $registro->custoTotalUsuario($userId);
 
         if ($gasto < $this->tetoUsd) {
             return;
         }
 
-        Logger::warning('Geracao bloqueada: teto de gasto com IA atingido', [
+        Logger::warning('Geracao bloqueada: teto por conta atingido', [
             'user_id' => $userId,
             'gasto_usd' => $gasto,
             'teto_usd' => $this->tetoUsd,
         ]);
 
         throw new AIException(sprintf(
-            'Limite de gasto com IA atingido (US$ %s de US$ %s). '
-            . 'O conteudo ja gerado continua disponivel; para gerar mais, aumente o '
-            . 'AI_TETO_USD no .env.',
+            'Voce atingiu o seu limite de gasto com IA (US$ %s de US$ %s). '
+            . 'O conteudo ja gerado continua disponivel; fale com o administrador.',
             number_format($gasto, 2, ',', '.'),
             number_format($this->tetoUsd, 2, ',', '.')
         ));

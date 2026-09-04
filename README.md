@@ -15,8 +15,13 @@ Construído em PHP 8.3 + MySQL 8.4 sobre um micro-framework MVC próprio.
 - **Cadastro aberto.** Qualquer pessoa com o endereço do sistema cria a própria
   conta e entra na hora, sempre como `professor`. Contas de administrador só
   são criadas por outro administrador. Se o sistema for publicado na internet,
-  reveja essa decisão: o controle de quem entra passa a ser só o teto de gasto
-  com IA por conta (`AI_TETO_USD`) e o limite de 3 cadastros por IP por hora.
+  reveja essa decisão: o que segura o gasto é o caixa de IA, não o número de
+  contas.
+- **Caixa único de IA.** Existe uma só chave de API, então todas as contas
+  gastam do mesmo caixa (`AI_TETO_TOTAL_USD`). Atingido o valor, ninguém gera
+  até o administrador aumentá-lo — o gasto máximo é esse número, e não cresce
+  com o número de cadastros. `AI_TETO_USD` adiciona, opcionalmente, um teto
+  por professor para que uma pessoa sozinha não esvazie o caixa.
 - **Human-in-the-loop.** Tudo que a IA gera nasce como `rascunho` e só vira
   `aprovado` depois que o professor revisa e edita.
 - **Alinhado à BNCC.** Ensino Fundamental/Médio usa códigos de habilidade
@@ -30,7 +35,7 @@ Hierarquia pedagógica: **Escola → Turma → Matéria → Tema da aula**.
 | --- | --- |
 | Login e cadastro | Autenticação por e-mail e senha (bcrypt), cadastro do próprio professor (nome, e-mail, celular), papéis `admin`/`professor`, bloqueio por tentativas e auditoria de acesso |
 | Administração de contas | Tela do admin: cria contas, ativa/desativa acesso, promove a admin e redefine senhas |
-| Controle de custo da IA | Cache de prompts, teto de gasto por professor (`AI_TETO_USD`) e consumo visível no painel |
+| Controle de custo da IA | Cache de prompts, caixa único compartilhado (`AI_TETO_TOTAL_USD`), teto opcional por professor (`AI_TETO_USD`) e consumo visível na tela de Contas |
 | Escolas / Turmas / Matérias | Organização das aulas do professor (só dado institucional) |
 | Conteúdo do tema | Geração do conteúdo da aula com IA, editável e aprovável |
 | Plano de aula | Objetivos, metodologia (introdução/desenvolvimento/fechamento), recursos e avaliação |
