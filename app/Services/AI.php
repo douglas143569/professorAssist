@@ -24,6 +24,17 @@ class AI
     private Client $client;
     private string $model;
     private int $maxTokens;
+    private bool $cacheLigado;
+
+    /**
+     * Tipos de geracao que reaproveitam uma resposta ja gerada.
+     *
+     * So entram aqui os pedidos em que repetir significa "quero a MESMA coisa":
+     * o conteudo e o plano de aula de um tema. Ficam de fora questoes,
+     * atividades, pacotes e cronograma, em que clicar de novo significa
+     * "quero itens DIFERENTES" -- cachear esses criaria duplicatas no banco.
+     */
+    private const TIPOS_COM_CACHE = ['conteudo', 'plano_aula'];
 
     /**
      * Precos por 1M de tokens (USD), por prefixo de modelo. Usado so para
@@ -48,6 +59,7 @@ class AI
         $this->client = $client ?? new Client(apiKey: $apiKey);
         $this->model = $_ENV['ANTHROPIC_MODEL'] ?? 'claude-haiku-4-5-20251001';
         $this->maxTokens = (int) ($_ENV['AI_MAX_TOKENS'] ?? 4096);
+        $this->cacheLigado = filter_var($_ENV['AI_CACHE'] ?? 'true', FILTER_VALIDATE_BOOLEAN);
     }
 
     /* ---------------------------------------------------------------------
@@ -373,9 +385,34 @@ class AI
      * @param string $tipo   rotulo do tipo de geracao (ex: 'conteudo', 'questao')
      * @throws AIException   em qualquer falha de comunicacao com a API
      */
-    public function gerar(string $tipo, string $system, string $prompt, ?int $userId = null): string
-    {
-        $promptHash = hash('sha256', $this->model . '|' . $system . '|' . $prompt);
+    public function gerar(
+        string $tipo,
+        string $system,
+        string $prompt,
+        ?int $userId = null,
+        bool $usarCache = true
+    ): string {
+        // maxTokens entra no hash porque muda o tamanho da resposta: com outro
+        // teto de tokens o pedido nao e mais "o mesmo pedido".
+        $promptHash = hash('sha256', $this->model . '|' . $this->maxTokens . '|' . $system . '|' . $prompt);
+
+        if ($usarCache && $this->podeUsarCache($tipo)) {
+            $emCache = (new AiGeracao())->respostaEmCache($promptHash, $userId);
+
+            if ($emCache !== null) {
+                // Registra o reaproveitamento com custo zero: a auditoria de uso
+                // continua completa e a economia fica visivel em ai_geracoes.
+                $this->registrarGeracao($userId, $tipo, $promptHash, null, 0, 0, 'cache', null);
+
+                Logger::info('IA: resposta reaproveitada do cache', [
+                    'tipo' => $tipo,
+                    'modelo' => $this->model,
+                    'user_id' => $userId,
+                ]);
+
+                return $emCache;
+            }
+        }
 
         try {
             $message = $this->client->messages->create(
@@ -388,7 +425,7 @@ class AI
             );
         } catch (Throwable $e) {
             Logger::exception($e);
-            $this->registrarGeracao($userId, $tipo, $promptHash, null, null, 'erro', $e->getMessage());
+            $this->registrarGeracao($userId, $tipo, $promptHash, null, null, null, 'erro', $e->getMessage());
 
             throw new AIException(
                 'Nao foi possivel gerar o conteudo agora. Tente novamente em instantes.',
@@ -405,6 +442,9 @@ class AI
             $userId,
             $tipo,
             $promptHash,
+            // So guarda o texto dos tipos que reaproveitam: nao incha a tabela
+            // com respostas que nunca serao lidas de volta.
+            $this->podeUsarCache($tipo) ? $texto : null,
             $tokensIn,
             $tokensOut,
             'ok',
@@ -690,10 +730,19 @@ class AI
         return $out;
     }
 
+    /**
+     * O cache vale para este tipo de geracao?
+     */
+    private function podeUsarCache(string $tipo): bool
+    {
+        return $this->cacheLigado && in_array($tipo, self::TIPOS_COM_CACHE, true);
+    }
+
     private function registrarGeracao(
         ?int $userId,
         string $tipo,
         string $promptHash,
+        ?string $resposta,
         ?int $tokensIn,
         ?int $tokensOut,
         string $status,
@@ -705,6 +754,7 @@ class AI
                 'tipo' => $tipo,
                 'modelo' => $this->model,
                 'prompt_hash' => $promptHash,
+                'resposta' => $resposta,
                 'tokens_in' => $tokensIn,
                 'tokens_out' => $tokensOut,
                 'custo_estimado' => $this->estimarCusto($tokensIn, $tokensOut),
