@@ -116,12 +116,18 @@ class ModuloController extends AppController
             $bncc = trim(explode(',', $modulo['codigos_bncc'])[0]);
         }
 
+        // O que ja existe para este tema. Se houver algo, a IA recebe o resumo
+        // e produz um material COMPLEMENTAR em vez de repetir o mesmo.
+        $existentes = (new Conteudo())->byModulo((int) $id);
+        $jaAbordado = $this->resumoDosConteudos($existentes);
+
         try {
             $texto = (new AI())->gerarConteudoAula(
                 tema: $modulo['titulo'],
                 habilidadeBncc: $bncc,
                 etapa: $modulo['disciplina_etapa'],
                 userId: (int) $prof['id'],
+                jaAbordado: $jaAbordado,
             );
         } catch (AIException $e) {
             $this->flash('Nao foi possivel gerar com a IA: ' . $e->getMessage());
@@ -129,15 +135,50 @@ class ModuloController extends AppController
             return;
         }
 
+        $numero = count($existentes) + 1;
+
         $conteudoId = (new Conteudo())->create([
             'modulo_id' => (int) $id,
-            'titulo' => 'Conteudo: ' . $modulo['titulo'],
+            'titulo' => $numero > 1
+                ? "Conteudo {$numero}: " . $modulo['titulo']
+                : 'Conteudo: ' . $modulo['titulo'],
             'corpo' => $texto,
             'origem' => 'ia',
             'status' => 'rascunho',
         ]);
 
-        $this->flash('Rascunho gerado pela IA. Revise e aprove.');
+        $this->flash($numero > 1
+            ? "Novo material criado sobre o tema (material {$numero}). Revise e aprove."
+            : 'Rascunho gerado pela IA. Revise e aprove.');
         $this->redirect('/conteudos/' . $conteudoId);
+    }
+
+    /**
+     * Resume cada conteudo existente pelos seus titulos de secao (cabecalhos
+     * markdown). E compacto -- gasta poucos tokens de entrada -- e diz a IA
+     * exatamente qual recorte do tema ja foi coberto.
+     *
+     * @return string[]
+     */
+    private function resumoDosConteudos(array $conteudos): array
+    {
+        $resumos = [];
+
+        // No maximo 5: o suficiente para orientar sem inchar o prompt.
+        foreach (array_slice($conteudos, 0, 5) as $conteudo) {
+            $titulos = [];
+
+            foreach (preg_split('/\r?\n/', (string) ($conteudo['corpo'] ?? '')) as $linha) {
+                if (preg_match('/^#{1,3}\s+(.+?)\s*$/', trim($linha), $m)) {
+                    $titulos[] = $m[1];
+                }
+            }
+
+            if ($titulos !== []) {
+                $resumos[] = mb_substr(implode(' / ', array_slice($titulos, 0, 8)), 0, 300);
+            }
+        }
+
+        return $resumos;
     }
 }

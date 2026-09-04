@@ -70,11 +70,18 @@ class AI
      * Gera o rascunho do conteudo de uma aula, alinhado a BNCC.
      * Devolve o texto (markdown). Registra tokens/custo em ai_geracoes.
      */
+    /**
+     * @param string[] $jaAbordado Resumo do que os materiais existentes deste
+     *                             tema ja cobrem. Quando vem preenchido, pede
+     *                             um material NOVO e complementar -- e, como o
+     *                             prompt muda, o cache nao devolve o anterior.
+     */
     public function gerarConteudoAula(
         string $tema,
         ?string $habilidadeBncc = null,
         string $etapa = 'EF',
-        ?int $userId = null
+        ?int $userId = null,
+        array $jaAbordado = []
     ): string {
         $etapaNome = $etapa === 'EM' ? 'Ensino Medio' : 'Ensino Fundamental';
         $bncc = $habilidadeBncc
@@ -89,7 +96,8 @@ class AI
 
         $prompt = "Prepare o conteudo de uma aula para {$etapaNome}.\n"
             . "Tema: {$tema}\n"
-            . "{$bncc}";
+            . "{$bncc}"
+            . $this->pedidoDeMaterialNovo($jaAbordado);
 
         return $this->gerar('conteudo', $system, $prompt, $userId);
     }
@@ -728,6 +736,34 @@ class AI
         }
 
         return $out;
+    }
+
+    /**
+     * Trecho do prompt que pede um material DIFERENTE dos que ja existem.
+     *
+     * Serve a dois propositos ao mesmo tempo: instrui a IA a nao repetir o que
+     * o professor ja tem e, por mudar o prompt, faz o pedido ter outro hash --
+     * entao "criar mais" gera de verdade, enquanto repetir o MESMO pedido
+     * continua saindo do cache de graca.
+     *
+     * @param string[] $jaAbordado
+     */
+    private function pedidoDeMaterialNovo(array $jaAbordado): string
+    {
+        if ($jaAbordado === []) {
+            return '';
+        }
+
+        $lista = '';
+        foreach ($jaAbordado as $i => $resumo) {
+            $lista .= '  ' . ($i + 1) . '. ' . $resumo . "\n";
+        }
+
+        return "\n\nATENCAO: o professor JA possui " . count($jaAbordado)
+            . " material(is) sobre este mesmo tema, cobrindo:\n" . $lista
+            . "Produza um material NOVO e COMPLEMENTAR aos que ja existem: escolha outro "
+            . "recorte do tema, use outros exemplos e contextos, e proponha outra atividade. "
+            . "Nao repita os titulos de secao, os exemplos nem a abordagem dos materiais acima.";
     }
 
     /**

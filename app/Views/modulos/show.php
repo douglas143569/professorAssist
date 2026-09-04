@@ -16,9 +16,11 @@
                 <?php endif; ?>
             </p>
         </div>
-        <form method="post" action="/modulos/<?= (int) $modulo['id'] ?>/conteudos/gerar" class="js-ai">
-            <button type="submit" class="btn btn--primary" data-loading="Gerando conteúdo…">✦ Gerar conteúdo com IA</button>
-        </form>
+        <?php if (empty($conteudos)): ?>
+            <form method="post" action="/modulos/<?= (int) $modulo['id'] ?>/conteudos/gerar" class="js-ai">
+                <button type="submit" class="btn btn--primary" data-loading="Gerando conteúdo…">✦ Gerar conteúdo com IA</button>
+            </form>
+        <?php endif; ?>
     </div>
 
     <?php if (!empty($modulo['objetivos'])): ?>
@@ -78,6 +80,15 @@
                 </li>
             <?php endforeach; ?>
         </ul>
+
+        <form method="post" action="/modulos/<?= (int) $modulo['id'] ?>/conteudos/gerar" class="js-ai" style="margin-top:14px;">
+            <button type="submit" class="btn btn--primary" data-loading="Criando novo material…">
+                ✦ Criar mais conteúdo com este tema
+            </button>
+            <p class="muted" style="font-size:0.82rem; margin:8px 0 0;">
+                A IA recebe o que já existe aqui e produz um material diferente, com outro recorte do tema.
+            </p>
+        </form>
     <?php endif; ?>
 
     <?php
