@@ -24,6 +24,14 @@ class PlanoAulaController extends AppController
         $duracao = trim($_POST['duracao'] ?? '') ?: '1 aula de 50 min';
         $bncc = !empty($modulo['codigos_bncc']) ? $modulo['codigos_bncc'] : null;
 
+        // So os planos da MESMA duracao contam como "ja existente": pedir a
+        // versao de 100 min de um tema nao e pedir mais do mesmo, e sim outro
+        // formato de aula -- ali a IA deve trabalhar sem essa amarra.
+        $mesmaDuracao = array_values(array_filter(
+            (new PlanoAula())->byModulo((int) $moduloId),
+            fn(array $p) => ($p['duracao'] ?? '') === $duracao
+        ));
+
         try {
             $texto = (new AI())->gerarPlanoAula(
                 tema: $modulo['titulo'],
@@ -32,6 +40,7 @@ class PlanoAulaController extends AppController
                 etapa: $modulo['disciplina_etapa'],
                 duracao: $duracao,
                 userId: (int) $prof['id'],
+                jaAbordado: AI::resumirMateriais($mesmaDuracao),
             );
         } catch (AIException $e) {
             $this->flash('Nao foi possivel gerar o plano: ' . $e->getMessage());
@@ -39,9 +48,13 @@ class PlanoAulaController extends AppController
             return;
         }
 
+        $numero = count($mesmaDuracao) + 1;
+
         $id = (new PlanoAula())->create([
             'modulo_id' => (int) $moduloId,
-            'titulo' => 'Plano de aula: ' . $modulo['titulo'],
+            'titulo' => $numero > 1
+                ? "Plano de aula {$numero}: " . $modulo['titulo']
+                : 'Plano de aula: ' . $modulo['titulo'],
             'duracao' => $duracao,
             'corpo' => $texto,
             'origem' => 'ia',
@@ -54,7 +67,9 @@ class PlanoAulaController extends AppController
             'description' => 'IA gerou um plano de aula',
         ]);
 
-        $this->flash('Plano de aula gerado como rascunho. Revise e aprove.');
+        $this->flash($numero > 1
+            ? "Novo plano criado para este tema (plano {$numero}). Revise e aprove."
+            : 'Plano de aula gerado como rascunho. Revise e aprove.');
         $this->redirect('/planos/' . $id);
     }
 

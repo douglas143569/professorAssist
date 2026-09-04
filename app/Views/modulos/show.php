@@ -32,7 +32,7 @@
 
     <h2>Plano de aula</h2>
     <div class="card">
-        <h3>Gerar plano de aula com IA</h3>
+        <h3><?= empty($planos) ? 'Gerar plano de aula com IA' : 'Criar mais um plano para este tema' ?></h3>
         <form method="post" action="/modulos/<?= (int) $modulo['id'] ?>/planos/gerar" class="form form--inline js-ai">
             <label>Duração
                 <select name="duracao">
@@ -42,8 +42,16 @@
                     <option value="Sequência de 3 aulas">Sequência de 3 aulas</option>
                 </select>
             </label>
-            <button type="submit" class="btn btn--primary" data-loading="Gerando plano…">✦ Gerar plano</button>
+            <button type="submit" class="btn btn--primary" data-loading="<?= empty($planos) ? 'Gerando plano…' : 'Criando novo plano…' ?>">
+                <?= empty($planos) ? '✦ Gerar plano' : '✦ Criar mais um plano de aula' ?>
+            </button>
         </form>
+        <?php if (!empty($planos)): ?>
+            <p class="muted" style="font-size:0.82rem; margin:10px 0 0;">
+                A IA considera os planos que já existem nesta mesma duração e propõe outra abordagem.
+                Trocar a duração gera um plano novo do zero.
+            </p>
+        <?php endif; ?>
     </div>
 
     <?php if (empty($planos)): ?>

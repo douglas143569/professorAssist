@@ -106,13 +106,18 @@ class AI
      * Gera o rascunho de um plano de aula estruturado, alinhado a BNCC e aos
      * objetivos de aprendizagem. Devolve markdown.
      */
+    /**
+     * @param string[] $jaAbordado Resumo dos planos que ja existem para este
+     *                             tema e esta duracao (ver gerarConteudoAula).
+     */
     public function gerarPlanoAula(
         string $tema,
         ?string $objetivos = null,
         ?string $habilidadeBncc = null,
         string $etapa = 'EF',
         string $duracao = '1 aula de 50 min',
-        ?int $userId = null
+        ?int $userId = null,
+        array $jaAbordado = []
     ): string {
         $etapaNome = $etapa === 'EM' ? 'Ensino Medio' : 'Ensino Fundamental';
         $bncc = $habilidadeBncc
@@ -135,7 +140,8 @@ class AI
             . 'Estruture com as secoes: Identificacao (tema, etapa, duracao), '
             . 'Objetivos de aprendizagem, Habilidades BNCC, Conhecimentos previos, '
             . 'Metodologia (dividida em Introducao, Desenvolvimento e Fechamento, com o '
-            . 'tempo estimado de cada etapa), Recursos didaticos, Avaliacao e Referencias.';
+            . 'tempo estimado de cada etapa), Recursos didaticos, Avaliacao e Referencias.'
+            . $this->pedidoDeMaterialNovo($jaAbordado, 'plano de aula');
 
         return $this->gerar('plano_aula', $system, $prompt, $userId);
     }
@@ -739,6 +745,35 @@ class AI
     }
 
     /**
+     * Resume registros ja gerados (conteudos, planos...) pelos seus titulos de
+     * secao em markdown. E compacto -- gasta poucos tokens -- e diz a IA qual
+     * recorte do tema ja foi coberto, para ela nao repetir.
+     *
+     * @param array<int, array<string, mixed>> $registros linhas do banco
+     * @return string[]
+     */
+    public static function resumirMateriais(array $registros, string $campo = 'corpo', int $max = 5): array
+    {
+        $resumos = [];
+
+        foreach (array_slice($registros, 0, $max) as $registro) {
+            $titulos = [];
+
+            foreach (preg_split('/\r?\n/', (string) ($registro[$campo] ?? '')) as $linha) {
+                if (preg_match('/^#{1,3}\s+(.+?)\s*$/', trim($linha), $m)) {
+                    $titulos[] = $m[1];
+                }
+            }
+
+            if ($titulos !== []) {
+                $resumos[] = mb_substr(implode(' / ', array_slice($titulos, 0, 8)), 0, 300);
+            }
+        }
+
+        return $resumos;
+    }
+
+    /**
      * Trecho do prompt que pede um material DIFERENTE dos que ja existem.
      *
      * Serve a dois propositos ao mesmo tempo: instrui a IA a nao repetir o que
@@ -748,7 +783,7 @@ class AI
      *
      * @param string[] $jaAbordado
      */
-    private function pedidoDeMaterialNovo(array $jaAbordado): string
+    private function pedidoDeMaterialNovo(array $jaAbordado, string $oQue = 'material'): string
     {
         if ($jaAbordado === []) {
             return '';
@@ -759,11 +794,11 @@ class AI
             $lista .= '  ' . ($i + 1) . '. ' . $resumo . "\n";
         }
 
-        return "\n\nATENCAO: o professor JA possui " . count($jaAbordado)
-            . " material(is) sobre este mesmo tema, cobrindo:\n" . $lista
-            . "Produza um material NOVO e COMPLEMENTAR aos que ja existem: escolha outro "
+        return "\n\nATENCAO: o professor JA possui " . count($jaAbordado) . ' ' . $oQue
+            . "(is) sobre este mesmo tema, cobrindo:\n" . $lista
+            . "Produza um {$oQue} NOVO e COMPLEMENTAR aos que ja existem: escolha outro "
             . "recorte do tema, use outros exemplos e contextos, e proponha outra atividade. "
-            . "Nao repita os titulos de secao, os exemplos nem a abordagem dos materiais acima.";
+            . "Nao repita os titulos de secao, os exemplos nem a abordagem acima.";
     }
 
     /**
