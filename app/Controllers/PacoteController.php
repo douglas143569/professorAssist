@@ -17,6 +17,7 @@ class PacoteController extends AppController
         $this->view('creche.pacotes', [
             'title' => 'Pacotes de atividades',
             'faixas' => CrecheController::FAIXAS,
+            'campos' => CrecheController::CAMPOS,
             'pacotes' => (new CrechePacote())->byUser($prof['id']),
         ]);
     }
@@ -29,6 +30,8 @@ class PacoteController extends AppController
         $tema = trim($_POST['tema'] ?? '');
         $faixa = trim($_POST['faixa_etaria'] ?? '');
         $quantidade = (int) ($_POST['quantidade'] ?? 6);
+        $campo = in_array($_POST['campo_experiencia'] ?? '', CrecheController::CAMPOS, true)
+            ? $_POST['campo_experiencia'] : '';
 
         if ($tema === '') {
             $this->flash('Informe o tema do pacote.');
@@ -46,6 +49,7 @@ class PacoteController extends AppController
                 tema: $tema,
                 faixaEtaria: $faixa,
                 quantidade: $quantidade,
+                campoExperiencia: $campo,
                 userId: (int) $prof['id'],
             );
         } catch (AIException $e) {
@@ -57,6 +61,7 @@ class PacoteController extends AppController
         $id = (new CrechePacote())->createComItens([
             'user_id' => $prof['id'],
             'faixa_etaria' => $faixa,
+            'campo_experiencia' => $campo,
             'tema' => $tema,
             'titulo' => 'Pacote: ' . $tema,
         ], $itens);

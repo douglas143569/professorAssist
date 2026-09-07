@@ -27,6 +27,14 @@
                         <?php endforeach; ?>
                     </select>
                 </label>
+                <label style="flex:1 1 220px;">Campo de experiência (BNCC)
+                    <select name="campo_experiencia">
+                        <option value="">A IA escolhe conforme o tema</option>
+                        <?php foreach ($campos as $c): ?>
+                            <option value="<?= htmlspecialchars($c) ?>"><?= htmlspecialchars($c) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </label>
                 <label style="flex:0 1 150px;">Nº de atividades
                     <input type="number" name="quantidade" value="6" min="3" max="12">
                 </label>
@@ -43,6 +51,9 @@
             <?php foreach ($pacotes as $p): ?>
                 <a class="card card--link" href="/creche/pacotes/<?= (int) $p['id'] ?>">
                     <span class="tag"><?= htmlspecialchars($p['faixa_etaria']) ?></span>
+                    <?php if (!empty($p['campo_experiencia'])): ?>
+                        <span class="tag"><?= htmlspecialchars($p['campo_experiencia']) ?></span>
+                    <?php endif; ?>
                     <h3><?= htmlspecialchars($p['tema']) ?></h3>
                     <p class="muted"><?= (int) $p['n_itens'] ?> atividade(s)</p>
                 </a>

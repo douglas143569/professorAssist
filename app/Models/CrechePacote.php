@@ -35,12 +35,13 @@ class CrechePacote extends Model
         $this->db->beginTransaction();
         try {
             $stmt = $this->db->prepare(
-                'INSERT INTO creche_pacotes (user_id, faixa_etaria, tema, titulo, descricao)
-                 VALUES (:u, :faixa, :tema, :titulo, :descricao)'
+                'INSERT INTO creche_pacotes (user_id, faixa_etaria, campo_experiencia, tema, titulo, descricao)
+                 VALUES (:u, :faixa, :campo, :tema, :titulo, :descricao)'
             );
             $stmt->execute([
                 'u' => $pacote['user_id'],
                 'faixa' => $pacote['faixa_etaria'],
+                'campo' => ($pacote['campo_experiencia'] ?? '') !== '' ? $pacote['campo_experiencia'] : null,
                 'tema' => $pacote['tema'],
                 'titulo' => $pacote['titulo'],
                 'descricao' => ($pacote['descricao'] ?? '') !== '' ? $pacote['descricao'] : null,
@@ -48,8 +49,8 @@ class CrechePacote extends Model
             $pacoteId = (int) $this->db->lastInsertId();
 
             $ins = $this->db->prepare(
-                'INSERT INTO creche_pacote_itens (pacote_id, tipo, formato, titulo, instrucao, itens_json, ordem)
-                 VALUES (:p, :tipo, :formato, :titulo, :instrucao, :itens_json, :ordem)'
+                'INSERT INTO creche_pacote_itens (pacote_id, tipo, campo_bncc, formato, titulo, instrucao, itens_json, ordem)
+                 VALUES (:p, :tipo, :campo_bncc, :formato, :titulo, :instrucao, :itens_json, :ordem)'
             );
             $ordem = 0;
             foreach ($itens as $it) {
@@ -59,6 +60,7 @@ class CrechePacote extends Model
                 $ins->execute([
                     'p' => $pacoteId,
                     'tipo' => ($it['tipo'] ?? '') !== '' ? $it['tipo'] : null,
+                    'campo_bncc' => ($it['campo_bncc'] ?? '') !== '' ? $it['campo_bncc'] : null,
                     'formato' => CrechePacoteItem::normalizarFormato($it['formato'] ?? null),
                     'titulo' => $it['titulo'],
                     'instrucao' => ($it['instrucao'] ?? '') !== '' ? $it['instrucao'] : null,

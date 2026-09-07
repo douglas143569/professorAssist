@@ -293,18 +293,26 @@ class AI
         string $tema,
         string $faixaEtaria,
         int $quantidade = 6,
+        string $campoExperiencia = '',
         ?int $userId = null
     ): array {
         $quantidade = max(3, min($quantidade, 10));
+        $bncc = trim($campoExperiencia) !== ''
+            ? "Alinhe TODAS as atividades ao campo de experiencia da BNCC \"{$campoExperiencia}\", "
+                . 'deixando essa relacao clara na instrucao ou no titulo quando fizer sentido.'
+            : 'Alinhe as atividades aos campos de experiencia da BNCC (Educacao Infantil) '
+                . 'pertinentes ao tema e a faixa etaria.';
 
         $system = 'Voce e um especialista em Educacao Infantil no Brasil que cria FOLHAS de '
-            . 'atividades imprimiveis de alta qualidade, no estilo de apostilas profissionais. '
+            . 'atividades imprimiveis de alta qualidade, no estilo de apostilas profissionais, '
+            . 'sempre alinhadas a Base Nacional Comum Curricular (BNCC). '
             . 'As instrucoes sao curtas, claras e diretas para a crianca. Usa emojis simples e '
             . 'reconheciveis como figuras. Responde SEMPRE com JSON valido, sem texto fora do '
             . 'JSON e sem blocos de codigo markdown.';
 
         $prompt = "Crie {$quantidade} atividades imprimiveis de OTIMA QUALIDADE sobre o tema "
-            . "\"{$tema}\", para a faixa \"{$faixaEtaria}\".\n\n"
+            . "\"{$tema}\", para a faixa \"{$faixaEtaria}\".\n"
+            . "{$bncc}\n\n"
             . "Cada atividade usa UM destes cinco formatos (varie bastante entre eles):\n\n"
             . "1) formato \"escrever\": a crianca observa uma FIGURA e escreve a resposta num "
             . "quadro. Bom para: escrever a letra inicial; contar e escrever o numero (repita o "
@@ -339,7 +347,8 @@ class AI
             . "elementos.\n"
             . "- Cada atividade tem um proposito unico e simples, adequado a idade.\n\n"
             . 'Responda um array JSON. Cada atividade: {"titulo": "titulo curto", "tipo": '
-            . '"categoria (ex: Letra inicial)", "formato": "escrever", "circular", "ligar", '
+            . '"categoria (ex: Letra inicial)", "campo_bncc": "campo de experiencia da BNCC que '
+            . 'essa atividade trabalha", "formato": "escrever", "circular", "ligar", '
             . '"pintar" ou "sequencia", "instrucao": "instrucao clara", "itens": [...conforme o '
             . 'formato...]}.';
 
@@ -751,6 +760,7 @@ class AI
             $out[] = [
                 'titulo' => mb_substr((string) $a['titulo'], 0, 200),
                 'tipo' => !empty($a['tipo']) ? mb_substr((string) $a['tipo'], 0, 60) : null,
+                'campo_bncc' => !empty($a['campo_bncc']) ? mb_substr((string) $a['campo_bncc'], 0, 80) : null,
                 'formato' => $formato,
                 'instrucao' => !empty($a['instrucao']) ? (string) $a['instrucao'] : null,
                 'itens' => $itens,

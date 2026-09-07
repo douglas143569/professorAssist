@@ -7,6 +7,9 @@
             <h1><?= htmlspecialchars($pacote['tema']) ?></h1>
             <p class="muted">
                 <span class="tag"><?= htmlspecialchars($pacote['faixa_etaria']) ?></span>
+                <?php if (!empty($pacote['campo_experiencia'])): ?>
+                    <span class="tag"><?= htmlspecialchars($pacote['campo_experiencia']) ?></span>
+                <?php endif; ?>
                 <?= count($itens) ?> atividade(s) imprimível(is)
             </p>
         </div>
@@ -32,6 +35,7 @@
                     <label class="pack-check">
                         <input type="checkbox" class="js-item" value="<?= (int) $it['id'] ?>" checked>
                         <?php if (!empty($it['tipo'])): ?><span class="tag"><?= htmlspecialchars($it['tipo']) ?></span><?php endif; ?>
+                        <?php if (!empty($it['campo_bncc'])): ?><span class="tag"><?= htmlspecialchars($it['campo_bncc']) ?></span><?php endif; ?>
                     </label>
                     <a class="pack-item__open" href="<?= $verUrl ?>" title="Abrir no tamanho de impressão">
                         <h3><?= htmlspecialchars($it['titulo']) ?></h3>
