@@ -997,3 +997,195 @@ label.mini input { padding: 6px 8px; font-size: 0.85rem; }
 /* Banco de questoes com selecao */
 .check-questao { flex: 0 0 auto; margin-right: 2px; }
 .check-vazio { flex: 0 0 13px; width: 13px; }
+
+/* =========================================================
+   Área do aluno
+   ========================================================= */
+
+/* Bloco "É aluno?" na tela de login do professor */
+.login-aluno {
+    margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--border);
+    display: flex; flex-direction: column; align-items: stretch; gap: 8px; text-align: center;
+}
+.login-aluno > span { color: var(--muted); font-size: 0.9rem; }
+.login-aluno .btn { width: 100%; }
+.login-aluno__entrar { font-size: 0.9rem; }
+
+.aluno-body { background: #eef4fb; }
+
+.aluno-shell { max-width: 980px; margin: 0 auto; padding: 0 20px 60px; }
+
+.aluno-top {
+    display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
+    padding: 16px 0; margin-bottom: 22px; border-bottom: 1px solid #dde7f1;
+}
+.aluno-brand { display: flex; align-items: center; gap: 10px; color: inherit; }
+.aluno-brand:hover { text-decoration: none; }
+.aluno-logo {
+    display: grid; place-items: center; width: 38px; height: 38px; border-radius: 10px;
+    background: #1d63b8; color: #fff; font-weight: 800; font-size: 0.9rem; letter-spacing: .02em;
+}
+.aluno-brandtext { font-size: 0.95rem; line-height: 1.15; color: var(--text-2); }
+.aluno-brandtext strong { display: block; color: var(--text); }
+
+.aluno-nav { display: flex; gap: 4px; flex-wrap: wrap; margin-left: 6px; }
+.aluno-nav a {
+    padding: 8px 14px; border-radius: 999px; color: var(--text-2); font-weight: 600; font-size: 0.92rem;
+}
+.aluno-nav a:hover { background: #e2ecf7; text-decoration: none; }
+.aluno-nav a.is-active { background: #1d63b8; color: #fff; }
+
+.aluno-user { display: flex; align-items: center; gap: 10px; margin-left: auto; }
+.aluno-user__txt { display: flex; flex-direction: column; line-height: 1.2; }
+.aluno-user__txt strong { font-size: 0.9rem; }
+.aluno-user__txt small { font-size: 0.76rem; }
+
+.aluno-foot { margin-top: 40px; padding-top: 16px; border-top: 1px solid #dde7f1; font-size: 0.8rem; }
+
+.aluno-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; margin: 4px 0 26px; }
+.aluno-stats .stat { display: flex; flex-direction: column; gap: 4px; padding: 16px 18px; }
+.aluno-stats .stat strong { font-size: 1.7rem; font-weight: 800; line-height: 1; letter-spacing: -.02em; }
+.aluno-stats .stat span { color: var(--muted); font-size: 0.8rem; }
+
+.lista-tarefas { display: flex; flex-direction: column; gap: 12px; }
+.tarefa-linha { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.tarefa-linha h3 { margin: 8px 0 4px; }
+.tarefa-nota { text-align: center; flex: 0 0 auto; }
+.tarefa-nota strong { display: block; font-size: 1.6rem; font-weight: 800; color: var(--primary-700); line-height: 1; }
+
+.tabela { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.tabela th, .tabela td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--border); }
+.tabela th { color: var(--muted); font-size: 0.76rem; text-transform: uppercase; letter-spacing: .04em; }
+.tabela tr:last-child td { border-bottom: 0; }
+
+.check-inline { display: flex; flex-direction: row; align-items: center; gap: 8px; font-weight: 600; font-size: 0.9rem; }
+.check-inline input { width: auto; }
+
+/* Status de entrega (reaproveitado no aluno e no professor) */
+.badge--pendente  { background: var(--warn-bg);   color: var(--warn); }
+.badge--entregue  { background: #e7eefb;          color: #1d4ed8; }
+.badge--corrigida { background: var(--ok-bg);     color: var(--ok); }
+
+@media (max-width: 620px) {
+    .aluno-user { margin-left: 0; width: 100%; }
+    .tarefa-linha { flex-direction: column; align-items: flex-start; }
+}
+
+.materiais-lista { display: flex; flex-direction: column; gap: 12px; }
+
+/* =========================================================
+   Apresentações — editor de slides
+   ========================================================= */
+.slide-edit {
+    border: 1px solid var(--border); border-radius: var(--radius-sm);
+    padding: 14px 16px 4px; margin: 0 0 14px; background: var(--surface);
+}
+.slide-edit__head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+.slide-edit__num { color: var(--muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: .04em; }
+.slide-edit__acoes { display: flex; gap: 6px; }
+.slide-edit label { display: block; margin-bottom: 10px; font-weight: 600; font-size: 0.9rem; }
+.slide-edit input, .slide-edit textarea {
+    width: 100%; margin-top: 4px; font: inherit; font-weight: 400;
+    padding: 8px 10px; border: 1px solid var(--border-strong); border-radius: 8px;
+}
+.slide-edit textarea { resize: vertical; }
+.slide-edit input[type="file"] { padding: 6px; background: var(--surface-2); }
+.slide-edit input[type="checkbox"] { width: auto; margin: 0 6px 0 0; }
+
+.slide-edit__midia { border-top: 1px dashed var(--border); margin-top: 6px; padding-top: 10px; }
+.slide-edit__midia-lbl { display: block; font-size: 0.8rem; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin-bottom: 8px; }
+.slide-edit__midia-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 640px) { .slide-edit__midia-grid { grid-template-columns: 1fr; } }
+.slide-edit__thumb {
+    display: block; width: 120px; height: 80px; object-fit: cover;
+    border-radius: 8px; border: 1px solid var(--border); margin-bottom: 6px;
+}
+.slide-edit__rm { display: flex; align-items: center; font-weight: 400; font-size: 0.82rem; color: var(--danger); margin-top: 4px; }
+.slide-edit .js-mudo { accent-color: var(--primary); }
+.slide-edit__rm:has(.js-mudo) { color: var(--text-2); }
+
+.trim-panel { margin-top: 8px; border: 1px dashed var(--border-strong); border-radius: 8px; }
+.trim-panel > summary { cursor: pointer; padding: 8px 10px; font-weight: 600; font-size: 0.85rem; }
+.trim-panel__corpo { padding: 4px 10px 12px; }
+.trim-panel__corpo video { width: 100%; max-height: 220px; border-radius: 8px; background: #000; }
+.trim-panel__corpo label { display: block; font-size: 0.8rem; color: var(--muted); margin-top: 8px; }
+.trim-panel__corpo input[type="range"] { width: 100%; margin-top: 2px; accent-color: var(--primary); }
+.trim-times { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--muted); margin: 4px 0 8px; }
+
+/* =========================================================
+   Design interativo — reveal ao rolar + mini-gráficos
+   ========================================================= */
+
+/* Só esconde quando há JS (classe .js no <html>). Sem JS, tudo visível. */
+.js .js-reveal {
+    opacity: 0; transform: translateY(12px);
+    transition: opacity .5s ease, transform .5s ease;
+}
+.js .js-reveal.is-visible { opacity: 1; transform: none; }
+
+.chart-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px; margin: 8px 0 8px;
+}
+.chart-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 16px 18px; box-shadow: var(--shadow-sm);
+}
+.chart-card h3 { margin: 0 0 6px; }
+.chart-card .chart-box { min-height: 220px; }
+.chart-card .frappe-chart text { font-family: inherit; }
+
+@media (prefers-reduced-motion: reduce) {
+    .js .js-reveal { opacity: 1; transform: none; }
+}
+
+/* Seção recolhível (ex: Questões no tema da aula) */
+.bloco-toggle { border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); }
+.bloco-toggle > summary {
+    list-style: none; cursor: pointer; user-select: none;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 14px 18px; font-weight: 700; color: var(--text);
+    transition: background .15s;
+}
+.bloco-toggle > summary::-webkit-details-marker { display: none; }
+.bloco-toggle > summary:hover { background: var(--surface-2); }
+.bloco-toggle > summary::after {
+    content: "▸"; color: var(--muted); font-weight: 400; transition: transform .2s ease;
+}
+.bloco-toggle[open] > summary::after { transform: rotate(90deg); }
+.bloco-toggle[open] > summary { border-bottom: 1px solid var(--border); }
+.bloco-toggle__titulo { display: inline-flex; align-items: center; gap: 8px; font-size: 1.2rem; letter-spacing: -.01em; }
+.bloco-toggle__acao { margin-left: auto; margin-right: 6px; font-weight: 400; font-size: .82rem; color: var(--muted); }
+.bloco-toggle__corpo { padding: 4px 18px 18px; }
+
+/* =========================================================
+   Texto gerado (prosa) — leitura profissional do markdown
+   ========================================================= */
+.prosa-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 28px 32px; box-shadow: var(--shadow-sm);
+}
+.prosa {
+    font-size: 1.07rem; line-height: 1.75; color: var(--text);
+    -webkit-font-smoothing: subpixel-antialiased;
+}
+.prosa > :first-child { margin-top: 0; }
+.prosa > :last-child { margin-bottom: 0; }
+.prosa p { margin: 0 0 1em; }
+.prosa h2 { font-size: 1.32rem; font-weight: 800; margin: 1.5em 0 .5em; }
+.prosa h3 { font-size: 1.12rem; font-weight: 700; margin: 1.3em 0 .4em; }
+.prosa h4 { font-size: 1rem; font-weight: 700; margin: 1.1em 0 .35em; }
+.prosa ul, .prosa ol { margin: 0 0 1em; padding-left: 1.5em; }
+.prosa li { margin: .35em 0; }
+.prosa strong { font-weight: 800; }
+.prosa em { font-style: italic; }
+.prosa blockquote {
+    margin: 0 0 1em; padding: .2em 0 .2em 1em;
+    border-left: 3px solid var(--primary-100); color: var(--text-2);
+}
+.prosa code {
+    background: var(--surface-2); border-radius: 4px; padding: 1px 5px; font-size: .92em;
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+}
+.prosa hr { border: 0; border-top: 1px solid var(--border); margin: 1.8em 0; }
+@media (max-width: 600px) { .prosa-card { padding: 20px 18px; } }

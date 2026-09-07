@@ -48,6 +48,12 @@
                 Ainda não tem conta? <a href="/cadastro"><strong>Criar conta</strong></a><br>
                 <span style="font-size:0.95em;">Esqueceu a senha? Fale com o administrador do sistema.</span>
             </p>
+
+            <div class="login-aluno">
+                <span>É aluno?</span>
+                <a href="/aluno/cadastro" class="btn btn--ghost login-btn">Criar login de aluno</a>
+                <a href="/aluno/login" class="login-aluno__entrar">Já tenho acesso de aluno</a>
+            </div>
         </div>
 
         <p class="login-nota">Assistente para Professores</p>

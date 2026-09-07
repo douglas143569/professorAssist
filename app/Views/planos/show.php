@@ -26,27 +26,39 @@
         <div class="notice">Rascunho gerado por IA. <strong>Revise e ajuste</strong> antes de aprovar — você é responsável pelo plano final.</div>
     <?php endif; ?>
 
-    <form method="post" action="/planos/<?= (int) $plano['id'] ?>" class="form">
-            <?= \App\Services\Csrf::campo() ?>
-        <div class="form--inline">
-            <label style="flex:1 1 auto;">Título
-                <input type="text" name="titulo" value="<?= htmlspecialchars($plano['titulo']) ?>" required>
-            </label>
-            <label style="flex:0 0 220px;">Duração
-                <input type="text" name="duracao" value="<?= htmlspecialchars($plano['duracao'] ?? '') ?>">
-            </label>
-        </div>
-        <label>Plano <span class="muted">(markdown)</span>
-            <textarea name="corpo" rows="26" class="mono"><?= htmlspecialchars($plano['corpo'] ?? '') ?></textarea>
-        </label>
-        <div class="actions">
-            <button type="submit" class="btn btn--primary">Salvar alterações</button>
-            <a href="/modulos/<?= (int) $plano['modulo_id'] ?>" class="btn btn--ghost">Voltar ao módulo</a>
-        </div>
-    </form>
+    <div class="prosa-card">
+        <div class="prosa"><?= \App\Services\Markdown::render($plano['corpo'] ?? '') ?></div>
+    </div>
 
-    <form method="post" action="/planos/<?= (int) $plano['id'] ?>/excluir"
-          onsubmit="return confirm('Excluir este plano de aula?');" style="margin-top:12px;">
-            <?= \App\Services\Csrf::campo() ?>
-        <button type="submit" class="btn btn--danger">Excluir plano</button>
-    </form>
+    <details class="bloco-toggle" style="margin-top:16px;">
+        <summary>
+            <span class="bloco-toggle__titulo">Editar texto</span>
+            <span class="bloco-toggle__acao">abrir editor</span>
+        </summary>
+        <div class="bloco-toggle__corpo">
+            <form method="post" action="/planos/<?= (int) $plano['id'] ?>" class="form">
+                    <?= \App\Services\Csrf::campo() ?>
+                <div class="form--inline">
+                    <label style="flex:1 1 auto;">Título
+                        <input type="text" name="titulo" value="<?= htmlspecialchars($plano['titulo']) ?>" required>
+                    </label>
+                    <label style="flex:0 0 220px;">Duração
+                        <input type="text" name="duracao" value="<?= htmlspecialchars($plano['duracao'] ?? '') ?>">
+                    </label>
+                </div>
+                <label>Texto <span class="muted">(markdown)</span>
+                    <textarea name="corpo" rows="26" class="mono"><?= htmlspecialchars($plano['corpo'] ?? '') ?></textarea>
+                </label>
+                <div class="actions">
+                    <button type="submit" class="btn btn--primary">Salvar alterações</button>
+                    <a href="/modulos/<?= (int) $plano['modulo_id'] ?>" class="btn btn--ghost">Voltar ao módulo</a>
+                </div>
+            </form>
+
+            <form method="post" action="/planos/<?= (int) $plano['id'] ?>/excluir"
+                  onsubmit="return confirm('Excluir este plano de aula?');" style="margin-top:12px;">
+                    <?= \App\Services\Csrf::campo() ?>
+                <button type="submit" class="btn btn--danger">Excluir plano</button>
+            </form>
+        </div>
+    </details>

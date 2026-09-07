@@ -101,6 +101,62 @@ class Auth
     }
 
     /**
+     * Login do ALUNO: nome + senha DENTRO de uma turma (o aluno nao tem e-mail).
+     * Mesmas defesas do login do professor: trava por IP, password_verify
+     * sempre, troca do id de sessao.
+     *
+     * @return array{ok: bool, erro: ?string}
+     */
+    public static function tentarLoginAluno(int $turmaId, string $nome, string $senha): array
+    {
+        self::iniciarSessao();
+
+        $nome = trim($nome);
+        $ip = Request::ip();
+
+        if ($ip !== null && self::bloqueadoPorTentativas($ip)) {
+            Logger::access('login_failed', $nome);
+
+            return ['ok' => false, 'erro' => 'Muitas tentativas seguidas. Espere '
+                . self::JANELA_MINUTOS . ' minutos e tente de novo.'];
+        }
+
+        $user = (new User())->findAlunoParaLogin($turmaId, $nome);
+
+        $hash = $user['password_hash'] ?? '$2y$12$invalidoinvalidoinvalidoinvalidoinvalidoinvalidoinvalidoinv';
+
+        if (!password_verify($senha, $hash) || !$user) {
+            Logger::access('login_failed', $nome, isset($user['id']) ? (int) $user['id'] : null);
+
+            return ['ok' => false, 'erro' => 'Nome ou senha incorretos para essa turma.'];
+        }
+
+        if ((int) $user['ativo'] !== 1) {
+            Logger::access('login_failed', $nome, (int) $user['id']);
+
+            return ['ok' => false, 'erro' => 'Esta conta esta desativada. Fale com o professor.'];
+        }
+
+        $id = (int) $user['id'];
+
+        if (password_needs_rehash($user['password_hash'], PASSWORD_DEFAULT)) {
+            (new User())->atualizarSenha($id, $senha);
+        }
+
+        session_regenerate_id(true);
+        Csrf::esquecer();
+
+        $_SESSION[self::CHAVE] = $id;
+        $_SESSION['user_id'] = $id;
+        self::$cache = null;
+
+        (new User())->registrarLogin($id);
+        Logger::access('login_success', $nome, $id);
+
+        return ['ok' => true, 'erro' => null];
+    }
+
+    /**
      * Usuario logado (sem o hash da senha) ou null.
      */
     public static function usuario(): ?array
@@ -142,6 +198,13 @@ class Auth
         $user = self::usuario();
 
         return $user !== null && $user['role'] === User::ROLE_ADMIN;
+    }
+
+    public static function ehAluno(): bool
+    {
+        $user = self::usuario();
+
+        return $user !== null && $user['role'] === User::ROLE_ALUNO;
     }
 
     public static function logout(): void

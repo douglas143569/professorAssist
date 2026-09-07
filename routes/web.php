@@ -11,6 +11,23 @@ $router->get('/cadastro', 'AuthController@formularioCadastro');
 $router->post('/cadastro', 'AuthController@cadastrar');
 $router->post('/logout', 'AuthController@sair');
 
+// Autenticacao do ALUNO (escola + turma + nome + senha; sem e-mail)
+$router->get('/aluno/login', 'AlunoAuthController@loginForm');
+$router->post('/aluno/login', 'AlunoAuthController@login');
+$router->get('/aluno/cadastro', 'AlunoAuthController@cadastroForm');
+$router->post('/aluno/cadastro', 'AlunoAuthController@cadastrar');
+$router->post('/aluno/logout', 'AlunoAuthController@sair');
+
+// Area do ALUNO (rotas fixas antes das com {id})
+$router->get('/aluno', 'AlunoController@index');
+$router->get('/aluno/tarefas', 'AlunoController@tarefas');
+$router->get('/aluno/tarefas/{id}', 'AlunoController@tarefa');
+$router->post('/aluno/tarefas/{id}/entregar', 'AlunoController@entregar');
+$router->get('/aluno/entregas/{id}/arquivo', 'AlunoController@arquivoEntrega');
+$router->get('/aluno/notas', 'AlunoController@notas');
+$router->get('/aluno/avisos', 'AlunoController@avisos');
+$router->get('/aluno/materiais', 'AlunoController@materiais');
+
 $router->get('/', 'HomeController@index');
 
 // Fila de revisao (rascunhos da IA esperando aprovacao)
@@ -37,6 +54,20 @@ $router->get('/turmas', 'TurmaController@index');
 $router->get('/turmas/{id}', 'TurmaController@show');
 $router->post('/turmas/{id}/excluir', 'TurmaController@excluir');
 $router->post('/turmas/{id}/materias', 'DisciplinaController@store');
+$router->post('/turmas/{id}/tarefas', 'TarefaController@store');
+$router->post('/turmas/{id}/avisos', 'AvisoController@store');
+$router->post('/turmas/{id}/alunos/{matriculaId}/situacao', 'MatriculaController@alternarSituacao');
+
+// Tarefas para a turma (lado do professor)
+$router->get('/tarefas/{id}', 'TarefaController@show');
+$router->post('/tarefas/{id}', 'TarefaController@update');
+$router->post('/tarefas/{id}/publicar', 'TarefaController@publicar');
+$router->post('/tarefas/{id}/excluir', 'TarefaController@excluir');
+$router->post('/tarefas/{id}/entregas/{alunoId}/corrigir', 'TarefaController@corrigir');
+$router->get('/tarefas/{id}/entregas/{alunoId}/arquivo', 'TarefaController@arquivoEntrega');
+
+// Mural de avisos
+$router->post('/avisos/{id}/excluir', 'AvisoController@excluir');
 
 // Materias (tabela disciplinas)
 $router->get('/disciplinas', 'DisciplinaController@index'); // redireciona para /turmas
@@ -98,6 +129,18 @@ $router->get('/planos/{id}', 'PlanoAulaController@show');
 $router->post('/planos/{id}', 'PlanoAulaController@update');
 $router->post('/planos/{id}/aprovar', 'PlanoAulaController@aprovar');
 $router->post('/planos/{id}/excluir', 'PlanoAulaController@excluir');
+
+// Apresentacoes (slides + resumo da aula expositiva)
+$router->post('/modulos/{id}/apresentacoes/gerar', 'ApresentacaoController@gerar');
+$router->get('/apresentacoes/{id}', 'ApresentacaoController@show');
+$router->get('/apresentacoes/{id}/apresentar', 'ApresentacaoController@apresentar');
+$router->get('/apresentacoes/{id}/midia/{arquivo}', 'ApresentacaoController@midia');
+$router->post('/apresentacoes/{id}/cortar-video', 'ApresentacaoController@cortarVideo');
+$router->post('/apresentacoes/{id}', 'ApresentacaoController@update');
+$router->post('/apresentacoes/{id}/aprovar', 'ApresentacaoController@aprovar');
+$router->post('/apresentacoes/{id}/excluir', 'ApresentacaoController@excluir');
+$router->post('/apresentacoes/{id}/publicar-resumo', 'ApresentacaoController@publicarResumo');
+$router->post('/apresentacoes/{id}/despublicar-resumo', 'ApresentacaoController@despublicarResumo');
 
 // Provas (RF-15 a RF-18)
 $router->get('/provas', 'ProvaController@index');

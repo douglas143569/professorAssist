@@ -41,7 +41,7 @@ class AI
      * atividades, pacotes e cronograma, em que clicar de novo significa
      * "quero itens DIFERENTES" -- cachear esses criaria duplicatas no banco.
      */
-    private const TIPOS_COM_CACHE = ['conteudo', 'plano_aula'];
+    private const TIPOS_COM_CACHE = ['conteudo', 'plano_aula', 'apresentacao'];
 
     /**
      * Precos por 1M de tokens (USD), por prefixo de modelo. Usado so para
@@ -109,6 +109,9 @@ class AI
             . 'no Brasil. Produz conteudo didatico claro, correto e alinhado a BNCC. '
             . 'Escreve em portugues do Brasil, em markdown, com titulos, objetivos de '
             . 'aprendizagem, desenvolvimento do conteudo e uma sugestao de atividade. '
+            . 'Use markdown SIMPLES: titulos no maximo com "###", listas com "- ", '
+            . '**negrito** so em termos-chave; sem tabelas, sem HTML, sem listas '
+            . 'aninhadas e sem blocos de codigo. '
             . 'O material e um rascunho que o professor vai revisar e ajustar.';
 
         $prompt = "Prepare o conteudo de uma aula para {$etapaNome}.\n"
@@ -146,8 +149,10 @@ class AI
 
         $system = 'Voce e um assistente pedagogico para professores da educacao basica '
             . 'no Brasil. Elabora planos de aula praticos, corretos e alinhados a BNCC. '
-            . 'Escreve em portugues do Brasil, em markdown. O plano e um rascunho que o '
-            . 'professor vai revisar e ajustar.';
+            . 'Escreve em portugues do Brasil, em markdown SIMPLES: titulos no maximo '
+            . 'com "###", listas com "- ", **negrito** so em termos-chave; sem tabelas, '
+            . 'sem HTML, sem listas aninhadas e sem blocos de codigo. '
+            . 'O plano e um rascunho que o professor vai revisar e ajustar.';
 
         $prompt = "Elabore um plano de aula para {$etapaNome}.\n"
             . "Tema: {$tema}\n"
@@ -161,6 +166,133 @@ class AI
             . $this->pedidoDeMaterialNovo($jaAbordado, 'plano de aula');
 
         return $this->gerar('plano_aula', $system, $prompt, $userId);
+    }
+
+    /**
+     * Gera um apoio de AULA EXPOSITIVA: um roteiro de slides + um resumo do
+     * assunto. Devolve ['titulo' => string, 'slides' => [['titulo','topicos','nota']], 'resumo' => string].
+     *
+     * @param string[] $jaAbordado Titulos das apresentacoes que ja existem para
+     *                             este tema. Quando preenchido, pede um recorte
+     *                             DIFERENTE -- e muda o hash, entao "criar mais"
+     *                             gera de verdade em vez de sair do cache.
+     */
+    public function gerarApresentacao(
+        string $tema,
+        ?string $objetivos = null,
+        ?string $habilidadeBncc = null,
+        string $etapa = 'EF',
+        int $nSlides = 8,
+        ?string $foco = null,
+        ?int $userId = null,
+        array $jaAbordado = []
+    ): array {
+        $nSlides = max(4, min($nSlides, 20));
+        $etapaNome = $etapa === 'EM' ? 'Ensino Medio' : 'Ensino Fundamental';
+
+        $bncc = $habilidadeBncc
+            ? "Contemple a habilidade da BNCC {$habilidadeBncc}."
+            : 'Contemple as habilidades da BNCC pertinentes ao tema.';
+        $objetivosLinha = $objetivos
+            ? "Objetivos de aprendizagem informados pelo professor: {$objetivos}."
+            : 'Defina objetivos adequados ao tema e a etapa.';
+        $focoLinha = ($foco !== null && trim($foco) !== '')
+            ? "Recorte pedido pelo professor: {$foco}.\n"
+            : '';
+
+        $system = 'Voce e um assistente pedagogico para professores da educacao basica '
+            . 'no Brasil. Monta o apoio de uma AULA EXPOSITIVA: um roteiro de slides '
+            . 'objetivo e um resumo do assunto. Escreve em portugues do Brasil. '
+            . 'Responde SEMPRE com JSON valido, sem nenhum texto fora do JSON e sem '
+            . 'blocos de codigo markdown.';
+
+        $prompt = "Prepare uma apresentacao para uma aula expositiva de {$etapaNome}.\n"
+            . "Tema: {$tema}\n"
+            . "Quantidade de slides: {$nSlides} (incluindo abertura e fechamento).\n"
+            . $focoLinha
+            . "{$objetivosLinha}\n"
+            . "{$bncc}\n"
+            . 'Responda um OBJETO JSON com as chaves: '
+            . '"titulo" (titulo da apresentacao), '
+            . '"slides" (lista com ' . $nSlides . ' itens; cada item: '
+            . '{"titulo": "titulo curto do slide", '
+            . '"topicos": ["3 a 5 frases curtas, uma ideia por topico"], '
+            . '"nota": "1 a 3 frases do que o professor fala nesse slide"}), '
+            . '"resumo" (texto corrido do assunto em 2 a 4 paragrafos; para listas, '
+            . 'use linhas comecando com "- "; NAO use #, *, ** nem qualquer outra '
+            . 'sintaxe de markdown).'
+            . $this->pedidoDeMaterialNovo($jaAbordado, 'apresentacao');
+
+        $texto = $this->gerar('apresentacao', $system, $prompt, $userId);
+
+        $t = trim($texto);
+        $t = (string) preg_replace('/^```(?:json)?\s*/i', '', $t);
+        $t = trim((string) preg_replace('/\s*```$/', '', $t));
+        $dados = json_decode($t, true);
+
+        if (!is_array($dados) || !isset($dados['slides']) || !is_array($dados['slides'])) {
+            throw new AIException('A IA nao retornou a apresentacao em formato valido. Tente novamente.');
+        }
+
+        return $this->normalizarApresentacao($dados, $nSlides);
+    }
+
+    /**
+     * Sanitiza a apresentacao vinda da IA: tamanhos, remocao de HTML, ao menos
+     * um slide valido.
+     */
+    private function normalizarApresentacao(array $dados, int $nSlides): array
+    {
+        $limpar = static fn ($v, int $max): string => mb_substr(trim(strip_tags((string) $v)), 0, $max);
+
+        $slides = [];
+        foreach ($dados['slides'] as $s) {
+            if (!is_array($s)) {
+                continue;
+            }
+
+            $topicos = [];
+            foreach ((array) ($s['topicos'] ?? []) as $topico) {
+                $texto = $limpar($topico, 240);
+                if ($texto !== '') {
+                    $topicos[] = $texto;
+                }
+                if (count($topicos) >= 8) {
+                    break;
+                }
+            }
+
+            $titulo = $limpar($s['titulo'] ?? '', 160);
+
+            if ($titulo === '' && $topicos === []) {
+                continue;
+            }
+
+            $slides[] = [
+                'titulo' => $titulo !== '' ? $titulo : 'Slide',
+                'topicos' => $topicos,
+                'nota' => $limpar($s['nota'] ?? '', 600),
+                // Midias sao adicionadas depois, no editor.
+                'imagem' => null,
+                'video_url' => null,
+                'video_arquivo' => null,
+                'video_mudo' => false,
+            ];
+
+            if (count($slides) >= max($nSlides, 20)) {
+                break;
+            }
+        }
+
+        if ($slides === []) {
+            throw new AIException('A IA nao retornou nenhum slide aproveitavel. Tente novamente.');
+        }
+
+        return [
+            'titulo' => $limpar($dados['titulo'] ?? '', 200),
+            'slides' => $slides,
+            'resumo' => mb_substr(trim(strip_tags((string) ($dados['resumo'] ?? ''))), 0, 8000),
+        ];
     }
 
     /**

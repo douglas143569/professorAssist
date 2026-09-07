@@ -62,6 +62,7 @@ class ModuloController extends AppController
             'title' => $modulo['titulo'],
             'modulo' => $modulo,
             'planos' => (new \App\Models\PlanoAula())->byModulo((int) $id),
+            'apresentacoes' => (new \App\Models\Apresentacao())->byModulo((int) $id),
             'atividades' => (new \App\Models\Atividade())->byModulo((int) $id),
             'conteudos' => (new Conteudo())->byModulo((int) $id),
             'questoes' => (new \App\Models\Questao())->byModulo((int) $id),

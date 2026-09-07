@@ -8,6 +8,7 @@ class User extends Model
 {
     public const ROLE_ADMIN = 'admin';
     public const ROLE_PROFESSOR = 'professor';
+    public const ROLE_ALUNO = 'aluno';
 
     /** Colunas seguras para trafegar na aplicacao (sem o hash da senha). */
     private const CAMPOS = 'id, name, email, celular, role, ativo, last_login_at, created_at';
@@ -121,6 +122,47 @@ class User extends Model
         ]);
 
         return (int) $this->db->lastInsertId();
+    }
+
+    /**
+     * Cria uma conta de ALUNO. Aluno nao tem e-mail nem celular: entra pelo
+     * nome dentro da turma (ver Auth::tentarLoginAluno). Ja nasce ativa.
+     */
+    public function criarAluno(string $nome, string $senha): int
+    {
+        $stmt = $this->db->prepare(
+            'INSERT INTO users (name, email, celular, password_hash, role, ativo)
+             VALUES (:name, NULL, NULL, :hash, :role, 1)'
+        );
+        $stmt->execute([
+            'name' => $nome,
+            'hash' => password_hash($senha, PASSWORD_DEFAULT),
+            'role' => self::ROLE_ALUNO,
+        ]);
+
+        return (int) $this->db->lastInsertId();
+    }
+
+    /**
+     * Busca o aluno pelo nome DENTRO de uma turma, trazendo o password_hash.
+     * Use SOMENTE na verificacao de login. A comparacao ignora caixa e espacos
+     * nas pontas -- o cadastro garante nome unico por turma.
+     */
+    public function findAlunoParaLogin(int $turmaId, string $nome): ?array
+    {
+        $stmt = $this->db->prepare(
+            'SELECT u.id, u.name, u.email, u.celular, u.role, u.ativo,
+                    u.last_login_at, u.created_at, u.password_hash
+               FROM users u
+               JOIN turma_alunos ta ON ta.aluno_id = u.id
+              WHERE ta.turma_id = :t
+                AND u.role = :role
+                AND LOWER(TRIM(u.name)) = LOWER(TRIM(:nome))
+              LIMIT 1'
+        );
+        $stmt->execute(['t' => $turmaId, 'role' => self::ROLE_ALUNO, 'nome' => $nome]);
+
+        return $stmt->fetch() ?: null;
     }
 
     /**

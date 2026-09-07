@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Models\Apresentacao;
 use App\Models\Atividade;
 use App\Models\Conteudo;
 use App\Models\Escola;
@@ -31,6 +32,7 @@ class HomeController extends AppController
                 'questoes' => $questaoModel->countByUser($prof['id']),
                 'questoes_aprovadas' => $questaoModel->countByUser($prof['id'], 'aprovado'),
                 'provas' => (new Prova())->countByUser($prof['id']),
+                'apresentacoes' => (new Apresentacao())->countByUser($prof['id']),
             ],
             'turmas' => (new Turma())->byUser($prof['id']),
             // Fila de revisao em destaque: sem isso, os rascunhos da IA

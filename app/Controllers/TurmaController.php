@@ -2,8 +2,11 @@
 
 namespace App\Controllers;
 
+use App\Models\Aviso;
 use App\Models\Disciplina;
 use App\Models\Escola;
+use App\Models\Matricula;
+use App\Models\Tarefa;
 use App\Models\Turma;
 use App\Services\Logger;
 
@@ -74,6 +77,10 @@ class TurmaController extends AppController
             'title' => $turma['nome'],
             'turma' => $turma,
             'materias' => (new Disciplina())->byTurma((int) $id),
+            'alunos' => (new Matricula())->daTurma((int) $id),
+            'tarefas' => (new Tarefa())->daTurma((int) $id),
+            'avisos' => (new Aviso())->daTurma((int) $id),
+            'tiposEntrega' => Tarefa::TIPOS_ENTREGA,
         ]);
     }
 

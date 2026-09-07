@@ -26,16 +26,28 @@
         </div>
     <?php endif; ?>
 
-    <form method="post" action="/conteudos/<?= (int) $conteudo['id'] ?>" class="form">
-            <?= \App\Services\Csrf::campo() ?>
-        <label>Título
-            <input type="text" name="titulo" value="<?= htmlspecialchars($conteudo['titulo']) ?>" required>
-        </label>
-        <label>Conteúdo <span class="muted">(markdown)</span>
-            <textarea name="corpo" rows="24" class="mono"><?= htmlspecialchars($conteudo['corpo'] ?? '') ?></textarea>
-        </label>
-        <div class="actions">
-            <button type="submit" class="btn btn--primary">Salvar alterações</button>
-            <a href="/modulos/<?= (int) $conteudo['modulo_id'] ?>" class="btn btn--ghost">Voltar ao módulo</a>
+    <div class="prosa-card">
+        <div class="prosa"><?= \App\Services\Markdown::render($conteudo['corpo'] ?? '') ?></div>
+    </div>
+
+    <details class="bloco-toggle" style="margin-top:16px;">
+        <summary>
+            <span class="bloco-toggle__titulo">Editar texto</span>
+            <span class="bloco-toggle__acao">abrir editor</span>
+        </summary>
+        <div class="bloco-toggle__corpo">
+            <form method="post" action="/conteudos/<?= (int) $conteudo['id'] ?>" class="form">
+                    <?= \App\Services\Csrf::campo() ?>
+                <label>Título
+                    <input type="text" name="titulo" value="<?= htmlspecialchars($conteudo['titulo']) ?>" required>
+                </label>
+                <label>Texto <span class="muted">(markdown)</span>
+                    <textarea name="corpo" rows="24" class="mono"><?= htmlspecialchars($conteudo['corpo'] ?? '') ?></textarea>
+                </label>
+                <div class="actions">
+                    <button type="submit" class="btn btn--primary">Salvar alterações</button>
+                    <a href="/modulos/<?= (int) $conteudo['modulo_id'] ?>" class="btn btn--ghost">Voltar ao módulo</a>
+                </div>
+            </form>
         </div>
-    </form>
+    </details>

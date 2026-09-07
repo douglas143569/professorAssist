@@ -37,6 +37,15 @@ class Escola extends Model
         return $stmt->fetch() ?: null;
     }
 
+    /**
+     * Todas as escolas (id, nome) -- para os <select> publicos do cadastro/login
+     * do aluno. So dado institucional, nada de dado pessoal.
+     */
+    public function todas(): array
+    {
+        return $this->db->query('SELECT id, nome FROM escolas ORDER BY nome')->fetchAll();
+    }
+
     public function create(array $data): int
     {
         $stmt = $this->db->prepare(

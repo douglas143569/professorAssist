@@ -37,6 +37,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+    <script>document.documentElement.className += ' js';</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($title ?? 'Assistente do Professor') ?></title>
@@ -59,7 +60,7 @@
                 </a>
                 <a href="/revisar" class="navitem <?= $__isRevisar ? 'is-active' : '' ?>">
                     <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-                    <span>Revisar</span>
+                    <span>Revisar questões para criar prova</span>
                     <?php if ($__pendentes > 0): ?>
                         <span class="contador-nav"><?= $__pendentes ?></span>
                     <?php endif; ?>

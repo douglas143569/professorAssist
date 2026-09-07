@@ -30,11 +30,37 @@ abstract class AppController extends Controller
             $this->exigirLogin();
         }
 
+        // Aluno nunca entra na area do professor: um unico ponto de bloqueio
+        // para toda rota que herda deste controller.
+        if ($usuario['role'] === User::ROLE_ALUNO) {
+            $this->redirect('/aluno');
+        }
+
         $this->usuario = $usuario;
 
         // Toda escrita passa por aqui: uma rota POST nova ja nasce protegida.
         if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
+            $this->recusarEnvioGrandeDemais();
             $this->exigirTokenValido();
+        }
+    }
+
+    /**
+     * Quando o envio passa de post_max_size, o PHP entrega $_POST e $_FILES
+     * VAZIOS e a acao "nao faz nada". Aqui isso vira uma mensagem clara.
+     */
+    private function recusarEnvioGrandeDemais(): void
+    {
+        $tamanho = (int) ($_SERVER['CONTENT_LENGTH'] ?? 0);
+
+        if ($tamanho > 0 && $_POST === [] && $_FILES === []) {
+            $limite = ini_get('post_max_size') ?: '?';
+            http_response_code(413);
+            $this->flash(
+                'O envio ficou grande demais para o servidor (limite atual: ' . $limite . '). '
+                . 'Aumente post_max_size e upload_max_filesize no php.ini e reinicie o servidor.'
+            );
+            $this->redirect($_SERVER['HTTP_REFERER'] ?? '/');
         }
     }
 

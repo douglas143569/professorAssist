@@ -20,6 +20,34 @@ class Turma extends Model
         return $stmt->fetchAll();
     }
 
+    /**
+     * Todas as turmas (id, nome, escola) -- para os <select> encadeados do
+     * cadastro/login do aluno. So dado institucional.
+     */
+    public function todasComEscola(): array
+    {
+        return $this->db->query(
+            'SELECT t.id, t.nome, t.etapa, t.ano_serie, t.escola_id,
+                    e.nome AS escola_nome
+               FROM turmas t
+          LEFT JOIN escolas e ON e.id = t.escola_id
+              ORDER BY e.nome, t.nome'
+        )->fetchAll();
+    }
+
+    /** Uma turma pelo id, sem checar dono (uso publico: cadastro do aluno). */
+    public function findPublica(int $id): ?array
+    {
+        $stmt = $this->db->prepare(
+            'SELECT t.id, t.nome, t.escola_id, e.nome AS escola_nome
+               FROM turmas t
+          LEFT JOIN escolas e ON e.id = t.escola_id
+              WHERE t.id = :id LIMIT 1'
+        );
+        $stmt->execute(['id' => $id]);
+        return $stmt->fetch() ?: null;
+    }
+
     /** Turmas de uma escola. */
     public function byEscola(int $escolaId): array
     {
