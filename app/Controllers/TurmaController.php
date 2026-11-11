@@ -73,7 +73,7 @@ class TurmaController extends AppController
             return;
         }
 
-        $this->view('turmas.show', [
+        $this->view('turmas.dashboard', [
             'title' => $turma['nome'],
             'turma' => $turma,
             'materias' => (new Disciplina())->byTurma((int) $id),

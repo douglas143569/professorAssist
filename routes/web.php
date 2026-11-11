@@ -11,6 +11,16 @@ $router->get('/cadastro', 'AuthController@formularioCadastro');
 $router->post('/cadastro', 'AuthController@cadastrar');
 $router->post('/logout', 'AuthController@sair');
 
+// Assinaturas: webhook público validado pela assinatura do Mercado Pago.
+$router->get('/assinatura', 'SubscriptionController@index');
+$router->post('/assinatura/checkout', 'SubscriptionController@checkout');
+$router->get('/assinatura/retorno', 'SubscriptionController@retorno');
+$router->post('/webhook/mercadopago', 'MercadoPagoWebhookController@receber');
+$router->get('/admin/financeiro', 'AdminBillingController@index');
+$router->post('/admin/financeiro/acesso/liberar', 'AdminBillingController@liberarAcesso');
+$router->post('/admin/financeiro/acesso/bloquear', 'AdminBillingController@bloquearAcesso');
+$router->post('/admin/financeiro/promocoes', 'AdminBillingController@criarPromocao');
+
 // Autenticacao do ALUNO (escola + turma + nome + senha; sem e-mail)
 $router->get('/aluno/login', 'AlunoAuthController@loginForm');
 $router->post('/aluno/login', 'AlunoAuthController@login');
@@ -28,7 +38,8 @@ $router->get('/aluno/notas', 'AlunoController@notas');
 $router->get('/aluno/avisos', 'AlunoController@avisos');
 $router->get('/aluno/materiais', 'AlunoController@materiais');
 
-$router->get('/', 'HomeController@index');
+// "/" = apresentacao para visitantes; logado cai no dashboard (LandingController).
+$router->get('/', 'LandingController@index');
 
 // Fila de revisao (rascunhos da IA esperando aprovacao)
 $router->get('/revisar', 'RevisaoController@index');

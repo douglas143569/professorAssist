@@ -17,6 +17,7 @@
     $__isProva = str_starts_with($__path, '/provas');
     $__isConta = str_starts_with($__path, '/admin/contas');
     $__isRevisar = str_starts_with($__path, '/revisar');
+    $__isAssinatura = str_starts_with($__path, '/assinatura');
 
     // Quem esta logado (para o rodape da sidebar).
     $__user = \App\Services\Auth::usuario() ?? ['name' => '', 'email' => '', 'role' => ''];
@@ -82,9 +83,18 @@
                     <span>Provas</span>
                 </a>
                 <?php if ($__ehAdmin): ?>
+                    <a href="/admin/financeiro" class="navitem <?= str_starts_with($__path, '/admin/financeiro') ? 'is-active' : '' ?>">
+                        <span>Financeiro</span>
+                    </a>
                     <a href="/admin/contas" class="navitem <?= $__isConta ? 'is-active' : '' ?>">
                         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/></svg>
                         <span>Contas</span>
+                    </a>
+                <?php endif; ?>
+                <?php if (!$__ehAdmin): ?>
+                    <a href="/assinatura" class="navitem <?= $__isAssinatura ? 'is-active' : '' ?>">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v6c0 4.500 3.300 8 8 9 4.700-1 8-4.500 8-9V6l-8-3Z"/><path d="m9 12 2 2 4-4"/></svg>
+                        <span>Minha assinatura</span>
                     </a>
                 <?php endif; ?>
             </nav>

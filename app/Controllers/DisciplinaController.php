@@ -4,6 +4,9 @@ namespace App\Controllers;
 
 use App\Models\Disciplina;
 use App\Models\Modulo;
+use App\Models\Matricula;
+use App\Models\Tarefa;
+use App\Models\Aviso;
 use App\Models\Turma;
 use App\Services\Logger;
 
@@ -95,6 +98,10 @@ class DisciplinaController extends AppController
             'title' => $disciplina['nome'],
             'disciplina' => $disciplina,
             'modulos' => (new Modulo())->byDisciplina((int) $id),
+            'resumo' => (new Disciplina())->resumo((int) $id),
+            'alunos' => !empty($disciplina['turma_id']) ? (new Matricula())->daTurma((int) $disciplina['turma_id']) : [],
+            'tarefas' => !empty($disciplina['turma_id']) ? (new Tarefa())->daTurma((int) $disciplina['turma_id']) : [],
+            'avisos' => !empty($disciplina['turma_id']) ? (new Aviso())->daTurma((int) $disciplina['turma_id']) : [],
         ]);
     }
 }

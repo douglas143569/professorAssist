@@ -18,7 +18,7 @@
             </div>
 
             <h1 class="login-title">Criar conta</h1>
-            <p class="login-sub">Preencha seus dados para começar a usar o sistema.</p>
+            <p class="login-sub">Preencha seus dados e ganhe <strong>3 dias de teste grátis</strong>, sem cartão.</p>
 
             <?php if (!empty($erro)): ?>
                 <div class="login-erro" role="alert">

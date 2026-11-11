@@ -45,6 +45,7 @@ Hierarquia pedagógica: **Escola → Turma → Matéria → Tema da aula**.
 | Atividades sugeridas | Formatos variados (individual, grupo, discussão, prática, projeto, jogo) |
 | Calendário | Provas, trabalhos, lembretes e aulas, com aba de eventos criados |
 | Creche (Ed. Infantil) | Atividades lúdicas, cronograma semanal e pacotes de folhas imprimíveis |
+| Assinaturas | Planos mensais, trimestrais e anuais; checkout Mercado Pago para PIX, cartão e boleto; ativação por webhook, acesso administrativo temporário/bloqueio de professores e promoções individuais |
 
 As folhas da creche saem em 5 formatos (`escrever`, `ligar`, `pintar`,
 `sequencia`, `circular`), prontas para imprimir ou salvar em PDF.
@@ -84,10 +85,21 @@ storage/         -> Logs e cache (não versionado)
    copy .env.example .env
    ```
    Preencha `ANTHROPIC_API_KEY` com a sua chave. O `.env` **nunca** é commitado.
+   Para habilitar pagamentos, configure também `APP_URL` (URL pública HTTPS),
+   `MERCADO_PAGO_ACCESS_TOKEN` e `MERCADO_PAGO_WEBHOOK_SECRET` obtidos no painel
+   do Mercado Pago. Cadastre `POST /webhook/mercadopago` como URL de notificação
+   para eventos de pagamento. Sem essas configurações, o checkout falha sem
+   conceder acesso.
 3. Crie o banco `app` e aplique as migrations:
    ```
    composer migrate
    ```
+   As migrations 0040 e 0041 criam as tabelas de cobrança e controles do
+   administrador. Professores acessam o sistema com assinatura ativa, liberação
+   administrativa temporária ou ficam bloqueados por decisão do administrador;
+   alunos e administradores não são cobrados. Promoções são individuais, para
+   um plano escolhido, válidas até a data configurada e consumidas no primeiro
+   pagamento aprovado.
 4. Crie a conta administradora (a senha é digitada na hora, nunca fica no repo):
    ```
    php database/criar_admin.php "Seu Nome" voce@dominio.com

@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Models\Apresentacao;
 use App\Models\Atividade;
 use App\Models\Conteudo;
+use App\Models\Dashboard;
 use App\Models\Escola;
 use App\Models\PlanoAula;
 use App\Models\Prova;
@@ -19,6 +20,7 @@ class HomeController extends AppController
         $prof = $this->professor();
 
         $questaoModel = new Questao();
+        $dashboard = new Dashboard();
 
         $this->view('home.index', [
             'title' => 'Início',
@@ -39,6 +41,10 @@ class HomeController extends AppController
             // ficavam invisiveis e o gerador de provas parecia quebrado por
             // falta de questao aprovada.
             'revisao' => (new Revisao())->contar($prof['id']),
+            // Numeros do mes, turmas com alunos e historico recente do painel.
+            'mes' => $dashboard->criadosNoMes($prof['id']),
+            'turmasResumo' => $dashboard->turmasResumo($prof['id'], 4),
+            'recentes' => $dashboard->atividadeRecente($prof['id'], 5),
         ]);
     }
 }

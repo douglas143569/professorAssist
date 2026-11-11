@@ -37,6 +37,27 @@ class Escola extends Model
         return $stmt->fetch() ?: null;
     }
 
+    /** Totais reais dos recursos pertencentes a uma escola. */
+    public function resumo(int $escolaId): array
+    {
+        $stmt = $this->db->prepare(
+            'SELECT
+                (SELECT COUNT(*) FROM turmas t WHERE t.escola_id = e.id) AS n_turmas,
+                (SELECT COUNT(*) FROM disciplinas d JOIN turmas t ON t.id = d.turma_id WHERE t.escola_id = e.id) AS n_materias,
+                (SELECT COUNT(*) FROM turma_alunos ta JOIN turmas t ON t.id = ta.turma_id WHERE t.escola_id = e.id AND ta.situacao = \'ativa\') AS n_alunos,
+                (SELECT COUNT(*) FROM conteudos c JOIN modulos m ON m.id = c.modulo_id JOIN disciplinas d ON d.id = m.disciplina_id JOIN turmas t ON t.id = d.turma_id WHERE t.escola_id = e.id) AS n_conteudos,
+                (SELECT COUNT(*) FROM questoes q JOIN disciplinas d ON d.id = q.disciplina_id JOIN turmas t ON t.id = d.turma_id WHERE t.escola_id = e.id) AS n_questoes,
+                (SELECT COUNT(*) FROM atividades a JOIN modulos m ON m.id = a.modulo_id JOIN disciplinas d ON d.id = m.disciplina_id JOIN turmas t ON t.id = d.turma_id WHERE t.escola_id = e.id) AS n_atividades
+             FROM escolas e WHERE e.id = :id'
+        );
+        $stmt->execute(['id' => $escolaId]);
+        $resumo = $stmt->fetch() ?: [];
+        foreach (['n_turmas', 'n_materias', 'n_alunos', 'n_conteudos', 'n_questoes', 'n_atividades'] as $campo) {
+            $resumo[$campo] = (int) ($resumo[$campo] ?? 0);
+        }
+        return $resumo;
+    }
+
     /**
      * Todas as escolas (id, nome) -- para os <select> publicos do cadastro/login
      * do aluno. So dado institucional, nada de dado pessoal.

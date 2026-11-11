@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Core\Controller;
 use App\Core\Request;
 use App\Models\ActivityLog;
+use App\Models\Subscription;
 use App\Models\User;
 use App\Services\Auth;
 use App\Services\Csrf;
@@ -165,10 +166,25 @@ class AuthController extends Controller
             'description' => "Cadastro proprio: {$dados['email']}",
         ]);
 
+        // Teste gratis de 3 dias: cria uma assinatura ativa com vencimento em
+        // +3 dias. Depois disso o AppController bloqueia e pede a renovacao.
+        $teste = (new Subscription())->startTrial($id);
+
+        if ($teste) {
+            Logger::activity('subscription.trial_started', [
+                'user_id' => $id,
+                'entity_type' => 'user',
+                'entity_id' => $id,
+                'description' => 'Teste gratis de 3 dias iniciado no cadastro',
+            ]);
+        }
+
         // Entra direto, como definido no produto.
         Auth::tentarLogin($dados['email'], $senha);
 
-        $_SESSION['flash'] = 'Conta criada. Bem-vindo(a)!';
+        $_SESSION['flash'] = $teste
+            ? 'Conta criada! Você tem 3 dias de teste grátis. Bem-vindo(a)!'
+            : 'Conta criada. Bem-vindo(a)!';
         $this->redirect('/');
     }
 

@@ -33,13 +33,38 @@ class Disciplina extends Model
     public function find(int $id, int $userId): ?array
     {
         $stmt = $this->db->prepare(
-            'SELECT d.*, t.nome AS turma_nome
+            'SELECT d.*, t.nome AS turma_nome, t.escola_id, e.nome AS escola_nome
                FROM disciplinas d
                LEFT JOIN turmas t ON t.id = d.turma_id
+               LEFT JOIN escolas e ON e.id = t.escola_id
               WHERE d.id = :id AND d.user_id = :u'
         );
         $stmt->execute(['id' => $id, 'u' => $userId]);
         return $stmt->fetch() ?: null;
+    }
+
+    /** Totais reais da matéria e da turma associada. */
+    public function resumo(int $disciplinaId): array
+    {
+        $stmt = $this->db->prepare(
+            'SELECT
+                (SELECT COUNT(*) FROM turma_alunos ta WHERE ta.turma_id = d.turma_id AND ta.situacao = \'ativa\') AS n_alunos,
+                (SELECT COUNT(*) FROM tarefas tf WHERE tf.turma_id = d.turma_id) AS n_tarefas,
+                (SELECT COUNT(*) FROM avisos av WHERE av.turma_id = d.turma_id) AS n_avisos,
+                (SELECT COUNT(*) FROM modulos m WHERE m.disciplina_id = d.id) AS n_temas,
+                (SELECT COUNT(*) FROM conteudos c JOIN modulos m ON m.id = c.modulo_id WHERE m.disciplina_id = d.id) AS n_conteudos,
+                (SELECT COUNT(*) FROM questoes q WHERE q.disciplina_id = d.id) AS n_questoes,
+                (SELECT COUNT(*) FROM atividades a JOIN modulos m ON m.id = a.modulo_id WHERE m.disciplina_id = d.id) AS n_atividades,
+                (SELECT COUNT(*) FROM planos_aula p JOIN modulos m ON m.id = p.modulo_id WHERE m.disciplina_id = d.id) AS n_planos,
+                (SELECT COUNT(*) FROM apresentacoes ap JOIN modulos m ON m.id = ap.modulo_id WHERE m.disciplina_id = d.id) AS n_apresentacoes
+             FROM disciplinas d WHERE d.id = :id'
+        );
+        $stmt->execute(['id' => $disciplinaId]);
+        $resumo = $stmt->fetch() ?: [];
+        foreach (['n_alunos', 'n_tarefas', 'n_avisos', 'n_temas', 'n_conteudos', 'n_questoes', 'n_atividades', 'n_planos', 'n_apresentacoes'] as $campo) {
+            $resumo[$campo] = (int) ($resumo[$campo] ?? 0);
+        }
+        return $resumo;
     }
 
     public function countByUser(int $userId): int

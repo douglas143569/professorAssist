@@ -53,7 +53,8 @@ class Turma extends Model
     {
         $stmt = $this->db->prepare(
             'SELECT t.*,
-                    (SELECT COUNT(*) FROM disciplinas d WHERE d.turma_id = t.id) AS n_materias
+                    (SELECT COUNT(*) FROM disciplinas d WHERE d.turma_id = t.id) AS n_materias,
+                    (SELECT COUNT(*) FROM turma_alunos ta WHERE ta.turma_id = t.id AND ta.situacao = \'ativa\') AS n_alunos
                FROM turmas t
               WHERE t.escola_id = :e
               ORDER BY t.nome'

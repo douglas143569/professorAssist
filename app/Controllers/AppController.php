@@ -7,6 +7,8 @@ use App\Models\User;
 use App\Services\Auth;
 use App\Services\Csrf;
 use App\Services\Logger;
+use App\Models\Subscription;
+use App\Models\UserAccessOverride;
 
 /**
  * Base dos controllers da area logada.
@@ -37,6 +39,23 @@ abstract class AppController extends Controller
         }
 
         $this->usuario = $usuario;
+
+        // Somente professores pagam; overrides do admin têm precedência sobre pagamentos.
+        $rota = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
+        $rotasDeAssinatura = str_starts_with($rota, '/assinatura');
+        if ($usuario['role'] === User::ROLE_PROFESSOR && !$rotasDeAssinatura) {
+            $override = (new UserAccessOverride())->forUser((int) $usuario['id']);
+            $bloqueado = ($override['mode'] ?? null) === 'blocked';
+            $liberado = ($override['mode'] ?? null) === 'granted';
+            $assinaturaAtiva = (new Subscription())->currentForUser((int) $usuario['id']) !== null;
+
+            if ($bloqueado || (!$liberado && !$assinaturaAtiva)) {
+                if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'GET') {
+                    $_SESSION['destino'] = $_SERVER['REQUEST_URI'] ?? '/';
+                }
+                $this->redirect($bloqueado ? '/assinatura?bloqueado=1' : '/assinatura');
+            }
+        }
 
         // Toda escrita passa por aqui: uma rota POST nova ja nasce protegida.
         if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {

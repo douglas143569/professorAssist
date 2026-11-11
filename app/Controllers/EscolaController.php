@@ -60,6 +60,7 @@ class EscolaController extends AppController
             'title' => $escola['nome'],
             'escola' => $escola,
             'turmas' => (new Turma())->byEscola((int) $id),
+            'resumo' => (new Escola())->resumo((int) $id),
             'redes' => Escola::REDES,
         ]);
     }
