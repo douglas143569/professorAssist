@@ -48,15 +48,32 @@
     <?php if (empty($pacotes)): ?>
         <div class="card card--empty"><p>Nenhum pacote ainda. Crie o primeiro acima informando um tema.</p></div>
     <?php else: ?>
-        <div class="card-grid">
-            <?php foreach ($pacotes as $p): ?>
-                <a class="card card--link" href="/creche/pacotes/<?= (int) $p['id'] ?>">
-                    <span class="tag"><?= htmlspecialchars($p['faixa_etaria']) ?></span>
-                    <?php if (!empty($p['campo_experiencia'])): ?>
-                        <span class="tag"><?= htmlspecialchars($p['campo_experiencia']) ?></span>
-                    <?php endif; ?>
-                    <h3><?= htmlspecialchars($p['tema']) ?></h3>
-                    <p class="muted"><?= (int) $p['n_itens'] ?> atividade(s)</p>
+        <?php
+            // Cada card ganha uma cor/icone da paleta, em rodizio.
+            $icones = [
+                '<path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2V5Z"/><path d="M9 7h6M9 11h6"/>',
+                '<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/>',
+                '<path d="M12 21s-8-5.2-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 5.8-8 11-8 11Z"/>',
+                '<path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9L12 3Z"/>',
+                '<circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9.5v.01M15 9.5v.01"/>',
+            ];
+        ?>
+        <div class="pkg-grid">
+            <?php foreach ($pacotes as $i => $p): $c = $i % 5; ?>
+                <a class="pkg-card pkg-card--<?= $c ?>" href="/creche/pacotes/<?= (int) $p['id'] ?>" style="--i:<?= $i ?>">
+                    <span class="pkg-card__top">
+                        <span class="pkg-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="46" height="46" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><?= $icones[$c] ?></svg></span>
+                        <span class="pkg-card__tema"><?= htmlspecialchars($p['tema']) ?></span>
+                        <span class="pkg-card__dots" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+                        <span class="pkg-card__faixa"><?= htmlspecialchars($p['faixa_etaria']) ?></span>
+                    </span>
+                    <span class="pkg-card__foot">
+                        <span><strong><?= (int) $p['n_itens'] ?></strong> atividade(s)</span>
+                        <?php if (!empty($p['campo_experiencia'])): ?>
+                            <small><?= htmlspecialchars($p['campo_experiencia']) ?></small>
+                        <?php endif; ?>
+                        <b class="pkg-card__cta">Abrir pacote ›</b>
+                    </span>
                 </a>
             <?php endforeach; ?>
         </div>
