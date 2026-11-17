@@ -1787,3 +1787,9 @@ label.mini input { padding: 6px 8px; font-size: 0.85rem; }
 .app-shell:not(.app-shell--home) .content .subject-suggestions .rec-card { min-height:150px; }
 .app-shell:not(.app-shell--home) .content .subject-suggestions .rec-card--bank { max-width:520px; margin:20px auto 0; text-align:left; }
 .app-shell:not(.app-shell--home) .content .subject-suggestions h2 { font-size:1.5rem; }
+
+/* ---- Questoes em cards ---- */
+.pkg-q { position:relative; display:-webkit-box; -webkit-line-clamp:5; -webkit-box-orient:vertical; overflow:hidden; font-size:.98rem; font-weight:700; line-height:1.4; text-shadow:0 1px 6px rgba(0,0,0,.15); }
+.pkg-q-num { position:absolute; top:14px; right:14px; width:28px; height:28px; display:grid; place-items:center; border-radius:50%; background:rgba(255,255,255,.22); font-size:.8rem; font-weight:800; }
+.pkg-card:hover .pkg-q-num { animation:pkg-pop .6s ease; }
+.pkg-card__top--item .pkg-tags { padding-right:34px; }

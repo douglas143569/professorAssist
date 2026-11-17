@@ -308,19 +308,28 @@
                     <p>Nenhuma questão ainda. Gere com IA ou adicione manualmente.</p>
                 </div>
             <?php else: ?>
-                <ul class="list">
-                    <?php foreach ($questoes as $q): ?>
-                        <li>
-                            <a href="/questoes/<?= (int) $q['id'] ?>" class="list__main">
-                                <?= htmlspecialchars(mb_strimwidth($q['enunciado'], 0, 90, '…')) ?>
-                            </a>
-                            <span class="tag"><?= htmlspecialchars($tiposLabel[$q['tipo']] ?? $q['tipo']) ?></span>
-                            <span class="badge badge--dif-<?= htmlspecialchars($q['dificuldade']) ?>"><?= htmlspecialchars($q['dificuldade']) ?></span>
-                            <span class="badge badge--<?= htmlspecialchars($q['status']) ?>"><?= htmlspecialchars($q['status']) ?></span>
-                            <span class="tag tag--origem"><?= $q['origem'] === 'ia' ? 'IA' : 'manual' ?></span>
-                        </li>
+                <?php $corTipo = ['multipla_escolha' => 0, 'verdadeiro_falso' => 1, 'dissertativa' => 2]; ?>
+                <div class="pkg-grid pkg-grid--wide">
+                    <?php foreach ($questoes as $n => $q): $c = $corTipo[$q['tipo']] ?? 3; ?>
+                        <a class="pkg-card pkg-card--<?= $c ?>" href="/questoes/<?= (int) $q['id'] ?>" style="--i:<?= $n % 12 ?>">
+                            <span class="pkg-card__top pkg-card__top--item">
+                                <span class="pkg-q-num"><?= $n + 1 ?></span>
+                                <span class="pkg-tags">
+                                    <span class="pkg-tag"><?= htmlspecialchars($tiposLabel[$q['tipo']] ?? $q['tipo']) ?></span>
+                                    <span class="pkg-tag"><?= htmlspecialchars($q['dificuldade']) ?></span>
+                                </span>
+                                <span class="pkg-q"><?= htmlspecialchars(mb_strimwidth($q['enunciado'], 0, 160, '…')) ?></span>
+                            </span>
+                            <span class="pkg-card__foot pkg-card__foot--row">
+                                <span>
+                                    <span class="badge badge--<?= htmlspecialchars($q['status']) ?>"><?= htmlspecialchars($q['status']) ?></span>
+                                    <span class="tag tag--origem"><?= $q['origem'] === 'ia' ? 'IA' : 'manual' ?></span>
+                                </span>
+                                <b class="pkg-card__cta">Abrir ›</b>
+                            </span>
+                        </a>
                     <?php endforeach; ?>
-                </ul>
+                </div>
             <?php endif; ?>
         </div>
     </details>

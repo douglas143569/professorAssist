@@ -62,29 +62,36 @@
                 </div>
             <?php endif; ?>
 
-            <ul class="list">
-                <?php foreach ($questoes as $q): ?>
+            <?php $corTipo = ['multipla_escolha' => 0, 'verdadeiro_falso' => 1, 'dissertativa' => 2]; ?>
+            <div class="pkg-grid pkg-grid--wide">
+                <?php foreach ($questoes as $n => $q): $c = $corTipo[$q['tipo']] ?? 3; ?>
                     <?php $ehRascunho = $q['status'] === 'rascunho'; ?>
-                    <li>
-                        <?php if ($ehRascunho): ?>
-                            <input type="checkbox" class="check-questao" name="itens[]"
-                                   value="questao:<?= (int) $q['id'] ?>"
-                                   aria-label="Selecionar questão para aprovar">
-                        <?php else: ?>
-                            <span class="check-vazio" aria-hidden="true"></span>
-                        <?php endif; ?>
-                        <a href="/questoes/<?= (int) $q['id'] ?>" class="list__main">
-                            <?= htmlspecialchars(mb_strimwidth($q['enunciado'], 0, 90, '…')) ?>
-                        </a>
-                        <?php if (!empty($q['modulo_titulo'])): ?>
-                            <span class="tag tag--origem"><?= htmlspecialchars($q['modulo_titulo']) ?></span>
-                        <?php endif; ?>
-                        <span class="tag"><?= htmlspecialchars($tipos[$q['tipo']] ?? $q['tipo']) ?></span>
-                        <span class="badge badge--dif-<?= htmlspecialchars($q['dificuldade']) ?>"><?= htmlspecialchars($q['dificuldade']) ?></span>
-                        <span class="badge badge--<?= htmlspecialchars($q['status']) ?>"><?= htmlspecialchars($q['status']) ?></span>
-                    </li>
+                    <div class="pkg-card pkg-card--<?= $c ?>" style="--i:<?= $n % 12 ?>">
+                        <div class="pkg-card__top pkg-card__top--item">
+                            <?php if ($ehRascunho): ?>
+                                <label class="pkg-check">
+                                    <input type="checkbox" class="check-questao" name="itens[]"
+                                           value="questao:<?= (int) $q['id'] ?>"
+                                           aria-label="Selecionar questão para aprovar">
+                                    <span>Selecionar</span>
+                                </label>
+                            <?php endif; ?>
+                            <span class="pkg-tags">
+                                <span class="pkg-tag"><?= htmlspecialchars($tipos[$q['tipo']] ?? $q['tipo']) ?></span>
+                                <span class="pkg-tag"><?= htmlspecialchars($q['dificuldade']) ?></span>
+                                <?php if (!empty($q['modulo_titulo'])): ?><span class="pkg-tag"><?= htmlspecialchars($q['modulo_titulo']) ?></span><?php endif; ?>
+                            </span>
+                            <a href="/questoes/<?= (int) $q['id'] ?>" class="pkg-open">
+                                <span class="pkg-q"><?= htmlspecialchars(mb_strimwidth($q['enunciado'], 0, 160, '…')) ?></span>
+                            </a>
+                        </div>
+                        <div class="pkg-card__foot pkg-card__foot--row">
+                            <span class="badge badge--<?= htmlspecialchars($q['status']) ?>"><?= htmlspecialchars($q['status']) ?></span>
+                            <a class="pkg-btn" href="/questoes/<?= (int) $q['id'] ?>">Abrir ›</a>
+                        </div>
+                    </div>
                 <?php endforeach; ?>
-            </ul>
+            </div>
         </form>
 
         <script>
