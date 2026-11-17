@@ -17,11 +17,11 @@
     $celulas = $offset + $totalDias;
     $trailing = (7 - ($celulas % 7)) % 7;
 ?>
+    <div class="calendar-page">
     <div class="subnav">
         <a href="/calendario" class="subnav__item is-active">Calendário</a>
         <a href="/calendario/eventos" class="subnav__item">Eventos criados</a>
     </div>
-
     <div class="page-header">
         <div>
             <h1>Calendário</h1>
@@ -156,4 +156,5 @@
                 </form>
             </div>
         </aside>
+    </div>
     </div>

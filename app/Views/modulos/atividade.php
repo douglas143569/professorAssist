@@ -48,9 +48,14 @@
                                 <?php endforeach; ?>
                             </div>
                         <?php elseif ($q['tipo'] === 'dissertativa'): ?>
-                            <div class="folha-q__linhas">
-                                <span></span><span></span><span></span>
-                            </div>
+                            <?php if ($gabarito): ?>
+                                <p><strong>Resposta-modelo:</strong> <?= nl2br(htmlspecialchars($q['resposta_modelo'] ?? 'Resposta-modelo não cadastrada.')) ?></p>
+                            <?php else: ?>
+                                <div class="folha-q__linhas"><span></span><span></span><span></span></div>
+                            <?php endif; ?>
+                        <?php endif; ?>
+                        <?php if ($gabarito && $q['tipo'] !== 'dissertativa' && !empty($q['resposta_modelo'])): ?>
+                            <p><strong>Resposta:</strong> <?= nl2br(htmlspecialchars($q['resposta_modelo'])) ?></p>
                         <?php endif; ?>
                     </li>
                 <?php endforeach; ?>

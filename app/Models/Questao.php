@@ -173,10 +173,10 @@ class Questao extends Model
         try {
             $stmt = $this->db->prepare(
                 'INSERT INTO questoes
-                    (disciplina_id, modulo_id, tipo, enunciado, dificuldade,
+                    (disciplina_id, modulo_id, tipo, enunciado, resposta_modelo, dificuldade,
                      habilidade_bncc, tags, origem, status)
                  VALUES
-                    (:disciplina_id, :modulo_id, :tipo, :enunciado, :dificuldade,
+                    (:disciplina_id, :modulo_id, :tipo, :enunciado, :resposta_modelo, :dificuldade,
                      :bncc, :tags, :origem, :status)'
             );
             $stmt->execute([
@@ -184,6 +184,7 @@ class Questao extends Model
                 'modulo_id' => $data['modulo_id'] ?? null,
                 'tipo' => $data['tipo'],
                 'enunciado' => $data['enunciado'],
+                'resposta_modelo' => ($data['resposta_modelo'] ?? '') !== '' ? $data['resposta_modelo'] : null,
                 'dificuldade' => $data['dificuldade'] ?? 'media',
                 'bncc' => ($data['habilidade_bncc'] ?? '') !== '' ? $data['habilidade_bncc'] : null,
                 'tags' => ($data['tags'] ?? '') !== '' ? $data['tags'] : null,
@@ -207,7 +208,7 @@ class Questao extends Model
     {
         $stmt = $this->db->prepare(
             'UPDATE questoes SET
-                tipo = :tipo, enunciado = :enunciado, dificuldade = :dificuldade,
+                tipo = :tipo, enunciado = :enunciado, resposta_modelo = :resposta_modelo, dificuldade = :dificuldade,
                 habilidade_bncc = :bncc, tags = :tags, status = :status
              WHERE id = :id'
         );
@@ -215,6 +216,7 @@ class Questao extends Model
             'id' => $id,
             'tipo' => $data['tipo'],
             'enunciado' => $data['enunciado'],
+            'resposta_modelo' => ($data['resposta_modelo'] ?? '') !== '' ? $data['resposta_modelo'] : null,
             'dificuldade' => $data['dificuldade'],
             'bncc' => ($data['habilidade_bncc'] ?? '') !== '' ? $data['habilidade_bncc'] : null,
             'tags' => ($data['tags'] ?? '') !== '' ? $data['tags'] : null,

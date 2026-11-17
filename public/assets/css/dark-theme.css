@@ -1,0 +1,76 @@
+/* Tema glassmorphism global para todas as telas internas */
+.app-shell:not(.app-shell--home) {
+    --primary:#42dfc4; --primary-700:#70eee0; --primary-50:rgba(66,223,196,.12); --primary-100:rgba(66,223,196,.2); --primary-ring:rgba(66,223,196,.22);
+    --bg:#06131d; --surface:rgba(13,34,48,.84); --surface-2:rgba(20,48,63,.78); --border:rgba(132,205,220,.16); --border-strong:rgba(132,205,220,.28);
+    --text:#eaf6fa; --text-2:#c6dbe1; --muted:#91aab4; --warn:#ffc06b; --warn-bg:rgba(185,110,34,.15); --danger:#ff8b8b; --danger-bg:rgba(173,58,65,.16); --danger-bd:rgba(255,130,130,.3); --ok:#63e6bd; --ok-bg:rgba(45,183,139,.15);
+    --shadow-sm:inset 0 1px rgba(255,255,255,.045),0 5px 16px rgba(0,0,0,.16); --shadow-md:0 10px 28px rgba(0,0,0,.25); --shadow-lg:0 18px 45px rgba(0,0,0,.32);
+    color-scheme:dark; color:var(--text); background:radial-gradient(ellipse at 75% 0%,rgba(22,103,128,.17),transparent 38%),radial-gradient(ellipse at 12% 80%,rgba(14,86,92,.12),transparent 38%),#06131d;
+}
+body:has(.app-shell:not(.app-shell--home)) { color:var(--text); background:#06131d; }
+.app-shell:not(.app-shell--home) .sidebar { color:var(--text); background:rgba(6,20,30,.94); border-color:var(--border); box-shadow:8px 0 36px rgba(0,0,0,.2); }
+.app-shell:not(.app-shell--home) .sidebar__brand,.app-shell:not(.app-shell--home) .sidebar__brandtext strong,.app-shell:not(.app-shell--home) .sidebar__user strong { color:#eaf8fb; }
+.app-shell:not(.app-shell--home) .sidebar__brandtext,.app-shell:not(.app-shell--home) .sidebar__nav::before,.app-shell:not(.app-shell--home) .sidebar__user small { color:#8faab4; }
+.app-shell:not(.app-shell--home) .sidebar__foot { border-color:var(--border); }
+.app-shell:not(.app-shell--home) .navitem { color:#b5cbd3; }
+.app-shell:not(.app-shell--home) .navitem svg { color:#78939d; }
+.app-shell:not(.app-shell--home) .navitem:hover,.app-shell:not(.app-shell--home) .navitem.is-active { color:#65eadb; background:rgba(54,210,199,.1); }
+.app-shell:not(.app-shell--home) .navitem.is-active { box-shadow:inset 3px 0 #42dfdf; }
+.app-shell:not(.app-shell--home) .navitem.is-active svg { color:#59e6dc; }
+.app-shell:not(.app-shell--home) .avatar { color:#06232c; background:linear-gradient(145deg,#53e8e5,#22b995); }
+.app-shell:not(.app-shell--home) .main,.app-shell:not(.app-shell--home) .content { background:transparent; }
+.app-shell:not(.app-shell--home) .topbar2 { color:#eaf8fb; background:rgba(7,22,32,.78); border-color:var(--border); backdrop-filter:blur(18px); }
+.app-shell:not(.app-shell--home) .topbar2__title,.app-shell:not(.app-shell--home) .menu-toggle { color:#eaf8fb; }
+.app-shell:not(.app-shell--home) .content { color:#d3e4e9; }
+.app-shell:not(.app-shell--home) .content :is(h1,h2,h3,h4) { color:#effaff; }
+.app-shell:not(.app-shell--home) .content :is(.muted,.breadcrumb,.breadcrumb a) { color:#94adb7; }
+.app-shell:not(.app-shell--home) a { color:#69e8d7; }
+.app-shell:not(.app-shell--home) a:hover { color:#a4fff1; }
+
+/* Cartões e painéis com vidro escuro e brilho discreto */
+.app-shell:not(.app-shell--home) .content .card,
+.app-shell:not(.app-shell--home) .content article[class*="card"],
+.app-shell:not(.app-shell--home) .content section[class*="card"],
+.app-shell:not(.app-shell--home) .content aside[class*="card"],
+.app-shell:not(.app-shell--home) .content div[class$="-card"],
+.app-shell:not(.app-shell--home) .content .school-class-card,
+.app-shell:not(.app-shell--home) .content .school-card,
+.app-shell:not(.app-shell--home) .content .ev,
+.app-shell:not(.app-shell--home) .content .creche-stat,
+.app-shell:not(.app-shell--home) .content .school-stat {
+    color:#dcecf0; border-color:rgba(132,205,220,.17); background:radial-gradient(ellipse at 100% 0%,rgba(49,197,203,.09),transparent 48%),linear-gradient(145deg,rgba(18,43,58,.88),rgba(8,26,39,.9)); box-shadow:inset 0 1px rgba(255,255,255,.055),0 10px 28px rgba(0,0,0,.2); backdrop-filter:blur(14px);
+}
+.app-shell:not(.app-shell--home) .content .card:hover,
+.app-shell:not(.app-shell--home) .content article[class*="card"]:hover,
+.app-shell:not(.app-shell--home) .content .school-card:hover,
+.app-shell:not(.app-shell--home) .content .school-class-card:hover { border-color:rgba(74,225,225,.38); box-shadow:inset 0 1px rgba(255,255,255,.07),0 14px 34px rgba(0,0,0,.28),0 0 22px rgba(63,221,220,.07); }
+.app-shell:not(.app-shell--home) .content .card h3,.app-shell:not(.app-shell--home) .content article[class*="card"] h3,.app-shell:not(.app-shell--home) .content [class*="card"] h2 { color:#effaff; }
+.app-shell:not(.app-shell--home) .content .school-class-open,.app-shell:not(.app-shell--home) .content .school-class-open:hover { color:#70efdc; border-color:rgba(72,224,208,.27); background:rgba(42,167,151,.13); }
+.app-shell:not(.app-shell--home) .content .class-ai-copy h2 { color:#122b40; }
+.app-shell:not(.app-shell--home) .content .class-ai-copy>small { color:#456574; }
+.app-shell:not(.app-shell--home) .content .creche-hero h1 { color:#122940; }
+
+/* Campos, listas, tabelas e estados */
+.app-shell:not(.app-shell--home) .content :is(input:not([type="checkbox"]):not([type="radio"]),select,textarea) { color:#eaf6fa; border-color:rgba(132,205,220,.25); background:rgba(5,20,31,.72); }
+.app-shell:not(.app-shell--home) .content :is(input,textarea)::placeholder { color:#78929d; }
+.app-shell:not(.app-shell--home) .content :is(input,select,textarea):focus { border-color:#42dfd0; box-shadow:0 0 0 3px rgba(66,223,208,.16); }
+.app-shell:not(.app-shell--home) .content option { color:#eaf6fa; background:#102938; }
+.app-shell:not(.app-shell--home) .content .list li,.app-shell:not(.app-shell--home) .content table { color:#d5e7eb; border-color:var(--border); background:rgba(11,31,44,.74); }
+.app-shell:not(.app-shell--home) .content th { color:#b9d5dc; background:rgba(61,153,162,.12); }
+.app-shell:not(.app-shell--home) .content td { border-color:rgba(132,205,220,.12); }
+.app-shell:not(.app-shell--home) .content .list li a { color:#e4f5f8; }
+.app-shell:not(.app-shell--home) .content .list li:hover { border-color:rgba(66,223,208,.35); background:rgba(24,57,72,.86); }
+.app-shell:not(.app-shell--home) .content .tag { color:#72e8d7; background:rgba(52,197,176,.14); }
+.app-shell:not(.app-shell--home) .content .badge--rascunho,.app-shell:not(.app-shell--home) .content .badge--dif-media { color:#ffd080; background:rgba(224,154,62,.17); }
+.app-shell:not(.app-shell--home) .content .badge--aprovado,.app-shell:not(.app-shell--home) .content .badge--dif-facil { color:#70e7b5; background:rgba(39,178,125,.16); }
+.app-shell:not(.app-shell--home) .content .badge--dif-dificil { color:#ff9b9b; background:rgba(207,73,73,.17); }
+.app-shell:not(.app-shell--home) .content .btn--primary { color:#05232b; border-color:transparent; background:linear-gradient(135deg,#69ebdd,#27b99c); box-shadow:0 7px 22px rgba(39,185,156,.2); }
+.app-shell:not(.app-shell--home) .content .btn--primary:hover { color:#031b22; background:linear-gradient(135deg,#8bf5e8,#40d7b8); }
+.app-shell:not(.app-shell--home) .content .btn--ghost { color:#d9eef2; border-color:rgba(132,205,220,.26); background:rgba(13,37,51,.72); }
+.app-shell:not(.app-shell--home) .content .btn--ghost:hover { color:#79f0e1; border-color:rgba(66,223,208,.48); background:rgba(28,71,83,.78); }
+.app-shell:not(.app-shell--home) .content .btn--danger { color:#ffaaaa; border-color:rgba(255,130,130,.3); background:rgba(110,35,43,.2); }
+.app-shell:not(.app-shell--home) .content .flash { color:#80ecc0; border-color:rgba(72,218,158,.25); background:rgba(28,130,93,.17); }
+.app-shell:not(.app-shell--home) .content .notice { color:#ffd184; border-color:rgba(230,170,82,.26); background:rgba(151,94,24,.17); }
+.app-shell:not(.app-shell--home) .content .alternativas { border-color:var(--border); background:rgba(5,20,31,.38); }
+.app-shell:not(.app-shell--home) .content .alternativas legend,.app-shell:not(.app-shell--home) .content .form label { color:#c8dce1; }
+.app-shell:not(.app-shell--home) ::selection { color:#041b20; background:#65eadb; }
+@media (max-width:760px) { .app-shell:not(.app-shell--home) .sidebar { color:#eaf6fa; background:rgba(5,18,28,.98); } }

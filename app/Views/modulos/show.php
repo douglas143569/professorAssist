@@ -4,10 +4,12 @@
         <?= htmlspecialchars($modulo['titulo']) ?>
     </p>
 
-    <p class="muted" style="margin:-6px 0 14px;font-size:0.85rem;">Tema da aula</p>
-
-    <div class="page-header">
-        <div>
+    <section class="tema-hero">
+        <div class="tema-hero__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 8l10 5 10-5-10-5Z"/><path d="M6 10.5V16c0 1.5 2.7 3 6 3s6-1.5 6-3v-5.5"/></svg>
+        </div>
+        <div class="tema-hero__texto">
+            <span class="tema-hero__eyebrow">Tema da aula</span>
             <h1><?= htmlspecialchars($modulo['titulo']) ?></h1>
             <p class="muted">
                 <span class="tag"><?= htmlspecialchars($modulo['disciplina_etapa']) ?></span>
@@ -17,12 +19,19 @@
             </p>
         </div>
         <?php if (empty($conteudos)): ?>
-            <form method="post" action="/modulos/<?= (int) $modulo['id'] ?>/conteudos/gerar" class="js-ai">
+            <form method="post" action="/modulos/<?= (int) $modulo['id'] ?>/conteudos/gerar" class="js-ai tema-hero__acao">
             <?= \App\Services\Csrf::campo() ?>
                 <button type="submit" class="btn btn--primary" data-loading="Gerando conteúdo…">✦ Gerar conteúdo com IA</button>
             </form>
         <?php endif; ?>
-    </div>
+        <dl class="tema-stats">
+            <div><dt>Planos</dt><dd><?= count($planos ?? []) ?></dd></div>
+            <div><dt>Apresentações</dt><dd><?= count($apresentacoes ?? []) ?></dd></div>
+            <div><dt>Conteúdos</dt><dd><?= count($conteudos ?? []) ?></dd></div>
+            <div><dt>Atividades</dt><dd><?= count($atividades ?? []) ?></dd></div>
+            <div><dt>Questões</dt><dd><?= count($questoes ?? []) ?></dd></div>
+        </dl>
+    </section>
 
     <?php if (!empty($modulo['objetivos'])): ?>
         <details class="bloco-toggle" style="margin-top:16px;">
@@ -36,10 +45,15 @@
         </details>
     <?php endif; ?>
 
-    <details class="bloco-toggle" style="margin-top:16px;">
+    <div class="topic-tools-grid">
+    <details class="bloco-toggle topic-tool-card topic-tool-card--lesson">
         <summary>
-            <span class="bloco-toggle__titulo">Plano de aula<?php if (!empty($planos)): ?> <span class="tag"><?= count($planos) ?></span><?php endif; ?></span>
-            <span class="bloco-toggle__acao">gerar / ver planos</span>
+            <span class="tool-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h12v16H6a2 2 0 0 0-2 2V5Z"/><path d="M8 7h6M8 11h6"/></svg></span>
+            <span class="tool-copy">
+                <span class="tool-title">Plano de aula<?php if (!empty($planos)): ?> <span class="tool-count"><?= count($planos) ?></span><?php endif; ?></span>
+                <span class="tool-desc">Sequência didática gerada pela IA com base na BNCC</span>
+            </span>
+            <span class="tool-cta">gerar / ver planos <b>›</b></span>
         </summary>
         <div class="bloco-toggle__corpo">
             <div class="card">
@@ -87,10 +101,14 @@
         </div>
     </details>
 
-    <details class="bloco-toggle" style="margin-top:16px;">
+    <details class="bloco-toggle topic-tool-card topic-tool-card--slides">
         <summary>
-            <span class="bloco-toggle__titulo">Gerador de Slide<?php if (!empty($apresentacoes)): ?> <span class="tag"><?= count($apresentacoes) ?></span><?php endif; ?></span>
-            <span class="bloco-toggle__acao">slides + resumo</span>
+            <span class="tool-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/><path d="m10 8 4 2-4 2V8Z"/></svg></span>
+            <span class="tool-copy">
+                <span class="tool-title">Apresentações e vídeos<?php if (!empty($apresentacoes)): ?> <span class="tool-count"><?= count($apresentacoes) ?></span><?php endif; ?></span>
+                <span class="tool-desc">Slides, resumo e vídeos para apoiar a aula</span>
+            </span>
+            <span class="tool-cta">criar / ver <b>›</b></span>
         </summary>
         <div class="bloco-toggle__corpo">
             <div class="card">
@@ -145,10 +163,14 @@
         </div>
     </details>
 
-    <details class="bloco-toggle" style="margin-top:16px;">
+    <details class="bloco-toggle topic-tool-card topic-tool-card--content">
         <summary>
-            <span class="bloco-toggle__titulo">Conteúdos<?php if (!empty($conteudos)): ?> <span class="tag"><?= count($conteudos) ?></span><?php endif; ?></span>
-            <span class="bloco-toggle__acao">gerar / ver conteúdos</span>
+            <span class="tool-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h8l4 4v14H7z"/><path d="M15 3v4h4M10 12h6M10 16h6"/></svg></span>
+            <span class="tool-copy">
+                <span class="tool-title">Conteúdos<?php if (!empty($conteudos)): ?> <span class="tool-count"><?= count($conteudos) ?></span><?php endif; ?></span>
+                <span class="tool-desc">Textos e materiais de estudo para os alunos</span>
+            </span>
+            <span class="tool-cta">gerar / ver conteúdos <b>›</b></span>
         </summary>
         <div class="bloco-toggle__corpo">
             <?php if (empty($conteudos)): ?>
@@ -184,10 +206,14 @@
     <?php
         $formatosLabel = ['individual' => 'Individual', 'grupo' => 'Em grupo', 'discussao' => 'Discussão', 'pratica' => 'Prática', 'projeto' => 'Projeto', 'jogo' => 'Jogo'];
     ?>
-    <details class="bloco-toggle" style="margin-top:16px;">
+    <details class="bloco-toggle topic-tool-card topic-tool-card--activities">
         <summary>
-            <span class="bloco-toggle__titulo">Atividades sugeridas<?php if (!empty($atividades)): ?> <span class="tag"><?= count($atividades) ?></span><?php endif; ?></span>
-            <span class="bloco-toggle__acao">sugerir / ver atividades</span>
+            <span class="tool-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/><circle cx="12" cy="12" r="2.5"/></svg></span>
+            <span class="tool-copy">
+                <span class="tool-title">Atividades sugeridas<?php if (!empty($atividades)): ?> <span class="tool-count"><?= count($atividades) ?></span><?php endif; ?></span>
+                <span class="tool-desc">Dinâmicas em grupo, práticas e lúdicas</span>
+            </span>
+            <span class="tool-cta">sugerir / ver atividades <b>›</b></span>
         </summary>
 
         <div class="bloco-toggle__corpo">
@@ -232,10 +258,14 @@
     <?php
         $tiposLabel = ['multipla_escolha' => 'Múltipla escolha', 'verdadeiro_falso' => 'V ou F', 'dissertativa' => 'Dissertativa'];
     ?>
-    <details class="bloco-toggle" style="margin-top:16px;">
+    <details class="bloco-toggle topic-tool-card topic-tool-card--questions">
         <summary>
-            <span class="bloco-toggle__titulo">Gerador de atividades<?php if (!empty($questoes)): ?> <span class="tag"><?= count($questoes) ?></span><?php endif; ?></span>
-            <span class="bloco-toggle__acao">gerar / ver questões</span>
+            <span class="tool-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 9a3 3 0 1 1 4.2 2.7c-.8.4-1.2 1-1.2 1.8"/><path d="M12 17.5v.01"/><rect x="3" y="3" width="18" height="18" rx="4"/></svg></span>
+            <span class="tool-copy">
+                <span class="tool-title">Gerador de atividades<?php if (!empty($questoes)): ?> <span class="tool-count"><?= count($questoes) ?></span><?php endif; ?></span>
+                <span class="tool-desc">Questões de múltipla escolha, V/F e dissertativas</span>
+            </span>
+            <span class="tool-cta">gerar / ver questões <b>›</b></span>
         </summary>
 
         <div class="bloco-toggle__corpo">
@@ -294,3 +324,4 @@
             <?php endif; ?>
         </div>
     </details>
+    </div>

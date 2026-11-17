@@ -46,7 +46,7 @@
 </head>
 <body>
     <input type="checkbox" id="navtoggle" class="navtoggle" hidden>
-    <div class="app-shell">
+    <div class="app-shell <?= $__isHome ? 'app-shell--home' : '' ?>">
         <label for="navtoggle" class="nav-overlay" aria-hidden="true"></label>
         <aside class="sidebar">
             <a class="sidebar__brand" href="/">

@@ -2,6 +2,8 @@
         </div>
     </div>
 
+    <link rel="stylesheet" href="/assets/css/dark-theme.css">
+
     <script>
         // Feedback de carregamento nos formularios de IA (a geracao leva alguns segundos).
         document.addEventListener('submit', function (e) {

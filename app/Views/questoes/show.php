@@ -39,6 +39,9 @@
         <label>Enunciado
             <textarea name="enunciado" rows="4" required><?= htmlspecialchars($questao['enunciado']) ?></textarea>
         </label>
+        <label>Resposta-modelo para o gabarito
+            <textarea name="resposta_modelo" rows="3" placeholder="Escreva a resposta esperada ou os critérios de correção"><?= htmlspecialchars($questao['resposta_modelo'] ?? '') ?></textarea>
+        </label>
 
         <div class="form--inline">
             <label>Tipo

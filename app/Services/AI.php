@@ -497,7 +497,7 @@ class AI
     /**
      * Gera um conjunto de questoes (rascunhos) alinhadas a BNCC.
      * Devolve um array normalizado; cada item:
-     *   ['tipo','enunciado','dificuldade','habilidade_bncc','tags','alternativas'=>[['texto','correta'],...]]
+     *   ['tipo','enunciado','resposta_modelo','dificuldade','habilidade_bncc','tags','alternativas'=>[['texto','correta'],...]]
      *
      * @param string $tipo multipla_escolha | verdadeiro_falso | dissertativa | mista
      */
@@ -534,8 +534,10 @@ class AI
             . 'Responda um array JSON. Cada item deve ter as chaves: '
             . '"tipo" (multipla_escolha|verdadeiro_falso|dissertativa), "enunciado", '
             . '"dificuldade" (facil|media|dificil), "habilidade_bncc" (codigo ou null), '
+            . '"resposta_modelo" (resposta esperada, especialmente para questoes dissertativas), '
             . '"alternativas" (lista de {"texto","correta":true|false}). '
-            . 'Questoes dissertativas usam "alternativas": [].';
+            . 'Questoes dissertativas usam "alternativas": [] e devem sempre incluir uma resposta-modelo clara e objetiva. '
+            . 'Em questoes objetivas, a resposta-modelo deve indicar a alternativa correta e explicar brevemente por que ela esta correta.';
 
         $texto = $this->gerar('questao', $system, $prompt, $userId);
 
@@ -728,6 +730,7 @@ class AI
             $out[] = [
                 'tipo' => $tipo,
                 'enunciado' => (string) $q['enunciado'],
+                'resposta_modelo' => trim((string) ($q['resposta_modelo'] ?? '')),
                 'dificuldade' => $dif,
                 'habilidade_bncc' => !empty($q['habilidade_bncc'])
                     ? mb_substr((string) $q['habilidade_bncc'], 0, 20) : null,

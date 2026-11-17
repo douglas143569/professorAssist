@@ -51,7 +51,7 @@ html { scroll-behavior: smooth; }
 .lp-tags { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 26px; }
 .lp-tag { font-size: .82rem; padding: 7px 14px; border-radius: 999px; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.16); color: rgba(255,255,255,.85); }
 .lp-tag--on { color: var(--lp-mint); border-color: rgba(46,230,166,.5); font-weight: 700; background: rgba(46,230,166,.1); }
-.lp-hero h1 { font-size: clamp(2.5rem, 5.4vw, 4.3rem); line-height: 1.04; letter-spacing: -.035em; margin: 0 0 22px; font-weight: 800; }
+.lp-hero h1 { color: #fff; font-size: clamp(2.5rem, 5.4vw, 4.3rem); line-height: 1.04; letter-spacing: -.035em; margin: 0 0 22px; font-weight: 800; }
 .lp-hero h1 em { font-style: normal; color: var(--lp-mint); position: relative; display: inline-block; }
 .lp-hero h1 em::after { content: ""; position: absolute; left: 0; right: 0; bottom: -10px; height: 8px;
     background: radial-gradient(60% 100% at 50% 0, var(--lp-mint), transparent 72%); opacity: .8; }

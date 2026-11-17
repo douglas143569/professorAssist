@@ -1,9 +1,16 @@
-    <div class="page-header">
+    <?php
+        $rascunhos = count(array_filter($atividades ?? [], static fn ($a) => ($a['status'] ?? '') === 'rascunho'));
+        $aprovadas = count(array_filter($atividades ?? [], static fn ($a) => ($a['status'] ?? '') === 'aprovado'));
+    ?>
+    <div class="creche-page">
+    <header class="page-header creche-hero">
+        <span class="creche-hero__icon" aria-hidden="true">✿</span>
         <div>
             <h1>Creche · Educação Infantil</h1>
             <p class="muted">Atividades lúdicas por faixa etária e campo de experiência (BNCC).</p>
         </div>
-    </div>
+        <a class="btn btn--ghost creche-hero__link" href="/creche/cronograma">Ver cronograma <span>→</span></a>
+    </header>
 
     <div class="subnav">
         <a href="/creche" class="subnav__item is-active">Atividades</a>
@@ -11,8 +18,14 @@
         <a href="/creche/pacotes" class="subnav__item">Pacotes</a>
     </div>
 
-    <div class="card">
-        <h3>Sugerir atividades lúdicas com IA</h3>
+    <section class="creche-stats" aria-label="Resumo das atividades">
+        <div class="creche-stat"><span class="creche-stat__icon is-mint">✿</span><span><strong><?= count($atividades ?? []) ?></strong><small>Atividades criadas</small></span></div>
+        <div class="creche-stat"><span class="creche-stat__icon is-amber">◷</span><span><strong><?= $rascunhos ?></strong><small>Aguardando revisão</small></span></div>
+        <div class="creche-stat"><span class="creche-stat__icon is-blue">✓</span><span><strong><?= $aprovadas ?></strong><small>Aprovadas</small></span></div>
+    </section>
+
+    <section class="card creche-generator">
+        <div class="creche-section-title"><span class="creche-section-title__icon">✦</span><div><small>ASSISTENTE DE PLANEJAMENTO</small><h2>Sugerir atividades lúdicas com IA</h2><p>Personalize as ideias para a idade e os interesses da sua turma.</p></div></div>
         <form method="post" action="/creche/atividades/gerar" class="form js-ai">
             <?= \App\Services\Csrf::campo() ?>
             <div class="form--inline">
@@ -40,9 +53,9 @@
             </label>
             <button type="submit" class="btn btn--primary" data-loading="Sugerindo…">✦ Sugerir atividades</button>
         </form>
-    </div>
+    </section>
 
-    <div class="page-header" style="margin-top:8px;">
+    <div class="page-header creche-list-header">
         <h2>Atividades</h2>
         <form method="get" action="/creche" class="form--inline">
             <label style="flex:0 1 220px;">Filtrar por faixa
@@ -61,9 +74,9 @@
             <p>Nenhuma atividade ainda. Use o gerador acima para criar sugestões por faixa etária.</p>
         </div>
     <?php else: ?>
-        <ul class="list">
+        <ul class="list creche-activity-list">
             <?php foreach ($atividades as $a): ?>
-                <li>
+                <li class="creche-activity-row">
                     <a href="/creche/atividades/<?= (int) $a['id'] ?>" class="list__main"><?= htmlspecialchars($a['titulo']) ?></a>
                     <span class="tag"><?= htmlspecialchars($a['faixa_etaria']) ?></span>
                     <?php if (!empty($a['duracao'])): ?>
@@ -76,7 +89,8 @@
         </ul>
     <?php endif; ?>
 
-    <div class="notice" style="margin-top:24px;">
+    <div class="notice creche-notice">
         <strong>Em breve nesta aba:</strong> acompanhamento das crianças (checklists de desenvolvimento, relatórios e alertas).
         Como envolve dados sensíveis de menores, será liberado após o plano de proteção de dados (LGPD/ECA).
+    </div>
     </div>

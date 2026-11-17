@@ -117,7 +117,11 @@ class MontadorDeProva
             $questao['numero'] = $numero;
 
             if ($alternativas === []) {
-                $gabarito[$numero] = '—'; // dissertativa: correcao a criterio do professor
+                $gabarito[$numero] = !empty($questao['resposta_modelo'])
+                    ? (string) $questao['resposta_modelo']
+                    : 'Resposta-modelo não cadastrada.';
+            } elseif (!empty($questao['resposta_modelo'])) {
+                $gabarito[$numero] .= ' — ' . (string) $questao['resposta_modelo'];
             }
 
             $numero++;

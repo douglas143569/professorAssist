@@ -75,6 +75,7 @@ class QuestaoController extends AppController
                 'modulo_id' => (int) $moduloId,
                 'tipo' => $q['tipo'],
                 'enunciado' => $q['enunciado'],
+                'resposta_modelo' => $q['resposta_modelo'],
                 'dificuldade' => $q['dificuldade'],
                 'habilidade_bncc' => $q['habilidade_bncc'],
                 'tags' => $q['tags'],
@@ -136,6 +137,7 @@ class QuestaoController extends AppController
             'modulo_id' => (int) $moduloId,
             'tipo' => $tipo,
             'enunciado' => $enunciado,
+            'resposta_modelo' => trim($_POST['resposta_modelo'] ?? ''),
             'dificuldade' => $this->dificuldadeValida($_POST['dificuldade'] ?? 'media'),
             'habilidade_bncc' => trim($_POST['habilidade_bncc'] ?? ''),
             'tags' => trim($_POST['tags'] ?? ''),
@@ -189,6 +191,7 @@ class QuestaoController extends AppController
         $model->update((int) $id, [
             'tipo' => $tipo,
             'enunciado' => $enunciado,
+            'resposta_modelo' => trim($_POST['resposta_modelo'] ?? ''),
             'dificuldade' => $this->dificuldadeValida($_POST['dificuldade'] ?? $questao['dificuldade']),
             'habilidade_bncc' => trim($_POST['habilidade_bncc'] ?? ''),
             'tags' => trim($_POST['tags'] ?? ''),

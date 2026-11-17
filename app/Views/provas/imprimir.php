@@ -49,8 +49,8 @@
             <div class="prova-gabarito no-print-break">
                 <strong>GABARITO — versão <?= htmlspecialchars($rotulo) ?></strong>
                 <div class="prova-gabarito__linha">
-                    <?php foreach ($gabarito as $numero => $letra): ?>
-                        <span><?= (int) $numero ?><i><?= htmlspecialchars($letra) ?></i></span>
+                    <?php foreach ($gabarito as $numero => $resposta): ?>
+                        <span><?= (int) $numero ?><i><?= htmlspecialchars($resposta) ?></i></span>
                     <?php endforeach; ?>
                 </div>
                 <p>Esta cópia é do professor — não entregue ao aluno.</p>
