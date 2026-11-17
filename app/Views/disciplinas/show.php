@@ -51,9 +51,18 @@
         </main>
 
         <aside class="subject-side">
+            <?php
+                $cenas = [
+                    ['M0 120V70l30-34 22 22 34-46 40 50 26-22 38 40 30-30 40 34 40-28v82Z', 'M0 120V92l40-18 36 22 44-30 48 28 52-24 80 20v30Z'],
+                    ['M0 120V62h18v-14h16v30h14V40h20v38h16V54h14v66ZM150 120V50h14V30h10v20h14v32h12V58h18v62ZM240 120V70h20V44h12v26h28v50Z', 'M0 120V96h26V80h20v16h22V84h18v36ZM130 120V90h20V76h16v14h26v30ZM230 120V88h24V72h14v16h32v32Z'],
+                    ['M0 120V84c40-30 80-30 120-6 40 22 80 16 110-8 26-14 50-10 70 2v48Z', 'M0 120V100c46-22 90-14 130 4 40 14 86 6 170-12v28Z'],
+                    ['M0 120V80l20-30 14 18 16-34 16 40 18-24 14 30 20-40 18 44 24-22 22 30 18-26 20 34 20-18v86Z', 'M0 120V96l24-16 20 20 28-24 24 28 30-20 30 26 34-22 34 24 40-12v36Z'],
+                ];
+                $cena = static fn(int $t) => '<svg class="rec-scene" viewBox="0 0 300 120" preserveAspectRatio="xMidYMax slice" aria-hidden="true"><circle class="rec-sun" cx="250" cy="30" r="14"/><path class="rec-back" d="' . $cenas[$t][0] . '"/><path class="rec-front" d="' . $cenas[$t][1] . '"/></svg>';
+            ?>
             <section class="subject-suggestions"><p class="subject-kicker">RECURSOS DA MATÉRIA</p><h2>Continue seu planejamento</h2><p>Escolha um tema para abrir as ferramentas disponíveis.</p>
-                <?php if (!empty($modulos)): ?><?php foreach (array_slice($modulos,0,4) as $m): ?><a class="subject-suggestion" href="/modulos/<?= (int) $m['id'] ?>"><span>✦</span><span><strong><?= htmlspecialchars($m['titulo']) ?></strong><small><?= !empty($m['codigos_bncc']) ? 'BNCC ' . htmlspecialchars($m['codigos_bncc']) : 'Abrir conteúdo, plano e atividades' ?></small></span><b>›</b></a><?php endforeach; ?><?php else: ?><div class="subject-suggestion-empty">Crie o primeiro tema para acessar geração de conteúdos, planos, atividades e apresentações com IA.</div><?php endif; ?>
-                <a href="/disciplinas/<?= (int) $disciplina['id'] ?>/questoes" class="subject-question-link">Abrir banco de questões <span>→</span></a>
+                <?php if (!empty($modulos)): ?><div class="rec-list"><?php foreach (array_slice($modulos,0,4) as $n => $m): $t = $n % 4; ?><a class="subject-suggestion rec-card tone-<?= $t ?>" style="--i:<?= $n ?>" href="/modulos/<?= (int) $m['id'] ?>"><?= $cena($t) ?><span class="rec-card__num"><?= $n + 1 ?></span><span class="rec-card__body"><small class="rec-card__kicker">Tema da aula</small><strong><?= htmlspecialchars($m['titulo']) ?></strong><small class="rec-card__sub"><?= !empty($m['codigos_bncc']) ? 'BNCC ' . htmlspecialchars($m['codigos_bncc']) : 'Abrir conteúdo, plano e atividades' ?></small></span><b class="rec-card__go">Abrir <span>→</span></b></a><?php endforeach; ?></div><?php else: ?><div class="subject-suggestion-empty">Crie o primeiro tema para acessar geração de conteúdos, planos, atividades e apresentações com IA.</div><?php endif; ?>
+                <a href="/disciplinas/<?= (int) $disciplina['id'] ?>/questoes" class="subject-question-link rec-card rec-card--bank tone-4" style="--i:5"><?= $cena(2) ?><span class="rec-card__body"><small class="rec-card__kicker">Banco da matéria</small><strong>Abrir banco de questões</strong></span><b class="rec-card__go">Abrir <span>→</span></b></a>
             </section>
             <section class="subject-new-topic" id="novo-tema"><div class="subject-new-topic__heading"><span>＋</span><div><h2>Novo tema da aula</h2><p>Adicione um tópico para planejar.</p></div></div>
                 <form method="post" action="/disciplinas/<?= (int) $disciplina['id'] ?>/modulos" class="form subject-topic-form">

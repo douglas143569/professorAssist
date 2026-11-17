@@ -1745,3 +1745,38 @@ label.mini input { padding: 6px 8px; font-size: 0.85rem; }
 @keyframes mat-in { from { opacity:0; transform:translateY(34px) scale(.92) rotate(-2deg); } to { opacity:1; transform:none; } }
 @keyframes mat-sun { to { transform:translate(-6px,6px) scale(1.15); } }
 @media (prefers-reduced-motion:reduce) { .app-shell:not(.app-shell--home) .content .class-subject-grid .class-subject-card, .app-shell:not(.app-shell--home) .content .class-subject-grid .class-subject-card .subject-sun { animation:none; opacity:1; } }
+
+/* ---- Recursos da materia: painel de destaque com cartoes-poster ---- */
+.app-shell:not(.app-shell--home) .content .subject-suggestions { position:relative; padding:20px; border:0; border-radius:18px; overflow:hidden; color:#fff;
+  background:radial-gradient(120% 80% at 100% 0%,rgba(120,90,255,.55),transparent 60%),linear-gradient(160deg,#241a5c,#12234f); backdrop-filter:none;
+  box-shadow:0 18px 40px rgba(25,20,80,.35), 0 0 0 1px rgba(255,255,255,.08) inset; animation:rec-panel .6s ease both; }
+.app-shell:not(.app-shell--home) .content .subject-suggestions .subject-kicker { color:#ffd166; letter-spacing:.16em; }
+.app-shell:not(.app-shell--home) .content .subject-suggestions h2 { color:#fff; font-size:1.25rem; }
+.app-shell:not(.app-shell--home) .content .subject-suggestions > p:not(.subject-kicker) { color:rgba(255,255,255,.78); }
+.app-shell:not(.app-shell--home) .content .subject-suggestions .rec-list { display:grid; gap:14px; }
+.app-shell:not(.app-shell--home) .content .subject-suggestions .rec-card { --c1:#7b4bf0; --c2:#3a2fb8; position:relative; display:flex; flex-direction:column; justify-content:flex-end; gap:8px; min-height:120px; margin-top:0; padding:16px 18px 14px; border:0; border-radius:12px; overflow:hidden; color:#fff; text-decoration:none;
+  background:linear-gradient(160deg,var(--c1),var(--c2)); box-shadow:0 12px 22px rgba(5,5,40,.4);
+  opacity:0; animation:rec-in .6s cubic-bezier(.2,.8,.2,1) both; animation-delay:calc(var(--i) * 110ms + 150ms);
+  transition:transform .3s cubic-bezier(.2,.8,.2,1), box-shadow .3s; }
+.app-shell:not(.app-shell--home) .content .subject-suggestions .rec-card:hover { transform:translateY(-6px) scale(1.025); box-shadow:0 22px 36px rgba(5,5,40,.55); background:linear-gradient(160deg,var(--c1),var(--c2)); text-decoration:none; }
+.app-shell:not(.app-shell--home) .content .subject-suggestions .rec-card.tone-0 { --c1:#8a5cff; --c2:#3a2fb8; } .app-shell:not(.app-shell--home) .content .subject-suggestions .rec-card.tone-1 { --c1:#ff7a85; --c2:#b3306f; }
+.app-shell:not(.app-shell--home) .content .subject-suggestions .rec-card.tone-2 { --c1:#2fb0ff; --c2:#1747b8; } .app-shell:not(.app-shell--home) .content .subject-suggestions .rec-card.tone-3 { --c1:#ffa15f; --c2:#d63a74; }
+.app-shell:not(.app-shell--home) .content .subject-suggestions .rec-card.tone-4 { --c1:#34d6a8; --c2:#0b7a63; }
+.app-shell:not(.app-shell--home) .content .subject-suggestions .rec-scene { position:absolute; inset:auto 0 0 0; width:100%; height:70%; pointer-events:none; }
+.app-shell:not(.app-shell--home) .content .subject-suggestions .rec-sun { fill:rgba(255,255,255,.3); animation:mat-sun 4s ease-in-out infinite alternate; }
+.app-shell:not(.app-shell--home) .content .subject-suggestions .rec-back { fill:rgba(255,255,255,.2); transition:transform .5s ease; }
+.app-shell:not(.app-shell--home) .content .subject-suggestions .rec-front { fill:rgba(20,10,60,.38); transition:transform .5s ease; }
+.app-shell:not(.app-shell--home) .content .subject-suggestions .rec-card:hover .rec-back { transform:translateX(-8px); } .app-shell:not(.app-shell--home) .content .subject-suggestions .rec-card:hover .rec-front { transform:translateX(10px); }
+.app-shell:not(.app-shell--home) .content .subject-suggestions .rec-card__num { position:absolute; top:12px; right:14px; width:28px; height:28px; display:grid; place-items:center; border-radius:50%; background:rgba(255,255,255,.22); font-size:.8rem; font-weight:800; }
+.app-shell:not(.app-shell--home) .content .subject-suggestions .rec-card__body { position:relative; z-index:1; display:grid; gap:3px; padding-right:34px; }
+.app-shell:not(.app-shell--home) .content .subject-suggestions .rec-card__kicker { font-size:.62rem; letter-spacing:.14em; text-transform:uppercase; opacity:.85; }
+.app-shell:not(.app-shell--home) .content .subject-suggestions .rec-card__body strong { color:#fff; font-size:1rem; font-weight:800; line-height:1.25; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; text-shadow:0 2px 8px rgba(0,0,0,.25); }
+.app-shell:not(.app-shell--home) .content .subject-suggestions .rec-card__sub { color:rgba(255,255,255,.88); font-size:.74rem; font-weight:700; }
+.app-shell:not(.app-shell--home) .content .subject-suggestions .rec-card__go { position:relative; z-index:1; align-self:flex-end; display:inline-flex; gap:6px; padding:5px 12px; border-radius:999px; background:rgba(255,255,255,.93); color:#2b2358; font-size:.74rem; font-weight:800; transition:transform .25s; }
+.app-shell:not(.app-shell--home) .content .subject-suggestions .rec-card:hover .rec-card__go { transform:translateX(-4px); }
+.app-shell:not(.app-shell--home) .content .subject-suggestions .rec-card__go span { transition:transform .25s; } .app-shell:not(.app-shell--home) .content .subject-suggestions .rec-card:hover .rec-card__go span { transform:translateX(4px); }
+.app-shell:not(.app-shell--home) .content .subject-suggestions .rec-card--bank { min-height:92px; margin-top:14px; flex-direction:row; align-items:center; justify-content:space-between; }
+.app-shell:not(.app-shell--home) .content .subject-suggestions .subject-suggestion-empty { color:rgba(255,255,255,.85); }
+@keyframes rec-in { from { opacity:0; transform:translateX(30px) scale(.94); } to { opacity:1; transform:none; } }
+@keyframes rec-panel { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:none; } }
+@media (prefers-reduced-motion:reduce) { .app-shell:not(.app-shell--home) .content .subject-suggestions, .app-shell:not(.app-shell--home) .content .subject-suggestions .rec-card, .app-shell:not(.app-shell--home) .content .subject-suggestions .rec-sun { animation:none; opacity:1; } }
