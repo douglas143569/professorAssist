@@ -548,6 +548,61 @@ class AI
     }
 
     /**
+     * Relatorio individual descritivo de um aluno da Educacao Infantil.
+     * Devolve texto corrido, pronto para a familia. NADA e gravado: o texto
+     * (com nome e observacoes da crianca) so existe na resposta HTTP, e o log
+     * de IA guarda apenas o hash do pedido, nunca a resposta (tipo sem cache).
+     *
+     * @param array<string,string> $cabecalho nome, idade, turma, periodo, professor
+     * @param array<string,string> $observacoes rotulo => texto (apenas os preenchidos)
+     */
+    public function gerarRelatorioAluno(array $cabecalho, array $observacoes, ?int $userId = null): string
+    {
+        $system = 'Voce e um especialista em Educacao Infantil e em elaboracao de relatorios '
+            . 'pedagogicos para creches e pre-escolas no Brasil. Escreve relatorios individuais '
+            . 'descritivos em texto corrido, profissional e acolhedor, em portugues do Brasil, '
+            . 'prontos para serem entregues a familia. Responde apenas com o texto do relatorio.';
+
+        $obs = '';
+        foreach ($observacoes as $rotulo => $texto) {
+            $obs .= "- {$rotulo}: {$texto}\n";
+        }
+        if ($obs === '') {
+            $obs = "- (nenhuma observacao detalhada foi informada)\n";
+        }
+
+        $prompt = "Elabore o RELATORIO INDIVIDUAL DESCRITIVO do aluno com base nas informacoes abaixo.\n\n"
+            . "DADOS\n"
+            . "Nome do aluno: {$cabecalho['nome']}\n"
+            . "Idade: {$cabecalho['idade']}\n"
+            . "Turma: {$cabecalho['turma']}\n"
+            . "Periodo avaliado: {$cabecalho['periodo']}\n"
+            . "Professor(a): {$cabecalho['professor']}\n\n"
+            . "OBSERVACOES DO PROFESSOR\n{$obs}\n"
+            . "INSTRUCOES\n"
+            . "- Texto corrido (sem listas, sem topicos, sem markdown), profissional e acolhedor.\n"
+            . "- Linguagem pedagogica adequada; valorize as conquistas da crianca.\n"
+            . "- Evite termos negativos e QUALQUER diagnostico ou rotulo clinico.\n"
+            . "- Descreva os desafios de forma construtiva, como aspectos a serem estimulados.\n"
+            . "- Demonstre a evolucao ao longo do periodo e personalize com as observacoes; nao "
+            . "invente fatos que nao constem nelas (se um item nao foi informado, nao o comente).\n"
+            . "- Sem frases prontas repetitivas.\n"
+            . "- Entre 300 e 600 palavras, em paragrafos logicos e fluidos.\n"
+            . "- Estrutura, nesta ordem, SEM escrever os titulos: 1) apresentacao do periodo "
+            . "avaliado; 2) aspectos socioemocionais; 3) desenvolvimento cognitivo e da linguagem; "
+            . "4) desenvolvimento motor; 5) participacao e interacao; 6) avancos observados; "
+            . "7) aspectos a serem estimulados; 8) consideracoes finais, terminando com uma "
+            . "consideracao positiva sobre o desenvolvimento da crianca.\n"
+            . 'Retorne apenas o relatorio finalizado, pronto para ser entregue a familia.';
+
+        $texto = trim($this->gerar('relatorio_aluno', $system, $prompt, $userId, false));
+        if ($texto === '') {
+            throw new AIException('A IA nao retornou o relatorio. Tente novamente.');
+        }
+        return $texto;
+    }
+
+    /**
      * Monta um pacote de FOLHAS de atividades IMPRIMIVEIS para Educacao Infantil,
      * em dois formatos claros: 'escrever' (figura -> quadro) e 'circular'
      * (linha de opcoes -> circular a certa). Devolve array de atividades:

@@ -14,6 +14,7 @@
         <a href="/creche" class="subnav__item">Atividades</a>
         <a href="/creche/cronograma" class="subnav__item is-active">Cronograma</a>
         <a href="/creche/pacotes" class="subnav__item">Pacotes</a>
+        <a href="/creche/relatorios" class="subnav__item">Relatórios dos alunos</a>
     </div>
 
     <div class="card">

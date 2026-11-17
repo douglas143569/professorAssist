@@ -105,6 +105,9 @@ $router->post('/creche/cronograma/limpar', 'CronogramaController@limpar');
 $router->get('/creche/cronograma/{id}', 'CronogramaController@show');
 $router->post('/creche/cronograma/{id}', 'CronogramaController@update');
 $router->post('/creche/cronograma/{id}/excluir', 'CronogramaController@excluir');
+// Relatorios individuais dos alunos (nada e armazenado)
+$router->get('/creche/relatorios', 'RelatorioAlunoController@index');
+$router->post('/creche/relatorios/gerar', 'RelatorioAlunoController@gerar');
 // Pacotes de atividades
 $router->get('/creche/pacotes', 'PacoteController@index');
 $router->post('/creche/pacotes/criar', 'PacoteController@criar');
