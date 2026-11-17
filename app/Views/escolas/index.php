@@ -20,21 +20,21 @@
                 <div class="schools-empty"><span>▦</span><strong>Nenhuma escola cadastrada ainda</strong><p>Cadastre sua primeira escola para começar a organizar suas turmas.</p><a href="#nova-escola">Cadastrar primeira escola ↓</a></div>
             <?php else: ?>
                 <div class="schools-cards" id="schools-cards">
-                    <?php foreach ($escolas as $e): ?>
-                        <article class="school-card" data-school-name="<?= htmlspecialchars(mb_strtolower($e['nome'] . ' ' . ($e['cidade'] ?? '') . ' ' . ($e['uf'] ?? ''))) ?>">
-                            <div class="school-card__icon" aria-hidden="true">▦</div>
-                            <div class="school-card__info"><h3><?= htmlspecialchars($e['nome']) ?></h3>
-                                <div class="school-card__meta"><span>♧ <?= (int) $e['n_turmas'] ?> <?= (int) $e['n_turmas'] === 1 ? 'turma' : 'turmas' ?></span>
-                                    <?php if (!empty($e['rede'])): ?><span>▣ <?= htmlspecialchars($redes[$e['rede']] ?? $e['rede']) ?></span><?php endif; ?>
-                                    <?php if (!empty($e['cidade']) || !empty($e['uf'])): ?><span>⌖ <?= htmlspecialchars(trim(($e['cidade'] ?? '') . (!empty($e['uf']) ? ' - ' . $e['uf'] : ''))) ?></span><?php endif; ?>
-                                </div>
+                    <?php foreach ($escolas as $n => $e): ?>
+                        <article class="school-card" style="--i:<?= $n % 12 ?>" data-school-name="<?= htmlspecialchars(mb_strtolower($e['nome'] . ' ' . ($e['cidade'] ?? '') . ' ' . ($e['uf'] ?? ''))) ?>">
+                            <form class="sc-del" method="post" action="/escolas/<?= (int) $e['id'] ?>/excluir" onsubmit="return confirm('Excluir a escola &quot;<?= htmlspecialchars($e['nome'], ENT_QUOTES) ?>&quot; e tudo dentro dela (turmas, matérias, temas, conteúdos e questões)?');">
+                                <?= \App\Services\Csrf::campo() ?><button type="submit" aria-label="Excluir <?= htmlspecialchars($e['nome']) ?>" title="Excluir escola">⋮</button>
+                            </form>
+                            <div class="sc-tile" aria-hidden="true"><svg viewBox="0 0 24 24" width="52" height="52" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10 12 4l9 6"/><path d="M5 10v9h14v-9"/><path d="M9 19v-5h6v5"/><path d="M12 4V2"/><path d="M8 12.5h.01M16 12.5h.01"/></svg></div>
+                            <div class="sc-waves" aria-hidden="true"><svg viewBox="0 0 400 80" preserveAspectRatio="none"><path class="sc-w1" d="M0 40Q50 0 100 40T200 40T300 40T400 40V80H0Z"/><path class="sc-w2" d="M0 52Q50 22 100 52T200 52T300 52T400 52V80H0Z"/></svg></div>
+                            <h3 class="sc-pill"><?= htmlspecialchars($e['nome']) ?></h3>
+                            <div class="sc-meta">
+                                <span>♧ <?= (int) $e['n_turmas'] ?> <?= (int) $e['n_turmas'] === 1 ? 'turma' : 'turmas' ?></span>
+                                <?php if (!empty($e['rede'])): ?><span>▣ <?= htmlspecialchars($redes[$e['rede']] ?? $e['rede']) ?></span><?php endif; ?>
+                                <?php if (!empty($e['cidade']) || !empty($e['uf'])): ?><span>⌖ <?= htmlspecialchars(trim(($e['cidade'] ?? '') . (!empty($e['uf']) ? ' - ' . $e['uf'] : ''))) ?></span><?php endif; ?>
                             </div>
-                            <span class="school-status <?= (int) $e['n_turmas'] > 0 ? 'is-ready' : '' ?>"><i></i><?= (int) $e['n_turmas'] > 0 ? 'Em andamento' : 'Comece por uma turma' ?></span>
-                            <div class="school-card__actions"><a href="/escolas/<?= (int) $e['id'] ?>" class="btn btn--ghost btn--sm">Abrir <span aria-hidden="true">↗</span></a>
-                                <form method="post" action="/escolas/<?= (int) $e['id'] ?>/excluir" onsubmit="return confirm('Excluir a escola &quot;<?= htmlspecialchars($e['nome'], ENT_QUOTES) ?>&quot; e tudo dentro dela (turmas, matérias, temas, conteúdos e questões)?');">
-                                    <?= \App\Services\Csrf::campo() ?><button type="submit" class="school-delete" aria-label="Excluir <?= htmlspecialchars($e['nome']) ?>" title="Excluir escola">⋮</button>
-                                </form>
-                            </div>
+                            <span class="sc-status <?= (int) $e['n_turmas'] > 0 ? 'is-ready' : '' ?>"><i></i><?= (int) $e['n_turmas'] > 0 ? 'Em andamento' : 'Comece por uma turma' ?></span>
+                            <a href="/escolas/<?= (int) $e['id'] ?>" class="sc-open">Abrir <span aria-hidden="true">↗</span></a>
                         </article>
                     <?php endforeach; ?>
                     <p class="schools-no-results" id="schools-no-results" hidden>Nenhuma escola encontrada para essa busca.</p>

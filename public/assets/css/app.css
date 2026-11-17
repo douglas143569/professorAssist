@@ -1803,3 +1803,38 @@ label.mini input { padding: 6px 8px; font-size: 0.85rem; }
 .rel-privacidade a { color:inherit; text-decoration:underline; }
 .rel-corpo { outline:none; border-radius:6px; }
 .rel-corpo:focus { box-shadow:0 0 0 3px var(--primary-ring); }
+
+/* ---- Minhas escolas: cartoes de vidro neon ---- */
+.schools-cards { display:grid !important; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)) !important; gap:20px !important; }
+.app-shell:not(.app-shell--home) .content .schools-cards .school-card { --g:52,211,153; position:relative; display:flex; flex-direction:column; align-items:center; gap:12px; min-height:340px; padding:24px 16px 18px; overflow:hidden; text-align:center; color:#fff;
+  border:1px solid rgba(var(--g),.65); border-radius:22px;
+  background:radial-gradient(120% 70% at 50% 0%,rgba(var(--g),.28),transparent 65%),linear-gradient(170deg,rgba(var(--g),.2),rgba(var(--g),.04));
+  box-shadow:0 0 28px rgba(var(--g),.28), inset 0 0 22px rgba(var(--g),.16); backdrop-filter:blur(10px);
+  opacity:0; animation:sc-in .7s cubic-bezier(.2,.8,.2,1) both, sc-glow 3.6s ease-in-out infinite alternate; animation-delay:calc(var(--i) * 110ms), calc(var(--i) * 110ms + .7s);
+  transition:transform .3s cubic-bezier(.2,.8,.2,1), box-shadow .3s; }
+.app-shell:not(.app-shell--home) .content .schools-cards .school-card:nth-child(3n+2) { --g:168,130,255; } .app-shell:not(.app-shell--home) .content .schools-cards .school-card:nth-child(3n) { --g:59,130,246; }
+.app-shell:not(.app-shell--home) .content .schools-cards .school-card:hover { transform:translateY(-10px) scale(1.03); border-color:rgba(var(--g),.95); box-shadow:0 0 44px rgba(var(--g),.5), inset 0 0 28px rgba(var(--g),.24); }
+.app-shell:not(.app-shell--home) .content .schools-cards .school-card[hidden] { display:none; }
+.app-shell:not(.app-shell--home) .content .schools-cards .school-card .sc-del { position:absolute; top:10px; right:10px; margin:0; z-index:3; }
+.app-shell:not(.app-shell--home) .content .schools-cards .school-card .sc-del button { width:28px; height:28px; border:0; border-radius:50%; background:rgba(255,255,255,.14); color:#fff; cursor:pointer; transition:background .2s; }
+.app-shell:not(.app-shell--home) .content .schools-cards .school-card .sc-del button:hover { background:#d1382f; }
+.app-shell:not(.app-shell--home) .content .schools-cards .school-card .sc-tile { position:relative; z-index:2; width:104px; height:104px; margin-top:14px; display:grid; place-items:center; border-radius:26px; color:#fff;
+  background:linear-gradient(145deg,rgba(255,255,255,.34),rgba(var(--g),.22)); border:1px solid rgba(255,255,255,.55);
+  box-shadow:0 0 26px rgba(var(--g),.55), inset 0 0 16px rgba(255,255,255,.22); animation:sc-float 3.4s ease-in-out infinite; animation-delay:calc(var(--i) * -.5s); }
+.app-shell:not(.app-shell--home) .content .schools-cards .school-card:hover .sc-tile { animation:pkg-pop .7s ease; }
+.app-shell:not(.app-shell--home) .content .schools-cards .school-card .sc-waves { position:absolute; left:0; right:0; bottom:0; height:46%; overflow:hidden; pointer-events:none; opacity:.9; }
+.app-shell:not(.app-shell--home) .content .schools-cards .school-card .sc-waves svg { position:absolute; left:0; bottom:0; width:200%; height:100%; animation:sc-wave 7s linear infinite; }
+.app-shell:not(.app-shell--home) .content .schools-cards .school-card .sc-waves svg + svg { display:none; }
+.app-shell:not(.app-shell--home) .content .schools-cards .school-card .sc-w1 { fill:rgba(var(--g),.28); } .app-shell:not(.app-shell--home) .content .schools-cards .school-card .sc-w2 { fill:rgba(var(--g),.2); animation:none; }
+.app-shell:not(.app-shell--home) .content .schools-cards .school-card .sc-pill { position:relative; z-index:2; margin:auto 0 0; padding:7px 20px; max-width:100%; border:1px solid rgba(255,255,255,.4); border-radius:999px; background:rgba(255,255,255,.08); color:#fff; font-size:1rem; font-weight:700; line-height:1.2; text-align:center; overflow-wrap:anywhere; backdrop-filter:blur(6px); }
+.app-shell:not(.app-shell--home) .content .schools-cards .school-card .sc-meta { position:relative; z-index:2; display:flex; flex-wrap:wrap; justify-content:center; gap:4px 10px; color:rgba(255,255,255,.78); font-size:.74rem; }
+.app-shell:not(.app-shell--home) .content .schools-cards .school-card .sc-status { position:relative; z-index:2; display:inline-flex; align-items:center; gap:6px; padding:3px 10px; border-radius:999px; background:rgba(0,0,0,.22); color:#fff; font-size:.7rem; font-weight:700; }
+.app-shell:not(.app-shell--home) .content .schools-cards .school-card .sc-status i { width:8px; height:8px; border-radius:50%; background:#f5b82e; }
+.app-shell:not(.app-shell--home) .content .schools-cards .school-card .sc-status.is-ready i { background:#34d399; box-shadow:0 0 8px #34d399; }
+.app-shell:not(.app-shell--home) .content .schools-cards .school-card .sc-open { position:relative; z-index:2; display:inline-flex; gap:6px; padding:8px 20px; border:1px solid rgba(255,255,255,.5); border-radius:999px; background:rgba(255,255,255,.14); color:#fff; font-size:.82rem; font-weight:800; text-decoration:none; transition:background .25s, color .25s, transform .25s; }
+.app-shell:not(.app-shell--home) .content .schools-cards .school-card .sc-open:hover { background:#fff; color:#12234f; transform:scale(1.06); text-decoration:none; }
+@keyframes sc-in { from { opacity:0; transform:translateY(44px) scale(.9); } to { opacity:1; transform:none; } }
+@keyframes sc-glow { from { box-shadow:0 0 20px rgba(var(--g),.22), inset 0 0 18px rgba(var(--g),.12); } to { box-shadow:0 0 38px rgba(var(--g),.45), inset 0 0 26px rgba(var(--g),.22); } }
+@keyframes sc-float { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-7px); } }
+@keyframes sc-wave { to { transform:translateX(-50%); } }
+@media (prefers-reduced-motion:reduce) { .app-shell:not(.app-shell--home) .content .schools-cards .school-card, .app-shell:not(.app-shell--home) .content .schools-cards .school-card .sc-tile, .app-shell:not(.app-shell--home) .content .schools-cards .school-card .sc-waves svg { animation:none; opacity:1; } }
