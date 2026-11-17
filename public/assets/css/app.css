@@ -1780,3 +1780,10 @@ label.mini input { padding: 6px 8px; font-size: 0.85rem; }
 @keyframes rec-in { from { opacity:0; transform:translateX(30px) scale(.94); } to { opacity:1; transform:none; } }
 @keyframes rec-panel { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:none; } }
 @media (prefers-reduced-motion:reduce) { .app-shell:not(.app-shell--home) .content .subject-suggestions, .app-shell:not(.app-shell--home) .content .subject-suggestions .rec-card, .app-shell:not(.app-shell--home) .content .subject-suggestions .rec-sun { animation:none; opacity:1; } }
+
+/* Recursos da materia: centralizado, em largura total, antes das colunas */
+.app-shell:not(.app-shell--home) .content .subject-suggestions { max-width:1100px; margin:22px auto 24px; padding:28px 28px 30px; text-align:center; }
+.app-shell:not(.app-shell--home) .content .subject-suggestions .rec-list { grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:18px; margin-top:18px; text-align:left; }
+.app-shell:not(.app-shell--home) .content .subject-suggestions .rec-card { min-height:150px; }
+.app-shell:not(.app-shell--home) .content .subject-suggestions .rec-card--bank { max-width:520px; margin:20px auto 0; text-align:left; }
+.app-shell:not(.app-shell--home) .content .subject-suggestions h2 { font-size:1.5rem; }
