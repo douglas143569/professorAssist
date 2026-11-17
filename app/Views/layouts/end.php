@@ -5,6 +5,27 @@
     <link rel="stylesheet" href="/assets/css/dark-theme.css">
 
     <script>
+        // Links "Criar ..." (#ancora): rola ate o formulario e poe o cursor no primeiro campo.
+        (function () {
+            function irParaFormulario(id) {
+                var alvo = id && document.getElementById(id);
+                if (!alvo) return false;
+                var campo = alvo.querySelector('input:not([type="hidden"]):not([type="checkbox"]), textarea, select');
+                if (!campo) return false;
+                alvo.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                setTimeout(function () { campo.focus({ preventScroll: true }); }, 450);
+                return true;
+            }
+            document.addEventListener('click', function (e) {
+                var a = e.target.closest && e.target.closest('a[href^="#"]');
+                if (!a || a.getAttribute('href').length < 2) return;
+                if (irParaFormulario(a.getAttribute('href').slice(1))) e.preventDefault();
+            });
+            if (location.hash.length > 1) irParaFormulario(decodeURIComponent(location.hash.slice(1)));
+        })();
+    </script>
+
+    <script>
         // Feedback de carregamento nos formularios de IA (a geracao leva alguns segundos).
         document.addEventListener('submit', function (e) {
             var form = e.target;
