@@ -150,3 +150,10 @@ migrations, segurança e commits).
 - **Aceite registrado:** `users.aceite_privacidade_em` / `aceite_versao` (versão em `App\Services\Legal::VERSAO`; mude-a ao alterar as políticas). Cadastro de aluno exige também a declaração de autorização do responsável.
 - **Direitos do titular (professor):** `/meus-dados` — baixar cópia em JSON e excluir conta (`App\Services\ContaPrivacidade`). A exclusão apaga o conteúdo, os arquivos enviados e os alunos que ficaram sem turma, e anonimiza a conta; assinaturas/pagamentos e registros de acesso ficam retidos por obrigação legal (fiscal e Marco Civil).
 - Pedidos de alunos/responsáveis são atendidos pelo contato da política (não há autoatendimento para alunos).
+
+## Recuperação de senha
+
+- Tela de login → **Esqueci minha senha** (`/esqueci-senha`). Envia um link (válido por 60 min, uso único) para o e-mail do professor; o token é guardado só como hash em `password_resets`.
+- **Produção:** configure `APP_URL` e o SMTP (`MAIL_*` no `.env`). O link é montado a partir do `APP_URL`, nunca do cabeçalho `Host`. Sem SMTP em produção, nada é enviado.
+- **Desenvolvimento:** sem `MAIL_HOST`, o e-mail (com o link) é gravado em `storage/logs/mail-AAAA-MM-DD.log`.
+- Alunos não têm e-mail: a redefinição é feita pelo professor/administrador.

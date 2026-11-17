@@ -68,6 +68,7 @@
                     <input type="password" name="senha" placeholder="••••••••"
                            required autocomplete="current-password">
                 </label>
+                <a href="/esqueci-senha" class="login-esqueci">Esqueci minha senha</a>
 
                 <button type="submit" class="btn btn--primary login-btn">➜ &nbsp; Entrar e continuar</button>
             </form>

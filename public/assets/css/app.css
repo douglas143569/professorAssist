@@ -1912,3 +1912,6 @@ label.mini input { padding: 6px 8px; font-size: 0.85rem; }
 .login-nota a { color:inherit; text-decoration:underline; }
 
 .login-aviso { margin:0 0 14px; padding:10px 14px; border-radius:10px; background:#e7f6ee; color:#0b5c40; font-size:.88rem; }
+
+.login-esqueci { display:block; margin:-4px 0 4px; text-align:right; font-size:.84rem; color:#0f7a54; text-decoration:none; }
+.login-esqueci:hover { text-decoration:underline; }

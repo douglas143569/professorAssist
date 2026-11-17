@@ -10,6 +10,11 @@ $router->post('/login', 'AuthController@entrar');
 $router->get('/cadastro', 'AuthController@formularioCadastro');
 $router->post('/cadastro', 'AuthController@cadastrar');
 $router->post('/logout', 'AuthController@sair');
+// Recuperacao de senha (professor), por e-mail
+$router->get('/esqueci-senha', 'SenhaController@esqueci');
+$router->post('/esqueci-senha', 'SenhaController@solicitar');
+$router->get('/redefinir-senha/{token}', 'SenhaController@redefinirForm');
+$router->post('/redefinir-senha', 'SenhaController@redefinir');
 
 // Assinaturas: webhook público validado pela assinatura do Mercado Pago.
 $router->get('/assinatura', 'SubscriptionController@index');
