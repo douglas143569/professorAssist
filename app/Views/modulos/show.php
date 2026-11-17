@@ -178,15 +178,20 @@
                     <p>Nenhum conteúdo ainda. Clique em <strong>Gerar conteúdo com IA</strong> para criar um rascunho.</p>
                 </div>
             <?php else: ?>
-                <ul class="list" style="margin-top:12px;">
-                    <?php foreach ($conteudos as $c): ?>
-                        <li>
-                            <a href="/conteudos/<?= (int) $c['id'] ?>"><strong><?= htmlspecialchars($c['titulo']) ?></strong></a>
-                            <span class="badge badge--<?= htmlspecialchars($c['status']) ?>"><?= htmlspecialchars($c['status']) ?></span>
-                            <span class="tag tag--origem"><?= $c['origem'] === 'ia' ? 'IA' : 'manual' ?></span>
-                        </li>
+                <div class="gl-grid" style="margin-top:14px;">
+                    <?php foreach ($conteudos as $n => $c): ?>
+                        <a class="gl-card" href="/conteudos/<?= (int) $c['id'] ?>" style="--i:<?= $n % 12 ?>">
+                            <span class="gl-tile" aria-hidden="true"><svg viewBox="0 0 24 24" width="44" height="44" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h8l4 4v14H7z"/><path d="M15 3v4h4M10 12h6M10 16h6"/></svg></span>
+                            <span class="gl-waves" aria-hidden="true"><svg viewBox="0 0 400 80" preserveAspectRatio="none"><path class="gl-w1" d="M0 40Q50 0 100 40T200 40T300 40T400 40V80H0Z"/></svg></span>
+                            <strong class="gl-pill"><?= htmlspecialchars($c['titulo']) ?></strong>
+                            <span class="gl-meta">
+                                <span class="badge badge--<?= htmlspecialchars($c['status']) ?>"><?= htmlspecialchars($c['status']) ?></span>
+                                <span class="tag tag--origem"><?= $c['origem'] === 'ia' ? 'IA' : 'manual' ?></span>
+                            </span>
+                            <span class="gl-open">Abrir <span aria-hidden="true">↗</span></span>
+                        </a>
                     <?php endforeach; ?>
-                </ul>
+                </div>
             <?php endif; ?>
 
             <form method="post" action="/modulos/<?= (int) $modulo['id'] ?>/conteudos/gerar" class="js-ai" style="margin-top:14px;">
