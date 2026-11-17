@@ -1793,3 +1793,7 @@ label.mini input { padding: 6px 8px; font-size: 0.85rem; }
 .pkg-q-num { position:absolute; top:14px; right:14px; width:28px; height:28px; display:grid; place-items:center; border-radius:50%; background:rgba(255,255,255,.22); font-size:.8rem; font-weight:800; }
 .pkg-card:hover .pkg-q-num { animation:pkg-pop .6s ease; }
 .pkg-card__top--item .pkg-tags { padding-right:34px; }
+
+/* Titulos escuros nos paineis de fundo branco (o tema escuro deixava-os quase invisiveis) */
+.app-shell:not(.app-shell--home) .content :is(.subject-box,.subject-new-topic,.subject-counts,.class-panel,.school-classes,.school-next,.school-setup-card,.school-settings-card,.school-impact,.school-new-class) :is(h2,h3,h4) { color:#14231d; }
+.app-shell:not(.app-shell--home) .content :is(.subject-box,.class-panel,.school-classes,.school-next) :is(h2,h3) > span { color:#14231d; }
