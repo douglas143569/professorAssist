@@ -16,6 +16,7 @@
     $__isBancoRel = (bool) preg_match('#^/creche/relatorios/(banco|\d+)#', $__path);
     $__isCreche = str_starts_with($__path, '/creche') && !$__isBancoRel;
     $__isProva = str_starts_with($__path, '/provas');
+    $__isBancoAtiv = str_starts_with($__path, '/banco-atividades');
     $__isConta = str_starts_with($__path, '/admin/contas');
     $__isRevisar = str_starts_with($__path, '/revisar');
     $__isAssinatura = str_starts_with($__path, '/assinatura');
@@ -82,6 +83,10 @@
                 <a href="/creche/relatorios/banco" class="navitem <?= $__isBancoRel ? 'is-active' : '' ?>">
                     <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7c0-1.1 3.6-2 8-2s8 .9 8 2-3.6 2-8 2-8-.9-8-2Z"/><path d="M4 7v10c0 1.1 3.6 2 8 2s8-.9 8-2V7"/><path d="M4 12c0 1.1 3.6 2 8 2s8-.9 8-2"/></svg>
                     <span>Banco de relatórios</span>
+                </a>
+                <a href="/banco-atividades" class="navitem <?= $__isBancoAtiv ? 'is-active' : '' ?>">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><path d="M14 17.5h7M17.5 14v7"/></svg>
+                    <span>Banco de atividades</span>
                 </a>
                 <a href="/provas" class="navitem <?= $__isProva ? 'is-active' : '' ?>">
                     <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h6"/></svg>

@@ -338,4 +338,15 @@
             <?php endif; ?>
         </div>
     </details>
+
+    <a class="bloco-toggle topic-tool-card topic-tool-card--bank" href="/banco-atividades?modulo=<?= (int) $modulo['id'] ?>">
+        <span class="bank-sum">
+            <span class="tool-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7c0-1.1 3.6-2 8-2s8 .9 8 2-3.6 2-8 2-8-.9-8-2Z"/><path d="M4 7v10c0 1.1 3.6 2 8 2s8-.9 8-2V7"/><path d="M4 12c0 1.1 3.6 2 8 2s8-.9 8-2"/></svg></span>
+            <span class="tool-copy">
+                <span class="tool-title">Banco de atividades<?php if (!empty($atividades)): ?> <span class="tool-count"><?= count($atividades) ?></span><?php endif; ?></span>
+                <span class="tool-desc">Todas as atividades geradas e salvas, num só lugar</span>
+            </span>
+            <span class="tool-cta">abrir banco <b>›</b></span>
+        </span>
+    </a>
     </div>

@@ -1861,3 +1861,11 @@ label.mini input { padding: 6px 8px; font-size: 0.85rem; }
 .gl-open { position:relative; z-index:2; display:inline-flex; gap:6px; padding:7px 20px; border:1px solid rgba(255,255,255,.5); border-radius:999px; background:rgba(255,255,255,.14); font-size:.8rem; font-weight:800; transition:background .25s, color .25s, transform .25s; }
 .gl-card:hover .gl-open { background:#fff; color:#12234f; transform:scale(1.06); }
 @media (prefers-reduced-motion:reduce) { .gl-card, .gl-tile, .gl-waves svg { animation:none; opacity:1; } }
+
+/* ---- Banco de atividades ---- */
+.bank-filtros { align-items:flex-end; gap:12px; }
+.gl-ctx { position:relative; z-index:2; color:rgba(255,255,255,.75); font-size:.74rem; line-height:1.3; }
+.topic-tool-card--bank { --tc:#0e9aa7; --tc-bg:#dff6f7; --tc-grad:linear-gradient(135deg,#2cc9d6,#0b7f8a); display:block; text-decoration:none; color:inherit; }
+.topic-tool-card--bank:hover { text-decoration:none; }
+.topic-tool-card--bank .bank-sum { display:grid; grid-template-columns:auto 1fr; gap:6px 16px; align-items:center; min-height:150px; padding:26px 22px 18px; }
+.topic-tool-card--bank:hover .bank-sum { background:radial-gradient(90% 120% at 0% 0%,var(--tc-bg),transparent 70%); }

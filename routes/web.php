@@ -136,6 +136,7 @@ $router->post('/eventos/{id}/excluir', 'CalendarioController@excluir');
 
 // Atividades
 $router->post('/modulos/{id}/atividades/gerar', 'AtividadeController@gerar');
+$router->get('/banco-atividades', 'BancoAtividadesController@index');
 $router->get('/atividades/{id}', 'AtividadeController@show');
 $router->post('/atividades/{id}', 'AtividadeController@update');
 $router->post('/atividades/{id}/aprovar', 'AtividadeController@aprovar');

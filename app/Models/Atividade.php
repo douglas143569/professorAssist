@@ -15,6 +15,36 @@ class Atividade extends Model
         return $stmt->fetchAll();
     }
 
+    /**
+     * Banco de atividades: todas as atividades do professor (de todos os temas),
+     * com tema e materia. Filtros opcionais: busca no titulo, status, tema.
+     */
+    public function bancoDoProfessor(int $userId, string $busca = '', string $status = '', int $moduloId = 0): array
+    {
+        $sql = 'SELECT a.*, m.titulo AS modulo_titulo, d.id AS disciplina_id, d.nome AS disciplina_nome
+                  FROM atividades a
+                  JOIN modulos m ON m.id = a.modulo_id
+                  JOIN disciplinas d ON d.id = m.disciplina_id
+                 WHERE d.user_id = :u';
+        $params = ['u' => $userId];
+        if ($busca !== '') {
+            $sql .= ' AND (a.titulo LIKE :b1 OR m.titulo LIKE :b2 OR d.nome LIKE :b3)';
+            $like = '%' . addcslashes($busca, '%_\\') . '%';
+            $params += ['b1' => $like, 'b2' => $like, 'b3' => $like];
+        }
+        if (in_array($status, ['rascunho', 'aprovado'], true)) {
+            $sql .= ' AND a.status = :s';
+            $params['s'] = $status;
+        }
+        if ($moduloId > 0) {
+            $sql .= ' AND a.modulo_id = :m';
+            $params['m'] = $moduloId;
+        }
+        $stmt = $this->db->prepare($sql . ' ORDER BY a.id DESC');
+        $stmt->execute($params);
+        return $stmt->fetchAll();
+    }
+
     /** Busca uma atividade garantindo o dono (via modulo -> disciplina). */
     public function find(int $id, int $userId): ?array
     {
