@@ -36,7 +36,22 @@
 
             <section class="class-subjects-panel class-panel" id="materias"><div class="class-panel-head"><div><h2>Matérias da turma</h2><p>Abra uma matéria para acessar os temas e recursos.</p></div><a href="#nova-materia" class="btn btn--primary">＋ &nbsp; Nova matéria</a></div>
                 <?php if (empty($materias)): ?><div class="class-empty"><span>▤</span><div><strong>Nenhuma matéria cadastrada</strong><p>Crie a primeira matéria para organizar temas e conteúdos.</p></div></div>
-                <?php else: ?><div class="class-subject-grid"><?php foreach ($materias as $i => $m): ?><article class="class-subject-card tone-<?= $i % 4 ?>"><div class="class-subject-card__top"><span><?= htmlspecialchars($m['etapa']) ?></span><form method="post" action="/disciplinas/<?= (int) $m['id'] ?>/excluir" onsubmit="return confirm('Excluir a matéria &quot;<?= htmlspecialchars($m['nome'], ENT_QUOTES) ?>&quot; e todos os temas, conteúdos e questões?');"><?= \App\Services\Csrf::campo() ?><button type="submit" title="Excluir matéria" aria-label="Excluir <?= htmlspecialchars($m['nome']) ?>">⋮</button></form></div><h3><?= htmlspecialchars($m['nome']) ?></h3><p><?= htmlspecialchars($turma['ano_serie'] ?? $turma['nome']) ?></p><a href="/disciplinas/<?= (int) $m['id'] ?>">Abrir matéria <span>→</span></a></article><?php endforeach; ?></div><?php endif; ?>
+                <?php else: ?><?php
+                    // Silhuetas em camadas (fundo / frente) para cada paleta de cartao.
+                    $paisagens = [
+                        ['M0 120V70l30-34 22 22 34-46 40 50 26-22 38 40 30-30 40 34 40-28v82Z', 'M0 120V92l40-18 36 22 44-30 48 28 52-24 80 20v30Z'],
+                        ['M0 120V62h18v-14h16v30h14V40h20v38h16V54h14v66ZM150 120V50h14V30h10v20h14v32h12V58h18v62ZM240 120V70h20V44h12v26h28v50Z', 'M0 120V96h26V80h20v16h22V84h18v36ZM130 120V90h20V76h16v14h26v30ZM230 120V88h24V72h14v16h32v32Z'],
+                        ['M0 120V84c40-30 80-30 120-6 40 22 80 16 110-8 26-14 50-10 70 2v48Z', 'M0 120V100c46-22 90-14 130 4 40 14 86 6 170-12v28Z'],
+                        ['M0 120V80l20-30 14 18 16-34 16 40 18-24 14 30 20-40 18 44 24-22 22 30 18-26 20 34 20-18v86Z', 'M0 120V96l24-16 20 20 28-24 24 28 30-20 30 26 34-22 34 24 40-12v36Z'],
+                    ];
+                ?><div class="class-subject-grid"><?php foreach ($materias as $i => $m): $tone = $i % 4; ?><article class="class-subject-card tone-<?= $tone ?>" style="--i:<?= $i % 12 ?>">
+                    <svg class="subject-scene" viewBox="0 0 300 120" preserveAspectRatio="xMidYMax slice" aria-hidden="true"><circle class="subject-sun" cx="236" cy="34" r="16"/><path class="subject-back" d="<?= $paisagens[$tone][0] ?>"/><path class="subject-front" d="<?= $paisagens[$tone][1] ?>"/></svg>
+                    <div class="class-subject-card__top"><span><?= htmlspecialchars($m['etapa']) ?></span><form method="post" action="/disciplinas/<?= (int) $m['id'] ?>/excluir" onsubmit="return confirm('Excluir a matéria &quot;<?= htmlspecialchars($m['nome'], ENT_QUOTES) ?>&quot; e todos os temas, conteúdos e questões?');"><?= \App\Services\Csrf::campo() ?><button type="submit" title="Excluir matéria" aria-label="Excluir <?= htmlspecialchars($m['nome']) ?>">⋮</button></form></div>
+                    <small class="subject-kicker">Matéria</small>
+                    <h3><?= htmlspecialchars($m['nome']) ?></h3>
+                    <p><?= htmlspecialchars($turma['ano_serie'] ?? $turma['nome']) ?></p>
+                    <a href="/disciplinas/<?= (int) $m['id'] ?>">Abrir matéria <span>→</span></a>
+                </article><?php endforeach; ?></div><?php endif; ?>
             </section>
 
             <section class="class-panel class-tasks-panel" id="tarefas"><div class="class-panel-head"><div><h2>Tarefas da turma</h2><p>Rascunhos, publicações e entregas.</p></div><a href="#nova-tarefa">＋ Nova tarefa</a></div>

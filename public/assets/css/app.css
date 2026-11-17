@@ -1713,3 +1713,35 @@ label.mini input { padding: 6px 8px; font-size: 0.85rem; }
 @keyframes turma-float { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-4px); } }
 @media (max-width:900px) { .school-class-grid { grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); } }
 @media (prefers-reduced-motion:reduce) { .app-shell:not(.app-shell--home) .content .school-class-grid .school-class-card, .app-shell:not(.app-shell--home) .content .school-class-grid .school-class-card .school-class-icon { animation:none; opacity:1; } }
+
+/* ---- Materias da turma: cartoes-poster com paisagem ---- */
+.class-subject-grid { grid-template-columns:repeat(auto-fill,minmax(240px,1fr)) !important; gap:18px !important; }
+.app-shell:not(.app-shell--home) .content .class-subject-grid .class-subject-card { position:relative; display:flex; flex-direction:column; justify-content:flex-start; aspect-ratio:16/10; min-height:170px; padding:16px 18px; border:0; border-radius:10px; overflow:hidden; color:#fff;
+  background:linear-gradient(160deg,var(--c1),var(--c2)); backdrop-filter:none; box-shadow:0 14px 26px rgba(15,25,60,.28);
+  opacity:0; animation:mat-in .65s cubic-bezier(.2,.8,.2,1) both; animation-delay:calc(var(--i) * 100ms);
+  transition:transform .3s cubic-bezier(.2,.8,.2,1), box-shadow .3s; }
+.app-shell:not(.app-shell--home) .content .class-subject-grid .class-subject-card:hover { transform:translateY(-8px) scale(1.03); box-shadow:0 28px 44px rgba(15,25,60,.4); border:0; }
+.app-shell:not(.app-shell--home) .content .class-subject-grid .class-subject-card.tone-0 { --c1:#7b4bf0; --c2:#3a2fb8; }
+.app-shell:not(.app-shell--home) .content .class-subject-grid .class-subject-card.tone-1 { --c1:#ff6f7d; --c2:#b3306f; }
+.app-shell:not(.app-shell--home) .content .class-subject-grid .class-subject-card.tone-2 { --c1:#2aa8ff; --c2:#1747b8; }
+.app-shell:not(.app-shell--home) .content .class-subject-grid .class-subject-card.tone-3 { --c1:#ff9a5a; --c2:#d63a74; }
+.app-shell:not(.app-shell--home) .content .class-subject-grid .class-subject-card .subject-scene { position:absolute; inset:auto 0 0 0; width:100%; height:62%; pointer-events:none; }
+.app-shell:not(.app-shell--home) .content .class-subject-grid .class-subject-card .subject-sun { fill:rgba(255,255,255,.3); animation:mat-sun 4s ease-in-out infinite alternate; }
+.app-shell:not(.app-shell--home) .content .class-subject-grid .class-subject-card .subject-back { fill:rgba(255,255,255,.2); transition:transform .5s ease; }
+.app-shell:not(.app-shell--home) .content .class-subject-grid .class-subject-card .subject-front { fill:rgba(20,10,60,.38); transition:transform .5s ease; }
+.app-shell:not(.app-shell--home) .content .class-subject-grid .class-subject-card:hover .subject-back { transform:translateX(-8px); }
+.app-shell:not(.app-shell--home) .content .class-subject-grid .class-subject-card:hover .subject-front { transform:translateX(10px); }
+.app-shell:not(.app-shell--home) .content .class-subject-grid .class-subject-card .class-subject-card__top { position:relative; z-index:2; display:flex; justify-content:space-between; align-items:center; order:-1; }
+.app-shell:not(.app-shell--home) .content .class-subject-grid .class-subject-card .class-subject-card__top > span { padding:2px 10px; border-radius:999px; background:rgba(255,255,255,.2); color:#fff; font-size:.7rem; font-weight:800; }
+.app-shell:not(.app-shell--home) .content .class-subject-grid .class-subject-card .class-subject-card__top button { background:rgba(255,255,255,.2); color:#fff; transition:background .2s; }
+.app-shell:not(.app-shell--home) .content .class-subject-grid .class-subject-card .class-subject-card__top button:hover { background:#d1382f; }
+.app-shell:not(.app-shell--home) .content .class-subject-grid .class-subject-card .subject-kicker { position:relative; z-index:1; margin-top:8px; font-size:.64rem; letter-spacing:.14em; text-transform:uppercase; opacity:.85; }
+.app-shell:not(.app-shell--home) .content .class-subject-grid .class-subject-card h3 { position:relative; z-index:1; margin:0; color:#fff; font-size:1.6rem; font-weight:800; text-transform:uppercase; letter-spacing:.01em; line-height:1.05; text-shadow:0 2px 8px rgba(0,0,0,.2); }
+.app-shell:not(.app-shell--home) .content .class-subject-grid .class-subject-card p { position:relative; z-index:1; margin:4px 0 0; color:rgba(255,255,255,.9); font-size:.8rem; font-weight:700; }
+.app-shell:not(.app-shell--home) .content .class-subject-grid .class-subject-card > a { position:absolute; inset:0; z-index:1; display:flex; align-items:flex-end; justify-content:flex-end; gap:6px; padding:0 16px 12px; border:0; background:transparent; color:#fff; font-size:.76rem; font-weight:800; text-decoration:none; text-shadow:0 1px 6px rgba(0,0,0,.35); }
+.app-shell:not(.app-shell--home) .content .class-subject-grid .class-subject-card:hover > a { text-decoration:underline; text-underline-offset:3px; }
+.app-shell:not(.app-shell--home) .content .class-subject-grid .class-subject-card > a span { transition:transform .25s; }
+.app-shell:not(.app-shell--home) .content .class-subject-grid .class-subject-card:hover > a span { transform:translateX(4px); }
+@keyframes mat-in { from { opacity:0; transform:translateY(34px) scale(.92) rotate(-2deg); } to { opacity:1; transform:none; } }
+@keyframes mat-sun { to { transform:translate(-6px,6px) scale(1.15); } }
+@media (prefers-reduced-motion:reduce) { .app-shell:not(.app-shell--home) .content .class-subject-grid .class-subject-card, .app-shell:not(.app-shell--home) .content .class-subject-grid .class-subject-card .subject-sun { animation:none; opacity:1; } }
