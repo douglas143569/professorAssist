@@ -75,19 +75,34 @@
             <p>Nenhuma atividade ainda. Use o gerador acima para criar sugestões por faixa etária.</p>
         </div>
     <?php else: ?>
-        <ul class="list creche-activity-list">
-            <?php foreach ($atividades as $a): ?>
-                <li class="creche-activity-row">
-                    <a href="/creche/atividades/<?= (int) $a['id'] ?>" class="list__main"><?= htmlspecialchars($a['titulo']) ?></a>
-                    <span class="tag"><?= htmlspecialchars($a['faixa_etaria']) ?></span>
-                    <?php if (!empty($a['duracao'])): ?>
-                        <span class="tag tag--origem"><?= htmlspecialchars($a['duracao']) ?></span>
-                    <?php endif; ?>
-                    <span class="badge badge--<?= htmlspecialchars($a['status']) ?>"><?= htmlspecialchars($a['status']) ?></span>
-                    <span class="tag tag--origem"><?= $a['origem'] === 'ia' ? 'IA' : 'manual' ?></span>
-                </li>
+        <?php
+            $icones = [
+                '<path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/><circle cx="12" cy="12" r="2.5"/>',
+                '<path d="M9 18V6l10-2v12"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="16" r="2"/>',
+                '<path d="M12 21s-8-5.2-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 5.8-8 11-8 11Z"/>',
+                '<path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9L12 3Z"/>',
+                '<circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9.5v.01M15 9.5v.01"/>',
+            ];
+        ?>
+        <div class="pkg-grid">
+            <?php foreach ($atividades as $i => $a): $c = $i % 5; ?>
+                <a class="pkg-card pkg-card--<?= $c ?>" href="/creche/atividades/<?= (int) $a['id'] ?>" style="--i:<?= $i % 12 ?>">
+                    <span class="pkg-card__top">
+                        <span class="pkg-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="46" height="46" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><?= $icones[$c] ?></svg></span>
+                        <span class="pkg-card__tema"><?= htmlspecialchars($a['titulo']) ?></span>
+                        <span class="pkg-card__faixa"><?= htmlspecialchars($a['faixa_etaria']) ?></span>
+                    </span>
+                    <span class="pkg-card__foot">
+                        <span>
+                            <?php if (!empty($a['duracao'])): ?><strong><?= htmlspecialchars($a['duracao']) ?></strong> · <?php endif; ?>
+                            <span class="badge badge--<?= htmlspecialchars($a['status']) ?>"><?= htmlspecialchars($a['status']) ?></span>
+                            <span class="tag tag--origem"><?= $a['origem'] === 'ia' ? 'IA' : 'manual' ?></span>
+                        </span>
+                        <b class="pkg-card__cta">Abrir atividade ›</b>
+                    </span>
+                </a>
             <?php endforeach; ?>
-        </ul>
+        </div>
     <?php endif; ?>
 
     <div class="notice creche-notice">
