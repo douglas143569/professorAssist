@@ -32,8 +32,9 @@
                 <?php else: ?>
                     <div class="school-class-grid">
                         <?php foreach ($turmas as $indice => $t): ?>
-                            <article class="school-class-card school-class-card--<?= $indice % 3 ?>">
-                                <div class="school-class-card__top"><span class="school-stage"><?= htmlspecialchars($t['etapa'] ?? 'Turma') ?></span><span class="school-class-card__number"><?= sprintf('%02d', $indice + 1) ?></span></div>
+                            <article class="school-class-card school-class-card--<?= $indice % 3 ?>" style="--i:<?= $indice % 12 ?>">
+                                <span class="school-class-tab" aria-hidden="true"><?= $indice + 1 ?></span>
+                                <div class="school-class-card__top"><span class="school-class-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><circle cx="12" cy="10" r="3"/><path d="M6 19c.8-3 3.2-4.5 6-4.5s5.2 1.5 6 4.5"/></svg></span><span class="school-stage"><?= htmlspecialchars($t['etapa'] ?? 'Turma') ?></span></div>
                                 <h3><?= htmlspecialchars($t['nome']) ?></h3>
                                 <?php if (!empty($t['ano_serie'])): ?><p class="school-class-grade"><?= htmlspecialchars($t['ano_serie']) ?></p><?php endif; ?>
                                 <div class="school-class-facts"><span>♧ &nbsp;<?= (int) $t['n_alunos'] ?> alunos</span><span>▤ &nbsp;<?= (int) $t['n_materias'] ?> matérias</span><span>✎ &nbsp;<?= (int) $t['n_materias'] ?> <?= (int) $t['n_materias'] === 1 ? 'área de estudo' : 'áreas de estudo' ?></span></div>

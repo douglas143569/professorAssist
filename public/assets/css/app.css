@@ -1673,3 +1673,43 @@ label.mini input { padding: 6px 8px; font-size: 0.85rem; }
 .pkg-card--3 .pkg-btn--edit { color:#c99a00; }
 @keyframes pkg-bob { 0%,100% { transform:translateY(0) rotate(0); } 50% { transform:translateY(-5px) rotate(6deg); } }
 @media (prefers-reduced-motion:reduce) { .pkg-fig { animation:none; } }
+
+/* ---- Turmas da escola: cartoes de papel com aba numerada ---- */
+.app-shell:not(.app-shell--home) .content .school-class-grid .school-class-card { --ac:#f5b82e; min-height:250px; padding:20px 66px 18px 20px; border:0; border-radius:16px; color:#5d6b76;
+  background:linear-gradient(145deg,#ffffff,#eef1f4); backdrop-filter:none;
+  box-shadow:0 14px 28px rgba(15,35,50,.22), inset 0 1px #fff; transform-origin:50% 100%;
+  opacity:0; animation:turma-in .6s cubic-bezier(.2,.8,.2,1) both; animation-delay:calc(var(--i) * 90ms);
+  transition:transform .28s cubic-bezier(.2,.8,.2,1), box-shadow .28s; }
+.app-shell:not(.app-shell--home) .content .school-class-grid .school-class-card::before { content:none; }
+.app-shell:not(.app-shell--home) .content .school-class-grid .school-class-card:hover { transform:translateY(-8px) rotate(-1deg); box-shadow:0 26px 44px rgba(15,35,50,.34); border:0; }
+.app-shell:not(.app-shell--home) .content .school-class-grid .school-class-card:nth-child(9n+1) { --ac:#f5b82e; }
+.app-shell:not(.app-shell--home) .content .school-class-grid .school-class-card:nth-child(9n+2) { --ac:#ef6c3e; }
+.app-shell:not(.app-shell--home) .content .school-class-grid .school-class-card:nth-child(9n+3) { --ac:#7d6455; }
+.app-shell:not(.app-shell--home) .content .school-class-grid .school-class-card:nth-child(9n+4) { --ac:#4caf50; }
+.app-shell:not(.app-shell--home) .content .school-class-grid .school-class-card:nth-child(9n+5) { --ac:#26b5c9; }
+.app-shell:not(.app-shell--home) .content .school-class-grid .school-class-card:nth-child(9n+6) { --ac:#2a64a8; }
+.app-shell:not(.app-shell--home) .content .school-class-grid .school-class-card:nth-child(9n+7) { --ac:#5b6f9a; }
+.app-shell:not(.app-shell--home) .content .school-class-grid .school-class-card:nth-child(9n+8) { --ac:#8a58b8; }
+.app-shell:not(.app-shell--home) .content .school-class-grid .school-class-card:nth-child(9n+9) { --ac:#e8368f; }
+.app-shell:not(.app-shell--home) .content .school-class-grid .school-class-card .school-class-tab { position:absolute; top:0; right:0; bottom:0; width:48px; display:flex; justify-content:center; padding-top:13px; color:#fff; font-weight:800; font-size:.95rem;
+  background:linear-gradient(180deg,var(--ac) 0,var(--ac) 30%,color-mix(in srgb,var(--ac) 62%,#fff) 30%,color-mix(in srgb,var(--ac) 62%,#fff) 100%);
+  border-radius:0 16px 16px 0; box-shadow:-6px 0 12px rgba(15,35,50,.12); transition:width .28s cubic-bezier(.2,.8,.2,1); }
+.app-shell:not(.app-shell--home) .content .school-class-grid .school-class-card:hover .school-class-tab { width:58px; }
+.app-shell:not(.app-shell--home) .content .school-class-grid .school-class-card .school-class-card__top { justify-content:flex-start; gap:10px; }
+.app-shell:not(.app-shell--home) .content .school-class-grid .school-class-card .school-class-icon { display:grid; place-items:center; color:#3b4a56; animation:turma-float 3.2s ease-in-out infinite; animation-delay:calc(var(--i) * -.4s); }
+.app-shell:not(.app-shell--home) .content .school-class-grid .school-class-card:hover .school-class-icon { animation:pkg-pop .6s ease; color:var(--ac); }
+.app-shell:not(.app-shell--home) .content .school-class-grid .school-class-card .school-stage { background:color-mix(in srgb,var(--ac) 18%,#fff); color:#3b4a56; }
+.app-shell:not(.app-shell--home) .content .school-class-grid .school-class-card h3 { margin:14px 0 0; padding-bottom:7px; border-bottom:1.5px solid #cfd6dc; color:#1e2c38; font-size:1.05rem; text-transform:uppercase; letter-spacing:.03em; }
+.app-shell:not(.app-shell--home) .content .school-class-grid .school-class-card .school-class-grade { color:#7b8894; }
+.app-shell:not(.app-shell--home) .content .school-class-grid .school-class-card .school-class-facts { color:#7b8894; }
+.app-shell:not(.app-shell--home) .content .school-class-grid .school-class-card .school-class-ready { color:#46555f; }
+.app-shell:not(.app-shell--home) .content .school-class-grid .school-class-card .school-class-ready i { background:var(--ac); }
+.app-shell:not(.app-shell--home) .content .school-class-grid .school-class-card .school-class-open { color:#2b3a46; border:0; background:color-mix(in srgb,var(--ac) 16%,#fff); font-weight:800; }
+.app-shell:not(.app-shell--home) .content .school-class-grid .school-class-card .school-class-open:hover { background:var(--ac); color:#fff; transform:translateX(3px); }
+.app-shell:not(.app-shell--home) .content .school-class-grid .school-class-card .school-class-delete { top:14px; right:60px; }
+.app-shell:not(.app-shell--home) .content .school-class-grid .school-class-card .school-class-delete button { background:#e6eaee; color:#5d6b76; transition:background .2s, color .2s; }
+.app-shell:not(.app-shell--home) .content .school-class-grid .school-class-card .school-class-delete button:hover { background:#d1382f; color:#fff; }
+@keyframes turma-in { from { opacity:0; transform:translateY(40px) scale(.92) rotate(-3deg); } to { opacity:1; transform:none; } }
+@keyframes turma-float { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-4px); } }
+@media (max-width:900px) { .school-class-grid { grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); } }
+@media (prefers-reduced-motion:reduce) { .app-shell:not(.app-shell--home) .content .school-class-grid .school-class-card, .app-shell:not(.app-shell--home) .content .school-class-grid .school-class-card .school-class-icon { animation:none; opacity:1; } }
