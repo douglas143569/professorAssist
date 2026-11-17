@@ -549,9 +549,9 @@ class AI
 
     /**
      * Relatorio individual descritivo de um aluno da Educacao Infantil.
-     * Devolve texto corrido, pronto para a familia. NADA e gravado: o texto
-     * (com nome e observacoes da crianca) so existe na resposta HTTP, e o log
-     * de IA guarda apenas o hash do pedido, nunca a resposta (tipo sem cache).
+     * Devolve texto corrido, pronto para a familia. Quem salva e o controller
+     * (Banco de relatorios); aqui o log de IA guarda apenas o hash do pedido,
+     * nunca a resposta (tipo sem cache).
      *
      * @param array<string,string> $cabecalho nome, idade, turma, periodo, professor
      * @param array<string,string> $observacoes rotulo => texto (apenas os preenchidos)

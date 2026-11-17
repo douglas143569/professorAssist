@@ -105,9 +105,13 @@ $router->post('/creche/cronograma/limpar', 'CronogramaController@limpar');
 $router->get('/creche/cronograma/{id}', 'CronogramaController@show');
 $router->post('/creche/cronograma/{id}', 'CronogramaController@update');
 $router->post('/creche/cronograma/{id}/excluir', 'CronogramaController@excluir');
-// Relatorios individuais dos alunos (nada e armazenado)
+// Relatorios individuais dos alunos + Banco de relatorios (rotas fixas antes de {id})
 $router->get('/creche/relatorios', 'RelatorioAlunoController@index');
 $router->post('/creche/relatorios/gerar', 'RelatorioAlunoController@gerar');
+$router->get('/creche/relatorios/banco', 'RelatorioAlunoController@banco');
+$router->get('/creche/relatorios/{id}', 'RelatorioAlunoController@show');
+$router->post('/creche/relatorios/{id}', 'RelatorioAlunoController@update');
+$router->post('/creche/relatorios/{id}/excluir', 'RelatorioAlunoController@excluir');
 // Pacotes de atividades
 $router->get('/creche/pacotes', 'PacoteController@index');
 $router->post('/creche/pacotes/criar', 'PacoteController@criar');

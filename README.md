@@ -8,8 +8,11 @@ Construído em PHP 8.3 + MySQL 8.4 sobre um micro-framework MVC próprio.
 
 ## Princípios do projeto
 
-- **Só o professor usa o sistema.** Não existe portal do aluno e nenhum dado
-  pessoal de menor de idade é armazenado — provas e atividades saem em PDF.
+- **Só o professor usa o sistema.** Não existe portal do aluno e, como regra, nenhum
+  dado pessoal de menor de idade é armazenado — provas e atividades saem em PDF.
+  **Única exceção:** o *Banco de relatórios* da creche guarda nome e relatório
+  descritivo da criança, visíveis só ao professor que os criou e excluíveis a
+  qualquer momento (tabela `creche_relatorios`; fora de logs e do histórico de IA).
   Os únicos dados pessoais guardados são de professores adultos: nome, e-mail
   e celular de contato.
 - **Cadastro aberto.** Qualquer pessoa com o endereço do sistema cria a própria

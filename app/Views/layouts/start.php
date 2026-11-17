@@ -13,7 +13,8 @@
         str_starts_with($__path, '/atividades')
     );
     $__isCal = str_starts_with($__path, '/calendario') || str_starts_with($__path, '/eventos');
-    $__isCreche = str_starts_with($__path, '/creche');
+    $__isBancoRel = (bool) preg_match('#^/creche/relatorios/(banco|\d+)#', $__path);
+    $__isCreche = str_starts_with($__path, '/creche') && !$__isBancoRel;
     $__isProva = str_starts_with($__path, '/provas');
     $__isConta = str_starts_with($__path, '/admin/contas');
     $__isRevisar = str_starts_with($__path, '/revisar');
@@ -77,6 +78,10 @@
                 <a href="/creche" class="navitem <?= $__isCreche ? 'is-active' : '' ?>">
                     <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a3 3 0 0 1 3 3c0 1.5-1 2-1 3h-4c0-1-1-1.5-1-3a3 3 0 0 1 3-3Z"/><path d="M5 21v-3a7 7 0 0 1 14 0v3"/><path d="M9 13c1 1 5 1 6 0"/></svg>
                     <span>Creche</span>
+                </a>
+                <a href="/creche/relatorios/banco" class="navitem <?= $__isBancoRel ? 'is-active' : '' ?>">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7c0-1.1 3.6-2 8-2s8 .9 8 2-3.6 2-8 2-8-.9-8-2Z"/><path d="M4 7v10c0 1.1 3.6 2 8 2s8-.9 8-2V7"/><path d="M4 12c0 1.1 3.6 2 8 2s8-.9 8-2"/></svg>
+                    <span>Banco de relatórios</span>
                 </a>
                 <a href="/provas" class="navitem <?= $__isProva ? 'is-active' : '' ?>">
                     <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h6"/></svg>

@@ -1797,3 +1797,9 @@ label.mini input { padding: 6px 8px; font-size: 0.85rem; }
 /* Titulos escuros nos paineis de fundo branco (o tema escuro deixava-os quase invisiveis) */
 .app-shell:not(.app-shell--home) .content :is(.subject-box,.subject-new-topic,.subject-counts,.class-panel,.school-classes,.school-next,.school-setup-card,.school-settings-card,.school-impact,.school-new-class) :is(h2,h3,h4) { color:#14231d; }
 .app-shell:not(.app-shell--home) .content :is(.subject-box,.class-panel,.school-classes,.school-next) :is(h2,h3) > span { color:#14231d; }
+
+/* ---- Banco de relatorios ---- */
+.pkg-avatar { position:relative; width:64px; height:64px; display:grid; place-items:center; border-radius:50%; background:rgba(255,255,255,.25); border:2px solid rgba(255,255,255,.55); font-size:1.4rem; font-weight:800; animation:pkg-float 3.2s ease-in-out infinite; }
+.rel-privacidade a { color:inherit; text-decoration:underline; }
+.rel-corpo { outline:none; border-radius:6px; }
+.rel-corpo:focus { box-shadow:0 0 0 3px var(--primary-ring); }
