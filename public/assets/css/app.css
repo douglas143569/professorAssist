@@ -1582,3 +1582,17 @@ label.mini input { padding: 6px 8px; font-size: 0.85rem; }
 }
 .prosa hr { border: 0; border-top: 1px solid var(--border); margin: 1.8em 0; }
 @media (max-width: 600px) { .prosa-card { padding: 20px 18px; } }
+
+/* ---- Cronograma mensal da creche ---- */
+.cron-semana { margin:22px 0; }
+.cron-semana__titulo { display:flex; align-items:baseline; gap:10px; margin:0 0 10px; font-size:1.1rem; }
+.cron-semana__titulo .muted { font-size:.82rem; font-weight:500; }
+.cron-tabela-wrap { overflow-x:auto; border:1px solid var(--border); border-radius:var(--radius); background:var(--surface); }
+.cron-tabela { width:100%; min-width:900px; border-collapse:collapse; font-size:.84rem; }
+.cron-tabela th { text-align:left; padding:10px 12px; background:var(--primary-50); color:var(--primary-700); font-size:.76rem; text-transform:uppercase; letter-spacing:.04em; }
+.cron-tabela td { padding:12px; vertical-align:top; border-top:1px solid var(--border); line-height:1.45; }
+.cron-tabela tr.is-today td { background:#f0f8f4; }
+.cron-dia { white-space:nowrap; }
+.cron-dia span { display:block; color:var(--muted); font-size:.76rem; }
+.cron-fechamento { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:14px; margin-top:26px; }
+.cron-fechamento .card { margin:0; }

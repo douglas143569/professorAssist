@@ -40,6 +40,15 @@
                 <?php endforeach; ?>
             </select>
         </label>
+        <label>Objetivos de aprendizagem
+            <textarea name="objetivos" rows="3"><?= htmlspecialchars($item['objetivos'] ?? '') ?></textarea>
+        </label>
+        <label>Habilidades trabalhadas
+            <textarea name="habilidades" rows="2"><?= htmlspecialchars($item['habilidades'] ?? '') ?></textarea>
+        </label>
+        <label>Forma de avaliação
+            <textarea name="avaliacao" rows="2"><?= htmlspecialchars($item['avaliacao'] ?? '') ?></textarea>
+        </label>
         <label>Como conduzir
             <textarea name="descricao" rows="8"><?= htmlspecialchars($item['descricao'] ?? '') ?></textarea>
         </label>

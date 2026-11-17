@@ -415,6 +415,138 @@ class AI
         return $this->normalizarAtividadesLudicas($dados);
     }
 
+    /** Tipos de atividade que o cronograma mensal precisa distribuir ao longo do mes. */
+    public const TIPOS_CRONOGRAMA = [
+        'Musicalização', 'Contação de histórias', 'Artes visuais', 'Coordenação motora fina',
+        'Coordenação motora ampla', 'Brincadeiras sensoriais', 'Jogos educativos', 'Psicomotricidade',
+        'Linguagem oral', 'Socialização', 'Identidade e autonomia', 'Natureza e sociedade',
+        'Matemática na educação infantil',
+    ];
+
+    private const SYSTEM_CRONOGRAMA_MENSAL = 'Voce e um coordenador pedagogico especializado em Educacao '
+        . 'Infantil no Brasil. Elabora cronogramas mensais de atividades para creche, com linguagem '
+        . 'profissional de planejamento escolar, atividades ludicas, SEGURAS, inclusivas e adequadas a '
+        . 'faixa etaria, alinhadas aos campos de experiencia da BNCC, sem repeticao excessiva. '
+        . 'Responde SEMPRE com JSON valido, sem texto fora do JSON e sem blocos de codigo markdown.';
+
+    /**
+     * Gera UMA semana (um item por dia informado) do cronograma mensal.
+     *
+     * @param array<string,mixed> $contexto faixa, mes_nome, num_criancas, periodo, tema
+     * @param string[] $dias     rotulos dos dias, ex: ["Segunda-feira (03/11)", ...]
+     * @param string[] $jaUsadas titulos das semanas anteriores (evita repeticao)
+     * @return array<int,array<string,?string>> um item por dia, na ordem
+     */
+    public function gerarSemanaCronograma(
+        array $contexto,
+        int $semana,
+        array $dias,
+        array $jaUsadas = [],
+        ?int $userId = null
+    ): array {
+        $n = count($dias);
+        $camposBncc = implode('; ', \App\Controllers\CrecheController::CAMPOS);
+        $tipos = implode(', ', self::TIPOS_CRONOGRAMA);
+        $usadas = $jaUsadas
+            ? 'Atividades JA planejadas nas semanas anteriores (NAO repita): ' . implode(' | ', $jaUsadas) . "\n"
+            : '';
+        $tema = trim((string) ($contexto['tema'] ?? '')) !== '' ? "Tema do mes: {$contexto['tema']}\n" : '';
+
+        $prompt = "Crie a SEMANA {$semana} do cronograma mensal de uma turma de creche.\n"
+            . "Faixa etaria: {$contexto['faixa']}\nMes de referencia: {$contexto['mes_nome']}\n"
+            . "Numero de criancas: {$contexto['num_criancas']}\nPeriodo: {$contexto['periodo']}\n{$tema}"
+            . 'Dias desta semana: ' . implode(', ', $dias) . ".\n{$usadas}"
+            . "Distribua tipos variados de atividade ao longo do mes. Tipos possiveis: {$tipos}. "
+            . "Em cada dia use um tipo diferente dos outros dias desta semana.\n"
+            . "Campos de experiencia da BNCC (use exatamente um destes nomes por item): {$camposBncc}.\n"
+            . "Responda um array JSON com exatamente {$n} itens, na ordem dos dias. Cada item: "
+            . '"titulo" (atividade principal), "tipo_atividade", "objetivos" (objetivos de aprendizagem), '
+            . '"campo_experiencia", "descricao" (desenvolvimento passo a passo), "materiais" (recursos '
+            . 'necessarios), "habilidades" (habilidades trabalhadas, preferencialmente com codigos BNCC EI), '
+            . '"avaliacao" (forma de avaliacao por observacao), "duracao".';
+
+        $texto = $this->gerar('creche_cronograma', self::SYSTEM_CRONOGRAMA_MENSAL, $prompt, $userId);
+        $dados = $this->decodeLista($texto);
+
+        $txt = static fn($v) => $v === null
+            ? null
+            : trim(is_array($v) ? implode('; ', array_map('strval', $v)) : (string) $v);
+
+        $out = [];
+        foreach ($dados as $a) {
+            if (!is_array($a) || empty($a['titulo'])) {
+                continue;
+            }
+            $campo = trim((string) ($a['campo_experiencia'] ?? ''));
+            $campoOk = '';
+            if ($campo !== '') {
+                foreach (\App\Controllers\CrecheController::CAMPOS as $c) {
+                    if (mb_stripos($c, $campo) !== false || mb_stripos($campo, $c) !== false) {
+                        $campoOk = $c;
+                        break;
+                    }
+                }
+            }
+            $out[] = [
+                'titulo' => mb_substr((string) $a['titulo'], 0, 200),
+                'tipo_atividade' => mb_substr((string) ($a['tipo_atividade'] ?? ''), 0, 80),
+                'objetivos' => $txt($a['objetivos'] ?? null),
+                'campo_experiencia' => $campoOk,
+                'descricao' => $txt($a['descricao'] ?? null),
+                'materiais' => $txt($a['materiais'] ?? null),
+                'habilidades' => $txt($a['habilidades'] ?? null),
+                'avaliacao' => $txt($a['avaliacao'] ?? null),
+                'duracao' => !empty($a['duracao']) ? mb_substr((string) $a['duracao'], 0, 60) : null,
+            ];
+        }
+        if (count($out) < 1) {
+            throw new AIException('A IA nao retornou a semana ' . $semana . ' em formato valido. Tente novamente.');
+        }
+        return $out;
+    }
+
+    /**
+     * Fechamento do cronograma mensal: resumo dos objetivos, competencias,
+     * adaptacoes para necessidades especificas e observacoes pedagogicas.
+     *
+     * @param array<string,mixed> $contexto
+     * @param string[] $titulos titulos das atividades do mes
+     * @return array{resumo_objetivos:string,competencias:string,adaptacoes:string,observacoes:string}
+     */
+    public function gerarFechamentoCronograma(array $contexto, array $titulos, ?int $userId = null): array
+    {
+        $tema = trim((string) ($contexto['tema'] ?? '')) !== '' ? "Tema do mes: {$contexto['tema']}\n" : '';
+        $prompt = "Com base no cronograma mensal ja planejado, elabore o fechamento pedagogico.\n"
+            . "Faixa etaria: {$contexto['faixa']}\nMes: {$contexto['mes_nome']}\n"
+            . "Numero de criancas: {$contexto['num_criancas']}\nPeriodo: {$contexto['periodo']}\n{$tema}"
+            . 'Atividades do mes: ' . implode(' | ', $titulos) . "\n"
+            . 'Responda UM objeto JSON com as chaves, todas em texto (use quebras de linha e "- " para '
+            . 'listar): "resumo_objetivos" (resumo dos objetivos do mes), "competencias" (competencias '
+            . 'desenvolvidas), "adaptacoes" (sugestoes de adaptacao para criancas com necessidades '
+            . 'especificas), "observacoes" (observacoes pedagogicas finais).';
+
+        $texto = $this->gerar('creche_cronograma', self::SYSTEM_CRONOGRAMA_MENSAL, $prompt, $userId);
+        $t = trim((string) preg_replace('/^```(?:json)?\s*|\s*```$/i', '', trim($texto)));
+        $d = json_decode($t, true);
+        if (!is_array($d)) {
+            $ini = strpos($t, '{');
+            $fim = strrpos($t, '}');
+            $d = ($ini !== false && $fim > $ini) ? json_decode(substr($t, $ini, $fim - $ini + 1), true) : null;
+        }
+        if (!is_array($d)) {
+            throw new AIException('A IA nao retornou o fechamento do mes em formato valido.');
+        }
+        $txt = static fn($v) => is_array($v)
+            ? '- ' . implode("\n- ", array_map('strval', $v))
+            : trim((string) $v);
+        return [
+            'resumo_objetivos' => $txt($d['resumo_objetivos'] ?? ''),
+            'competencias' => $txt($d['competencias'] ?? ''),
+            'adaptacoes' => $txt($d['adaptacoes'] ?? ''),
+            'observacoes' => $txt($d['observacoes'] ?? ''),
+        ];
+    }
+
     /**
      * Monta um pacote de FOLHAS de atividades IMPRIMIVEIS para Educacao Infantil,
      * em dois formatos claros: 'escrever' (figura -> quadro) e 'circular'

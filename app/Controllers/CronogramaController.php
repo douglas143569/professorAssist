@@ -9,100 +9,158 @@ use App\Services\Logger;
 
 class CronogramaController extends AppController
 {
-    /** Segunda-feira da semana a exibir (a partir de ?inicio ou hoje). */
-    private function segundaDaSemana(): int
+    private const MESES = [1 => 'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho',
+        'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+    private const DIAS = ['Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira'];
+
+    /** Mes exibido (AAAA-MM), vindo de ?mes ou do POST; padrao: mes atual. */
+    private function mesRef(): string
     {
-        $ref = $_GET['inicio'] ?? ($_POST['inicio'] ?? '');
-        $base = ($ref !== '' && strtotime($ref)) ? strtotime($ref) : time();
-        return strtotime('monday this week', $base);
+        $m = $_GET['mes'] ?? ($_POST['mes'] ?? '');
+        return preg_match('/^\d{4}-(0[1-9]|1[0-2])$/', (string) $m) ? $m : date('Y-m');
+    }
+
+    public static function nomeDoMes(string $mesRef): string
+    {
+        return self::MESES[(int) substr($mesRef, 5, 2)] . ' de ' . substr($mesRef, 0, 4);
+    }
+
+    /**
+     * Dias uteis (seg-sex) do mes agrupados por semana (comecando na segunda).
+     * @return array<int,string[]> lista de semanas, cada uma com datas Y-m-d
+     */
+    private function semanasDoMes(string $mesRef): array
+    {
+        $semanas = [];
+        $ultimo = (int) date('t', strtotime($mesRef . '-01'));
+        for ($d = 1; $d <= $ultimo; $d++) {
+            $ts = strtotime(sprintf('%s-%02d', $mesRef, $d));
+            if ((int) date('N', $ts) > 5) {
+                continue;
+            }
+            $semanas[date('o-W', $ts)][] = date('Y-m-d', $ts);
+        }
+        return array_values($semanas);
     }
 
     public function index(): void
     {
         $prof = $this->professor();
-        $seg = $this->segundaDaSemana();
-        $sex = strtotime('+4 days', $seg);
+        $mes = $this->mesRef();
+        $model = new CrecheCronograma();
 
-        $inicio = date('Y-m-d', $seg);
-        $fim = date('Y-m-d', $sex);
-
-        // Agrupa itens por dia (Y-m-d).
-        $itens = (new CrecheCronograma())->byWeek($prof['id'], $inicio, $fim);
-        $porDia = [];
+        $itens = $model->byMonth($prof['id'], $mes);
+        $semanas = [];
+        foreach ($this->semanasDoMes($mes) as $i => $datas) {
+            $semanas[$i + 1] = array_fill_keys($datas, []);
+        }
         foreach ($itens as $it) {
-            $porDia[$it['data']][] = $it;
+            foreach ($semanas as $n => $dias) {
+                if (array_key_exists($it['data'], $dias)) {
+                    $semanas[$n][$it['data']][] = $it;
+                }
+            }
         }
 
         $this->view('creche.cronograma', [
-            'title' => 'Cronograma de atividades',
+            'title' => 'Cronograma mensal de atividades',
             'faixas' => CrecheController::FAIXAS,
-            'campos' => CrecheController::CAMPOS,
-            'seg' => $seg,
-            'inicio' => $inicio,
-            'fim' => $fim,
-            'porDia' => $porDia,
+            'mes' => $mes,
+            'mesNome' => self::nomeDoMes($mes),
+            'mesAnterior' => date('Y-m', strtotime($mes . '-01 -1 month')),
+            'mesSeguinte' => date('Y-m', strtotime($mes . '-01 +1 month')),
+            'semanas' => $semanas,
+            'nomesDias' => self::DIAS,
+            'resumo' => $model->resumoDoMes($prof['id'], $mes),
             'temItens' => count($itens) > 0,
         ]);
     }
 
-    /** Cria as atividades da semana inteira com a IA. */
+    /** Cria o cronograma do mes inteiro com a IA (uma chamada por semana + fechamento). */
     public function criar(): void
     {
         $prof = $this->professor();
-        $seg = $this->segundaDaSemana();
+        $mes = $this->mesRef();
+        $volta = '/creche/cronograma?mes=' . $mes;
 
         $faixa = trim($_POST['faixa_etaria'] ?? '');
         if (!in_array($faixa, CrecheController::FAIXAS, true)) {
             $this->flash('Selecione uma faixa etária válida.');
-            $this->redirect('/creche/cronograma?inicio=' . date('Y-m-d', $seg));
+            $this->redirect($volta);
             return;
         }
-        $campo = in_array($_POST['campo_experiencia'] ?? '', CrecheController::CAMPOS, true)
-            ? $_POST['campo_experiencia'] : '';
-        $tema = trim($_POST['tema'] ?? '');
+        $periodo = in_array($_POST['periodo'] ?? '', ['Integral', 'Parcial'], true) ? $_POST['periodo'] : 'Integral';
+        $numCriancas = max(0, min(60, (int) ($_POST['num_criancas'] ?? 0)));
+        $tema = mb_substr(trim($_POST['tema'] ?? ''), 0, 200);
 
+        $contexto = [
+            'faixa' => $faixa,
+            'mes_nome' => self::nomeDoMes($mes),
+            'num_criancas' => $numCriancas > 0 ? (string) $numCriancas : 'nao informado',
+            'periodo' => $periodo,
+            'tema' => $tema,
+        ];
+
+        // Uma chamada por semana: respostas menores e sem estourar o limite de tokens.
+        @set_time_limit(0);
+        $ai = new AI();
+        $gerados = [];
+        $titulos = [];
         try {
-            $atividades = (new AI())->gerarCronogramaSemanal(
-                faixaEtaria: $faixa,
-                campoExperiencia: $campo,
-                tema: $tema,
-                dias: 5,
-                userId: (int) $prof['id'],
-            );
+            foreach ($this->semanasDoMes($mes) as $i => $datas) {
+                $rotulos = array_map(
+                    fn($d) => self::DIAS[(int) date('N', strtotime($d)) - 1] . ' (' . date('d/m', strtotime($d)) . ')',
+                    $datas
+                );
+                $itens = $ai->gerarSemanaCronograma($contexto, $i + 1, $rotulos, $titulos, (int) $prof['id']);
+                foreach ($datas as $k => $data) {
+                    if (!isset($itens[$k])) {
+                        break;
+                    }
+                    $gerados[] = $itens[$k] + ['data' => $data, 'semana' => $i + 1];
+                    $titulos[] = $itens[$k]['titulo'];
+                }
+            }
+            $fechamento = $ai->gerarFechamentoCronograma($contexto, $titulos, (int) $prof['id']);
         } catch (AIException $e) {
             $this->flash('Nao foi possivel criar o cronograma: ' . $e->getMessage());
-            $this->redirect('/creche/cronograma?inicio=' . date('Y-m-d', $seg));
+            $this->redirect($volta);
             return;
         }
 
+        // So apaga o mes anterior depois que TUDO foi gerado com sucesso.
         $model = new CrecheCronograma();
-        // Cada atividade vai para um dia da semana (segunda a sexta), em ordem.
-        $i = 0;
-        foreach ($atividades as $a) {
-            if ($i > 4) {
-                break;
-            }
-            $dia = date('Y-m-d', strtotime("+{$i} days", $seg));
+        $model->deleteMonth((int) $prof['id'], $mes);
+        foreach ($gerados as $g) {
             $model->create([
                 'user_id' => $prof['id'],
                 'faixa_etaria' => $faixa,
-                'campo_experiencia' => $campo,
-                'data' => $dia,
-                'titulo' => $a['titulo'],
-                'descricao' => $a['descricao'],
-                'materiais' => $a['materiais'],
-                'duracao' => $a['duracao'],
+                'campo_experiencia' => $g['campo_experiencia'],
+                'data' => $g['data'],
+                'titulo' => $g['titulo'],
+                'descricao' => $g['descricao'],
+                'materiais' => $g['materiais'],
+                'duracao' => $g['duracao'],
+                'objetivos' => $g['objetivos'],
+                'habilidades' => $g['habilidades'],
+                'avaliacao' => $g['avaliacao'],
+                'tipo_atividade' => $g['tipo_atividade'],
+                'semana' => $g['semana'],
+                'mes_ref' => $mes,
                 'origem' => 'ia',
             ]);
-            $i++;
         }
-
-        Logger::activity('creche.cronograma.created', [
-            'description' => "IA criou cronograma da semana ({$faixa})",
+        $model->salvarResumoDoMes($fechamento + [
+            'user_id' => $prof['id'], 'mes_ref' => $mes, 'faixa_etaria' => $faixa,
+            'num_criancas' => $numCriancas, 'periodo' => $periodo, 'tema' => $tema,
         ]);
 
-        $this->flash('Cronograma da semana criado. Ajuste o que quiser.');
-        $this->redirect('/creche/cronograma?inicio=' . date('Y-m-d', $seg));
+        Logger::activity('creche.cronograma.created', [
+            'description' => "IA criou cronograma mensal {$mes} ({$faixa})",
+        ]);
+
+        $this->flash('Cronograma de ' . self::nomeDoMes($mes) . ' criado. Ajuste o que quiser.');
+        $this->redirect($volta);
     }
 
     public function show(string $id): void
@@ -155,10 +213,13 @@ class CronogramaController extends AppController
             'descricao' => $_POST['descricao'] ?? '',
             'materiais' => $_POST['materiais'] ?? '',
             'duracao' => trim($_POST['duracao'] ?? ''),
+            'objetivos' => $_POST['objetivos'] ?? '',
+            'habilidades' => $_POST['habilidades'] ?? '',
+            'avaliacao' => $_POST['avaliacao'] ?? '',
         ]);
 
         $this->flash('Atividade atualizada.');
-        $this->redirect('/creche/cronograma?inicio=' . date('Y-m-d', strtotime('monday this week', strtotime($data))));
+        $this->redirect('/creche/cronograma?mes=' . date('Y-m', strtotime($data)));
     }
 
     public function excluir(string $id): void
@@ -174,23 +235,18 @@ class CronogramaController extends AppController
 
         $model->delete((int) $id);
         $this->flash('Atividade removida do cronograma.');
-        $this->redirect('/creche/cronograma?inicio=' . date('Y-m-d', strtotime('monday this week', strtotime($item['data']))));
+        $this->redirect('/creche/cronograma?mes=' . date('Y-m', strtotime($item['data'])));
     }
 
-    /** Limpa todas as atividades da semana exibida. */
+    /** Limpa o cronograma do mes exibido (atividades + resumo). */
     public function limpar(): void
     {
         $prof = $this->professor();
-        $seg = $this->segundaDaSemana();
-        $sex = strtotime('+4 days', $seg);
+        $mes = $this->mesRef();
 
-        (new CrecheCronograma())->deleteWeek(
-            (int) $prof['id'],
-            date('Y-m-d', $seg),
-            date('Y-m-d', $sex)
-        );
+        (new CrecheCronograma())->deleteMonth((int) $prof['id'], $mes);
 
-        $this->flash('Semana limpa.');
-        $this->redirect('/creche/cronograma?inicio=' . date('Y-m-d', $seg));
+        $this->flash('Cronograma de ' . self::nomeDoMes($mes) . ' limpo.');
+        $this->redirect('/creche/cronograma?mes=' . $mes);
     }
 }
