@@ -28,48 +28,53 @@
             </div>
         </div>
 
-        <div class="pack-grid">
-            <?php foreach ($itens as $it): ?>
-                <?php $verUrl = '/creche/pacotes/' . (int) $pacote['id'] . '/imprimir?itens=' . (int) $it['id']; ?>
-                <div class="card pack-item">
-                    <label class="pack-check">
-                        <input type="checkbox" class="js-item" value="<?= (int) $it['id'] ?>" checked>
-                        <?php if (!empty($it['tipo'])): ?><span class="tag"><?= htmlspecialchars($it['tipo']) ?></span><?php endif; ?>
-                        <?php if (!empty($it['campo_bncc'])): ?><span class="tag"><?= htmlspecialchars($it['campo_bncc']) ?></span><?php endif; ?>
-                    </label>
-                    <a class="pack-item__open" href="<?= $verUrl ?>" title="Abrir no tamanho de impressão">
-                        <h3><?= htmlspecialchars($it['titulo']) ?></h3>
-                        <?php if (!empty($it['instrucao'])): ?>
-                            <p class="muted pack-item__desc"><?= htmlspecialchars($it['instrucao']) ?></p>
-                        <?php endif; ?>
-                        <?php
-                            $emojis = [];
-                            foreach ($it['itens'] ?? [] as $sub) {
-                                if (!empty($sub['figura'])) {
-                                    $emojis[] = $sub['figura'];
-                                } elseif (!empty($sub['opcoes'])) {
-                                    $emojis = array_merge($emojis, $sub['opcoes']);
-                                } elseif (!empty($sub['esquerda'])) {
-                                    $emojis[] = $sub['esquerda'];
-                                    if (!empty($sub['direita'])) { $emojis[] = $sub['direita']; }
-                                } elseif (!empty($sub['sequencia'])) {
-                                    $emojis = array_merge($emojis, $sub['sequencia']);
-                                }
-                            }
-                            $emojis = array_slice($emojis, 0, 8);
-                        ?>
-                        <?php if ($emojis): ?>
-                            <div class="pack-figs">
-                                <?php foreach ($emojis as $em): ?>
-                                    <span class="pack-fig"><?= htmlspecialchars($em) ?></span>
-                                <?php endforeach; ?>
-                            </div>
-                        <?php endif; ?>
-                    </a>
-                    <span class="pack-item__foot">
-                        <a class="btn btn--ghost btn--sm" href="<?= $verUrl ?>">Abrir ↗</a>
-                        <a class="act-card__edit" href="/creche/pacote-itens/<?= (int) $it['id'] ?>">Editar ✎</a>
-                    </span>
+        <div class="pkg-grid pkg-grid--wide">
+            <?php foreach ($itens as $n => $it): $c = $n % 5; ?>
+                <?php
+                    $verUrl = '/creche/pacotes/' . (int) $pacote['id'] . '/imprimir?itens=' . (int) $it['id'];
+                    $emojis = [];
+                    foreach ($it['itens'] ?? [] as $sub) {
+                        if (!empty($sub['figura'])) {
+                            $emojis[] = $sub['figura'];
+                        } elseif (!empty($sub['opcoes'])) {
+                            $emojis = array_merge($emojis, $sub['opcoes']);
+                        } elseif (!empty($sub['esquerda'])) {
+                            $emojis[] = $sub['esquerda'];
+                            if (!empty($sub['direita'])) { $emojis[] = $sub['direita']; }
+                        } elseif (!empty($sub['sequencia'])) {
+                            $emojis = array_merge($emojis, $sub['sequencia']);
+                        }
+                    }
+                    $emojis = array_slice($emojis, 0, 8);
+                ?>
+                <div class="pkg-card pkg-card--<?= $c ?>" style="--i:<?= $n % 12 ?>">
+                    <div class="pkg-card__top pkg-card__top--item">
+                        <label class="pkg-check">
+                            <input type="checkbox" class="js-item" value="<?= (int) $it['id'] ?>" checked>
+                            <span>Imprimir</span>
+                        </label>
+                        <span class="pkg-tags">
+                            <?php if (!empty($it['tipo'])): ?><span class="pkg-tag"><?= htmlspecialchars($it['tipo']) ?></span><?php endif; ?>
+                            <?php if (!empty($it['campo_bncc'])): ?><span class="pkg-tag"><?= htmlspecialchars($it['campo_bncc']) ?></span><?php endif; ?>
+                        </span>
+                        <a class="pkg-open" href="<?= $verUrl ?>" title="Abrir no tamanho de impressão">
+                            <span class="pkg-card__tema"><?= htmlspecialchars($it['titulo']) ?></span>
+                            <?php if (!empty($it['instrucao'])): ?>
+                                <span class="pkg-desc"><?= htmlspecialchars($it['instrucao']) ?></span>
+                            <?php endif; ?>
+                            <?php if ($emojis): ?>
+                                <span class="pkg-figs">
+                                    <?php foreach ($emojis as $k => $em): ?>
+                                        <span class="pkg-fig" style="--k:<?= $k ?>"><?= htmlspecialchars($em) ?></span>
+                                    <?php endforeach; ?>
+                                </span>
+                            <?php endif; ?>
+                        </a>
+                    </div>
+                    <div class="pkg-card__foot pkg-card__foot--row">
+                        <a class="pkg-btn" href="<?= $verUrl ?>">Abrir ↗</a>
+                        <a class="pkg-btn pkg-btn--edit" href="/creche/pacote-itens/<?= (int) $it['id'] ?>">Editar ✎</a>
+                    </div>
                 </div>
             <?php endforeach; ?>
         </div>
