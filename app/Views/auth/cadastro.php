@@ -61,6 +61,12 @@
                            required minlength="8" autocomplete="new-password">
                 </label>
 
+                <label class="aceite-lgpd">
+                    <input type="checkbox" name="aceite" value="1" required>
+                    <span>Li e concordo com a <a href="/privacidade" target="_blank" rel="noopener">Política de Privacidade</a>
+                    e a <a href="/cookies" target="_blank" rel="noopener">Política de Cookies</a>.</span>
+                </label>
+
                 <button type="submit" class="btn btn--primary login-btn">Criar conta</button>
             </form>
 
@@ -69,7 +75,8 @@
             </p>
         </div>
 
-        <p class="login-nota">Assistente para Professores</p>
+        <p class="login-nota">Assistente para Professores · <a href="/privacidade">Privacidade</a> · <a href="/cookies">Cookies</a></p>
     </main>
+    <?php require __DIR__ . '/../layouts/cookie_banner.php'; ?>
 </body>
 </html>

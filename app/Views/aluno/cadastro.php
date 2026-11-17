@@ -72,13 +72,22 @@
                            required minlength="8" autocomplete="new-password">
                 </label>
 
+                <label class="aceite-lgpd">
+                    <input type="checkbox" name="aceite" value="1" required>
+                    <span>Li e concordo com a <a href="/privacidade" target="_blank" rel="noopener">Política de Privacidade</a>.</span>
+                </label>
+                <label class="aceite-lgpd">
+                    <input type="checkbox" name="responsavel" value="1" required>
+                    <span><strong>Menores de 18 anos:</strong> declaro que um dos meus pais ou responsável legal autorizou este cadastro e o uso dos meus dados pela escola/professor, ou que tenho 18 anos ou mais.</span>
+                </label>
+
                 <button type="submit" class="btn btn--primary login-btn">Criar acesso</button>
             </form>
             <?php endif; ?>
 
             <p class="login-rodape">Já tem acesso? <a href="/aluno/login">Entrar</a></p>
         </div>
-        <p class="login-nota">Assistente para Professores</p>
+        <p class="login-nota">Assistente para Professores · <a href="/privacidade">Privacidade</a> · <a href="/cookies">Cookies</a></p>
     </main>
 
     <script>
@@ -107,5 +116,6 @@
             if (marcada) { turma.value = marcada.value; }
         })();
     </script>
+    <?php require __DIR__ . '/../layouts/cookie_banner.php'; ?>
 </body>
 </html>

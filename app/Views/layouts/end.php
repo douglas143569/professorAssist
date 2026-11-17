@@ -1,4 +1,5 @@
             </main>
+            <footer class="legal-foot legal-foot--app"><a href="/privacidade">Privacidade</a> · <a href="/cookies">Cookies</a> · <a href="/meus-dados">Meus dados (LGPD)</a></footer>
         </div>
     </div>
 
@@ -89,5 +90,6 @@
             }
         })();
     </script>
+    <?php require __DIR__ . '/cookie_banner.php'; ?>
 </body>
 </html>

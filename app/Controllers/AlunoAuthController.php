@@ -125,6 +125,10 @@ class AlunoAuthController extends Controller
             $this->erroCadastro('As duas senhas não são iguais.', $dados);
         }
 
+        if (($_POST['aceite'] ?? '') !== '1' || ($_POST['responsavel'] ?? '') !== '1') {
+            $this->erroCadastro('É preciso aceitar a Política de Privacidade e confirmar a autorização do responsável (ou ter 18 anos).', $dados);
+        }
+
         $matricula = new Matricula();
 
         if ($matricula->nomeExisteNaTurma($turmaId, $nome)) {
@@ -134,7 +138,9 @@ class AlunoAuthController extends Controller
             );
         }
 
-        $alunoId = (new User())->criarAluno($nome, $senha);
+        $usuarios = new User();
+        $alunoId = $usuarios->criarAluno($nome, $senha);
+        $usuarios->registrarAceite($alunoId, \App\Services\Legal::VERSAO);
         $matricula->inscrever($turmaId, $alunoId);
 
         Logger::activity('aluno.registered', [

@@ -21,6 +21,13 @@ $router->post('/admin/financeiro/acesso/liberar', 'AdminBillingController@libera
 $router->post('/admin/financeiro/acesso/bloquear', 'AdminBillingController@bloquearAcesso');
 $router->post('/admin/financeiro/promocoes', 'AdminBillingController@criarPromocao');
 
+// LGPD: politicas publicas e direitos do titular (professor)
+$router->get('/privacidade', 'PoliticaController@privacidade');
+$router->get('/cookies', 'PoliticaController@cookies');
+$router->get('/meus-dados', 'PrivacidadeController@index');
+$router->get('/meus-dados/exportar', 'PrivacidadeController@exportar');
+$router->post('/meus-dados/excluir', 'PrivacidadeController@excluir');
+
 // Autenticacao do ALUNO (escola + turma + nome + senha; sem e-mail)
 $router->get('/aluno/login', 'AlunoAuthController@loginForm');
 $router->post('/aluno/login', 'AlunoAuthController@login');

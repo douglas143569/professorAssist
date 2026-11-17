@@ -1869,3 +1869,46 @@ label.mini input { padding: 6px 8px; font-size: 0.85rem; }
 .topic-tool-card--bank:hover { text-decoration:none; }
 .topic-tool-card--bank .bank-sum { display:grid; grid-template-columns:auto 1fr; gap:6px 16px; align-items:center; min-height:150px; padding:26px 22px 18px; }
 .topic-tool-card--bank:hover .bank-sum { background:radial-gradient(90% 120% at 0% 0%,var(--tc-bg),transparent 70%); }
+
+/* ---- LGPD: politicas, aviso de cookies e aceite ---- */
+.legal-body { margin:0; background:#f4f7f6; color:#14231d; font-family:inherit; }
+.legal-top { display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; padding:14px 28px; background:#fff; border-bottom:1px solid #e7eceb; position:sticky; top:0; z-index:5; }
+.legal-brand { display:inline-flex; align-items:center; gap:10px; color:#14231d; text-decoration:none; font-size:.95rem; line-height:1.1; }
+.legal-nav { display:flex; gap:6px 18px; flex-wrap:wrap; font-size:.88rem; }
+.legal-nav a { color:#46554f; text-decoration:none; padding:4px 0; border-bottom:2px solid transparent; }
+.legal-nav a:hover, .legal-nav a.is-active { color:#0f7a54; border-color:#0f7a54; }
+.legal-wrap { max-width:860px; margin:0 auto; padding:34px 20px 20px; }
+.legal-doc { background:#fff; border:1px solid #e7eceb; border-radius:16px; padding:34px 38px; box-shadow:0 6px 22px rgba(16,40,32,.06); line-height:1.7; color:#26332d; }
+.legal-doc h1 { margin:0 0 4px; color:#14231d; font-size:1.8rem; }
+.legal-doc h2 { margin:30px 0 8px; padding-top:6px; color:#0b5c40; font-size:1.2rem; }
+.legal-doc p, .legal-doc li { color:#26332d; }
+.legal-doc a { color:#0f7a54; }
+.legal-meta { margin:0 0 18px; color:#79857f; font-size:.84rem; }
+.legal-toc { display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:6px 14px; margin:18px 0 6px; padding:14px 16px; border-radius:12px; background:#ecf7f1; font-size:.88rem; }
+.legal-toc a { color:#0b5c40; text-decoration:none; }
+.legal-toc a:hover { text-decoration:underline; }
+.legal-table-wrap { overflow-x:auto; margin:10px 0; }
+.legal-table { width:100%; border-collapse:collapse; font-size:.88rem; }
+.legal-table th { text-align:left; background:#ecf7f1; color:#0b5c40; padding:9px 11px; }
+.legal-table td { padding:10px 11px; vertical-align:top; border-top:1px solid #e7eceb; color:#26332d; }
+.legal-foot { padding:20px; text-align:center; color:#79857f; font-size:.82rem; }
+.legal-foot a { color:#46554f; }
+.legal-foot--app { margin-top:24px; }
+.legal-body .legal-foot { margin-bottom:70px; }
+.ck-banner { position:fixed; left:16px; right:16px; bottom:16px; z-index:9999; max-width:760px; margin:0 auto; display:flex; align-items:center; gap:16px; padding:14px 18px; border-radius:14px; background:#14231d; color:#fff; box-shadow:0 14px 34px rgba(0,0,0,.35); animation:ck-in .5s ease both; }
+.ck-banner[hidden] { display:none; }
+.ck-banner p { margin:0; font-size:.84rem; line-height:1.5; }
+.ck-banner a { color:#7ee8c1; }
+.ck-banner .btn { flex:0 0 auto; }
+@keyframes ck-in { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:none; } }
+@media (max-width:600px) { .ck-banner { flex-direction:column; align-items:stretch; } .legal-doc { padding:22px 18px; } }
+.aceite-lgpd { display:flex !important; flex-direction:row !important; align-items:flex-start; gap:10px; font-size:.84rem; font-weight:400; line-height:1.45; color:#46554f; }
+.aceite-lgpd input[type=checkbox] { width:18px; height:18px; flex:0 0 18px; margin-top:2px; accent-color:#0f7a54; }
+.aceite-lgpd a { color:#0f7a54; }
+.lgpd-dados { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px 20px; margin:0; }
+.lgpd-dados dt { font-size:.74rem; text-transform:uppercase; letter-spacing:.05em; color:#79857f; }
+.lgpd-dados dd { margin:2px 0 0; font-weight:600; }
+.lgpd-perigo { border-color:#f6c9c6 !important; }
+.login-nota a { color:inherit; text-decoration:underline; }
+
+.login-aviso { margin:0 0 14px; padding:10px 14px; border-radius:10px; background:#e7f6ee; color:#0b5c40; font-size:.88rem; }

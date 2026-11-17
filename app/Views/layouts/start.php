@@ -101,6 +101,10 @@
                         <span>Contas</span>
                     </a>
                 <?php endif; ?>
+                <a href="/meus-dados" class="navitem <?= str_starts_with($__path, '/meus-dados') ? 'is-active' : '' ?>">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v6c0 4.5 3.3 8 8 9 4.7-1 8-4.5 8-9V6l-8-3Z"/><path d="M9 12l2 2 4-4"/></svg>
+                    <span>Privacidade (LGPD)</span>
+                </a>
                 <?php if (!$__ehAdmin): ?>
                     <a href="/assinatura" class="navitem <?= $__isAssinatura ? 'is-active' : '' ?>">
                         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v6c0 4.500 3.300 8 8 9 4.700-1 8-4.500 8-9V6l-8-3Z"/><path d="m9 12 2 2 4-4"/></svg>

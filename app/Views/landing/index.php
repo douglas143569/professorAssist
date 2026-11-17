@@ -226,9 +226,10 @@ $seta = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="cur
     </div>
     <div class="lp-wrap lp-bar__legal">
         <span>© <?= date('Y') ?> Assistente do Professor</span>
-        <span><a href="/login">Entrar</a> · <a href="/cadastro">Criar conta</a> · <a href="/aluno/login">Sou aluno</a></span>
+        <span><a href="/login">Entrar</a> · <a href="/cadastro">Criar conta</a> · <a href="/aluno/login">Sou aluno</a> · <a href="/privacidade">Privacidade</a> · <a href="/cookies">Cookies</a></span>
     </div>
 </footer>
 
+<?php require __DIR__ . '/../layouts/cookie_banner.php'; ?>
 </body>
 </html>

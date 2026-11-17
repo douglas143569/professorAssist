@@ -43,6 +43,10 @@
 
             <h2 class="login-title">Bem-vindo de volta!</h2>
             <p class="login-sub">Entre para continuar sua jornada educacional.</p>
+            <?php if (!empty($_SESSION['flash'])): ?>
+                <div class="login-aviso" role="status"><?= htmlspecialchars($_SESSION['flash']) ?></div>
+                <?php unset($_SESSION['flash']); ?>
+            <?php endif; ?>
 
             <?php if (!empty($erro)): ?>
                 <div class="login-erro" role="alert">
@@ -84,5 +88,6 @@
         <p class="login-panel__note">Um espaço feito para quem transforma o futuro.</p>
         </section>
     </main>
+    <?php require __DIR__ . '/../layouts/cookie_banner.php'; ?>
 </body>
 </html>

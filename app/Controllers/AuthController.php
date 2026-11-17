@@ -143,6 +143,10 @@ class AuthController extends Controller
             $this->erroCadastro('As duas senhas não são iguais.', $dados);
         }
 
+        if (($_POST['aceite'] ?? '') !== '1') {
+            $this->erroCadastro('Para criar a conta é preciso aceitar a Política de Privacidade e a Política de Cookies.', $dados);
+        }
+
         $users = new User();
 
         if ($users->findByEmail($dados['email']) !== null) {
@@ -158,6 +162,7 @@ class AuthController extends Controller
 
         // role fixo: cadastro proprio nunca cria administrador.
         $id = $users->create($dados['name'], $dados['email'], $senha, User::ROLE_PROFESSOR, $celular);
+        $users->registrarAceite($id, \App\Services\Legal::VERSAO);
 
         Logger::activity('conta.registered', [
             'user_id' => $id,

@@ -75,7 +75,7 @@
                 <a href="/login">Sou professor</a>
             </p>
         </div>
-        <p class="login-nota">Assistente para Professores</p>
+        <p class="login-nota">Assistente para Professores · <a href="/privacidade">Privacidade</a> · <a href="/cookies">Cookies</a></p>
     </main>
 
     <script>
@@ -106,5 +106,6 @@
             if (marcada) { turma.value = marcada.value; }
         })();
     </script>
+    <?php require __DIR__ . '/../layouts/cookie_banner.php'; ?>
 </body>
 </html>

@@ -142,3 +142,11 @@ de idade. A correção é feita pelo professor com o gabarito de cada versão.
 
 Consulte [CLAUDE.md](CLAUDE.md) para as convenções completas (camadas, logging,
 migrations, segurança e commits).
+
+## LGPD e privacidade
+
+- **Páginas públicas:** `/privacidade` (Política de Privacidade) e `/cookies` (Política de Cookies). Os dados da empresa vêm do `.env` (`LGPD_CONTROLADOR`, `LGPD_CNPJ`, `LGPD_CONTATO_EMAIL`, `LGPD_ENCARREGADO`) — **preencha antes de publicar**. O texto é um modelo técnico e deve ser revisado por advogado.
+- **Cookies:** só o de sessão (`PHPSESSID`) e um item de `localStorage` (`ap_aviso_cookies`). Aviso informativo em todas as telas; se um dia entrar analytics/marketing, trocar por consentimento granular.
+- **Aceite registrado:** `users.aceite_privacidade_em` / `aceite_versao` (versão em `App\Services\Legal::VERSAO`; mude-a ao alterar as políticas). Cadastro de aluno exige também a declaração de autorização do responsável.
+- **Direitos do titular (professor):** `/meus-dados` — baixar cópia em JSON e excluir conta (`App\Services\ContaPrivacidade`). A exclusão apaga o conteúdo, os arquivos enviados e os alunos que ficaram sem turma, e anonimiza a conta; assinaturas/pagamentos e registros de acesso ficam retidos por obrigação legal (fiscal e Marco Civil).
+- Pedidos de alunos/responsáveis são atendidos pelo contato da política (não há autoatendimento para alunos).

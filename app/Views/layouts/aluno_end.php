@@ -1,7 +1,7 @@
         </main>
 
         <footer class="aluno-foot muted">
-            Área do Aluno — Assistente do Professor
+            Área do Aluno — Assistente do Professor · <a href="/privacidade">Privacidade</a> · <a href="/cookies">Cookies</a>
         </footer>
     </div>
 
@@ -16,5 +16,6 @@
             btn.textContent = 'Enviando…';
         }, true);
     </script>
+    <?php require __DIR__ . '/cookie_banner.php'; ?>
 </body>
 </html>

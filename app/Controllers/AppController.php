@@ -42,7 +42,8 @@ abstract class AppController extends Controller
 
         // Somente professores pagam; overrides do admin têm precedência sobre pagamentos.
         $rota = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
-        $rotasDeAssinatura = str_starts_with($rota, '/assinatura');
+        // /meus-dados (LGPD) nunca pode ser barrado por assinatura vencida.
+        $rotasDeAssinatura = str_starts_with($rota, '/assinatura') || str_starts_with($rota, '/meus-dados');
         if ($usuario['role'] === User::ROLE_PROFESSOR && !$rotasDeAssinatura) {
             $override = (new UserAccessOverride())->forUser((int) $usuario['id']);
             $bloqueado = ($override['mode'] ?? null) === 'blocked';

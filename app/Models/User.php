@@ -53,6 +53,21 @@ class User extends Model
         return $stmt->fetch() ?: null;
     }
 
+    /** Registra o aceite da Politica de Privacidade (quando e qual versao). */
+    public function registrarAceite(int $id, string $versao): void
+    {
+        $stmt = $this->db->prepare('UPDATE users SET aceite_privacidade_em = NOW(), aceite_versao = :v WHERE id = :id');
+        $stmt->execute(['v' => $versao, 'id' => $id]);
+    }
+
+    /** @return array{aceite_privacidade_em:?string, aceite_versao:?string} */
+    public function aceite(int $id): array
+    {
+        $stmt = $this->db->prepare('SELECT aceite_privacidade_em, aceite_versao FROM users WHERE id = :id');
+        $stmt->execute(['id' => $id]);
+        return $stmt->fetch() ?: ['aceite_privacidade_em' => null, 'aceite_versao' => null];
+    }
+
     /**
      * Traz tambem o password_hash: use SOMENTE na verificacao de login.
      */
