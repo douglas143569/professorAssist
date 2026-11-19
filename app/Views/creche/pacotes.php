@@ -5,13 +5,7 @@
         </div>
     </div>
 
-    <div class="subnav">
-        <a href="/creche" class="subnav__item">Atividades</a>
-        <a href="/creche/cronograma" class="subnav__item">Cronograma</a>
-        <a href="/creche/pacotes" class="subnav__item is-active">Pacotes</a>
-        <a href="/creche/relatorios" class="subnav__item">Relatórios dos alunos</a>
-        <a href="/creche/relatorios/banco" class="subnav__item">Banco de relatórios</a>
-    </div>
+    <?php $ativa = 'pacotes'; require __DIR__ . '/_nav.php'; ?>
 
     <div class="card">
         <h3>Criar pacote de atividades com IA</h3>

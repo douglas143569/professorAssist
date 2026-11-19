@@ -6,13 +6,7 @@
         <a href="/creche/relatorios" class="btn btn--primary">✦ Novo relatório</a>
     </div>
 
-    <div class="subnav">
-        <a href="/creche" class="subnav__item">Atividades</a>
-        <a href="/creche/cronograma" class="subnav__item">Cronograma</a>
-        <a href="/creche/pacotes" class="subnav__item">Pacotes</a>
-        <a href="/creche/relatorios" class="subnav__item">Relatórios dos alunos</a>
-        <a href="/creche/relatorios/banco" class="subnav__item is-active">Banco de relatórios</a>
-    </div>
+    <?php $ativa = 'banco'; require __DIR__ . '/_nav.php'; ?>
 
     <form method="get" action="/creche/relatorios/banco" class="form--inline" style="margin-bottom:16px;">
         <label style="flex:1 1 280px;">Buscar

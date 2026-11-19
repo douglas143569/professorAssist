@@ -12,13 +12,7 @@
         <a class="btn btn--ghost creche-hero__link" href="/creche/cronograma">Ver cronograma <span>→</span></a>
     </header>
 
-    <div class="subnav">
-        <a href="/creche" class="subnav__item is-active">Atividades</a>
-        <a href="/creche/cronograma" class="subnav__item">Cronograma</a>
-        <a href="/creche/pacotes" class="subnav__item">Pacotes</a>
-        <a href="/creche/relatorios" class="subnav__item">Relatórios dos alunos</a>
-        <a href="/creche/relatorios/banco" class="subnav__item">Banco de relatórios</a>
-    </div>
+    <?php $ativa = 'atividades'; require __DIR__ . '/_nav.php'; ?>
 
     <section class="creche-stats" aria-label="Resumo das atividades">
         <div class="creche-stat"><span class="creche-stat__icon is-mint">✿</span><span><strong><?= count($atividades ?? []) ?></strong><small>Atividades criadas</small></span></div>

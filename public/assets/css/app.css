@@ -2029,3 +2029,19 @@ img, svg, video { max-width:100%; }
   .rel-folha__dados { grid-template-columns:1fr; }
   .rel-folha__dados > div { flex-wrap:wrap; }
 }
+
+/* ---- Menu da Creche em cards de vidro neon ---- */
+.cr-nav { grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:18px; margin:6px 0 24px; }
+.cr-nav__card { min-height:210px; padding:18px 12px 16px; gap:10px; }
+.cr-nav__card .gl-tile { width:72px; height:72px; border-radius:20px; margin-top:4px; }
+.cr-nav__card .gl-tile svg { width:34px; height:34px; }
+.cr-nav__card .gl-pill { font-size:.95rem; }
+.cr-nav__card.is-active { border-color:rgba(var(--g),1); box-shadow:0 0 48px rgba(var(--g),.6), inset 0 0 30px rgba(var(--g),.3); }
+@media (max-width:760px) {
+  .cr-nav { grid-template-columns:repeat(2,1fr); gap:12px; }
+  .cr-nav__card { min-height:176px; padding:14px 8px 12px; }
+  .cr-nav__card .gl-tile { width:56px; height:56px; border-radius:16px; }
+  .cr-nav__card .gl-tile svg { width:28px; height:28px; }
+  .cr-nav__card .gl-pill { font-size:.82rem; padding:6px 10px; }
+  .cr-nav__card .gl-ctx { font-size:.68rem; }
+}
