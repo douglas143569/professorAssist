@@ -2047,4 +2047,4 @@ img, svg, video { max-width:100%; }
 }
 
 /* Home: apenas o cartao "Comece aqui", centralizado */
-.hc-grid { grid-template-columns:minmax(250px,340px); justify-content:center; }
+.hc-grid { grid-template-columns:repeat(auto-fit,minmax(250px,340px)); justify-content:center; }

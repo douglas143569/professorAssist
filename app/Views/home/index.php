@@ -131,6 +131,13 @@ $cores = ['EM' => ['#d6f5e6', '#0b7a54'], 0 => ['#d9e6ff', '#2a5bd7'], 1 => ['#e
             <small class="gl-ctx">Primeira vez? Vamos te guiar em 1 clique</small>
             <span class="gl-open">Começar <span aria-hidden="true">↗</span></span>
         </button>
+        <a class="gl-card hc-card" href="/calendario#novo-evento" style="--i:1;--g:167,139,250">
+            <span class="gl-tile" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4M12 12v6M9 15h6"/></svg></span>
+            <?= $ondas ?>
+            <strong class="gl-pill">Cadastre um evento no calendário</strong>
+            <small class="gl-ctx">Provas, trabalhos e compromissos</small>
+            <span class="gl-open">Criar evento <span aria-hidden="true">↗</span></span>
+        </a>
     </section>
 
     <!-- Pergunta do "Comece aqui" -->

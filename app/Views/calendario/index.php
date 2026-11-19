@@ -118,7 +118,7 @@
         </section>
 
         <aside>
-            <div class="card">
+            <div class="card" id="novo-evento">
                 <h3>Novo evento</h3>
                 <form method="post" action="/calendario" class="form">
             <?= \App\Services\Csrf::campo() ?>
