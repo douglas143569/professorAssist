@@ -121,16 +121,6 @@ $cores = ['EM' => ['#d6f5e6', '#0b7a54'], 0 => ['#d9e6ff', '#2a5bd7'], 1 => ['#e
     <!-- Cartoes de acesso rapido (vidro neon) -->
     <?php
         $ondas = '<span class="gl-waves" aria-hidden="true"><svg viewBox="0 0 400 80" preserveAspectRatio="none"><path class="gl-w1" d="M0 40Q50 0 100 40T200 40T300 40T400 40V80H0Z"/></svg></span>';
-        // [titulo, descricao, url, cor (rgb), icone]
-        $acessos = [
-            ['Criar atividade', 'Gere questões e dinâmicas com IA', '/escolas', '244,114,182', $ic['atividade']],
-            ['Criar plano de aula', 'Plano completo em segundos', '/escolas', '34,211,238', $ic['plano']],
-            ['Criar prova', 'Monte provas personalizadas', '/provas', '251,113,85', $ic['prova']],
-            ['Minhas turmas', 'Organize turmas, matérias e alunos', '/turmas', '163,230,53', $ic['turma']],
-            ['Calendário', 'Veja e crie seus compromissos', '/calendario', '167,139,250', $ic['cal']],
-            ['Creche', 'Atividades, cronograma e relatórios', '/creche', '251,146,190', $ic['creche']],
-            ['Banco de atividades', 'Tudo o que você já gerou, num só lugar', '/banco-atividades', '129,140,248', $ic['questao']],
-        ];
     ?>
     <div class="hm-sec"><h3>O que você quer fazer hoje?</h3></div>
     <section class="gl-grid hc-grid">
@@ -141,15 +131,6 @@ $cores = ['EM' => ['#d6f5e6', '#0b7a54'], 0 => ['#d9e6ff', '#2a5bd7'], 1 => ['#e
             <small class="gl-ctx">Primeira vez? Vamos te guiar em 1 clique</small>
             <span class="gl-open">Começar <span aria-hidden="true">↗</span></span>
         </button>
-        <?php foreach ($acessos as $n => [$titulo, $desc, $url, $rgb, $icone]): ?>
-            <a class="gl-card hc-card" href="<?= $h($url) ?>" style="--i:<?= $n + 1 ?>;--g:<?= $h($rgb) ?>">
-                <span class="gl-tile" aria-hidden="true"><?= $icone ?></span>
-                <?= $ondas ?>
-                <strong class="gl-pill"><?= $h($titulo) ?></strong>
-                <small class="gl-ctx"><?= $h($desc) ?></small>
-                <span class="gl-open">Abrir <span aria-hidden="true">↗</span></span>
-            </a>
-        <?php endforeach; ?>
     </section>
 
     <!-- Pergunta do "Comece aqui" -->

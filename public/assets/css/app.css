@@ -2045,3 +2045,6 @@ img, svg, video { max-width:100%; }
   .cr-nav__card .gl-pill { font-size:.82rem; padding:6px 10px; }
   .cr-nav__card .gl-ctx { font-size:.68rem; }
 }
+
+/* Home: apenas o cartao "Comece aqui", centralizado */
+.hc-grid { grid-template-columns:minmax(250px,340px); justify-content:center; }
