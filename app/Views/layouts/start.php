@@ -61,13 +61,8 @@
                     <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5 12 3l9 6.5"/><path d="M5 10v10h14V10"/></svg>
                     <span>Início</span>
                 </a>
-                <a href="/revisar" class="navitem <?= $__isRevisar ? 'is-active' : '' ?>">
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-                    <span>Revisar questões para criar prova</span>
-                    <?php if ($__pendentes > 0): ?>
-                        <span class="contador-nav"><?= $__pendentes ?></span>
-                    <?php endif; ?>
-                </a>
+
+
                 <a href="/escolas" class="navitem <?= $__isEscola ? 'is-active' : '' ?>">
                     <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 8h20L12 3Z"/><path d="M4 8v11h16V8"/><path d="M9 19v-5h6v5"/></svg>
                     <span>Escolas</span>
@@ -88,9 +83,16 @@
                     <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><path d="M14 17.5h7M17.5 14v7"/></svg>
                     <span>Banco de atividades</span>
                 </a>
-                <a href="/provas" class="navitem <?= $__isProva ? 'is-active' : '' ?>">
+                <a href="/provas" class="navitem <?= ($__isProva || $__isRevisar) ? 'is-active' : '' ?>">
                     <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h6"/></svg>
                     <span>Provas</span>
+                </a>
+                <a href="/revisar" class="navitem navitem--sub <?= $__isRevisar ? 'is-active' : '' ?>">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                    <span>Revisar questões para criar prova</span>
+                    <?php if ($__pendentes > 0): ?>
+                        <span class="contador-nav"><?= $__pendentes ?></span>
+                    <?php endif; ?>
                 </a>
                 <?php if ($__ehAdmin): ?>
                     <a href="/admin/financeiro" class="navitem <?= str_starts_with($__path, '/admin/financeiro') ? 'is-active' : '' ?>">
@@ -101,10 +103,8 @@
                         <span>Contas</span>
                     </a>
                 <?php endif; ?>
-                <a href="/meus-dados" class="navitem <?= str_starts_with($__path, '/meus-dados') ? 'is-active' : '' ?>">
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v6c0 4.5 3.3 8 8 9 4.7-1 8-4.5 8-9V6l-8-3Z"/><path d="M9 12l2 2 4-4"/></svg>
-                    <span>Privacidade (LGPD)</span>
-                </a>
+
+
                 <?php if (!$__ehAdmin): ?>
                     <a href="/assinatura" class="navitem <?= $__isAssinatura ? 'is-active' : '' ?>">
                         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v6c0 4.500 3.300 8 8 9 4.700-1 8-4.500 8-9V6l-8-3Z"/><path d="m9 12 2 2 4-4"/></svg>

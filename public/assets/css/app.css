@@ -1915,3 +1915,38 @@ label.mini input { padding: 6px 8px; font-size: 0.85rem; }
 
 .login-esqueci { display:block; margin:-4px 0 4px; text-align:right; font-size:.84rem; color:#0f7a54; text-decoration:none; }
 .login-esqueci:hover { text-decoration:underline; }
+
+/* Texto escuro nas folhas de atividade e relatorio da creche */
+.folha, .folha * { color: #000; }
+.rel-folha, .rel-folha * { color: #000; }
+
+
+/* Subitem de revisao dentro de Provas */
+.sidebar__nav .navitem--sub { margin-left: 16px; padding-left: 13px; border-left: 2px solid var(--border); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; font-size: .86rem; }
+.sidebar__nav .navitem--sub svg { width: 18px; height: 18px; }
+
+/* ---- Pagina inicial: cartoes grandes de acesso rapido ---- */
+.hc-grid { grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:24px; margin:6px 0 30px; }
+.hc-card { min-height:340px; padding:26px 20px 22px; font:inherit; width:100%; cursor:pointer; }
+.hc-card .gl-tile { width:120px; height:120px; border-radius:30px; margin-top:12px; }
+.hc-card .gl-tile svg { width:56px; height:56px; }
+.hc-card .gl-pill { font-size:1.15rem; padding:8px 22px; border-radius:999px; }
+.hc-card .gl-ctx { font-size:.82rem; max-width:90%; }
+.hc-card .gl-open { padding:9px 26px; font-size:.88rem; }
+.hc-start { animation:sc-in .7s cubic-bezier(.2,.8,.2,1) both, hc-pulse 2.4s ease-in-out infinite; animation-delay:0s, .8s; }
+@keyframes hc-pulse { 0%,100% { box-shadow:0 0 28px rgba(var(--g),.35), inset 0 0 22px rgba(var(--g),.18); } 50% { box-shadow:0 0 56px rgba(var(--g),.7), inset 0 0 30px rgba(var(--g),.3); } }
+.hc-dialog { width:min(720px,calc(100vw - 32px)); padding:30px 28px 28px; border:1px solid rgba(255,255,255,.18); border-radius:26px; color:#fff; text-align:center;
+  background:radial-gradient(120% 80% at 50% 0%,rgba(251,191,36,.18),transparent 60%),linear-gradient(170deg,#12234f,#0a1530); box-shadow:0 30px 80px rgba(0,0,0,.55); }
+.hc-dialog::backdrop { background:rgba(4,10,24,.72); backdrop-filter:blur(4px); }
+.hc-dialog[open] { animation:hc-dlg .35s cubic-bezier(.2,.8,.2,1) both; }
+@keyframes hc-dlg { from { opacity:0; transform:translateY(24px) scale(.94); } to { opacity:1; transform:none; } }
+.hc-dialog h3 { margin:0 0 6px; color:#fff; font-size:1.5rem; }
+.hc-dialog > p { margin:0 0 22px; color:rgba(255,255,255,.78); }
+.hc-dialog__x { position:absolute; top:12px; right:14px; width:34px; height:34px; border:0; border-radius:50%; background:rgba(255,255,255,.14); color:#fff; font-size:1.3rem; line-height:1; cursor:pointer; }
+.hc-dialog__x:hover { background:#d1382f; }
+.hc-dialog__opcoes { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:20px; }
+.hc-opcao { min-height:280px; opacity:1; animation:none; }
+.hc-opcao .gl-tile { width:104px; height:104px; }
+.hc-opcao .gl-tile svg { width:50px; height:50px; }
+.hc-opcao .gl-pill { font-size:1.2rem; }
+@media (prefers-reduced-motion:reduce) { .hc-start, .hc-dialog[open] { animation:none; } }

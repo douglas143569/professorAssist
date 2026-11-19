@@ -118,89 +118,72 @@ $cores = ['EM' => ['#d6f5e6', '#0b7a54'], 0 => ['#d9e6ff', '#2a5bd7'], 1 => ['#e
         <a href="/escolas" class="hm-btn">Criar com IA <?= $seta ?></a>
     </section>
 
-    <!-- Numeros -->
-    <section class="hm-stats">
-        <?php foreach ($cartoes as [$ks, $km, $rotulo, $icone, $cor]): ?>
-            <article class="hm-stat">
-                <span class="hm-ico hm-ico--<?= $cor ?>"><?= $ic[$icone] ?></span>
-                <div>
-                    <b><?= (int) ($stats[$ks] ?? 0) ?></b>
-                    <span><?= $h($rotulo) ?></span>
-                    <?php if ($km !== null): ?>
-                        <small class="<?= ((int) $mes[$km]) > 0 ? 'up' : '' ?>">+<?= (int) $mes[$km] ?> este mês</small>
-                    <?php elseif ($ks === 'questoes'): ?>
-                        <small><?= $aprov ?> aprovadas</small>
-                    <?php else: ?>
-                        <small>&nbsp;</small>
-                    <?php endif; ?>
-                </div>
-            </article>
+    <!-- Cartoes de acesso rapido (vidro neon) -->
+    <?php
+        $ondas = '<span class="gl-waves" aria-hidden="true"><svg viewBox="0 0 400 80" preserveAspectRatio="none"><path class="gl-w1" d="M0 40Q50 0 100 40T200 40T300 40T400 40V80H0Z"/></svg></span>';
+        // [titulo, descricao, url, cor (rgb), icone]
+        $acessos = [
+            ['Criar atividade', 'Gere questões e dinâmicas com IA', '/escolas', '244,114,182', $ic['atividade']],
+            ['Criar plano de aula', 'Plano completo em segundos', '/escolas', '34,211,238', $ic['plano']],
+            ['Criar prova', 'Monte provas personalizadas', '/provas', '251,113,85', $ic['prova']],
+            ['Minhas turmas', 'Organize turmas, matérias e alunos', '/turmas', '163,230,53', $ic['turma']],
+            ['Calendário', 'Veja e crie seus compromissos', '/calendario', '167,139,250', $ic['cal']],
+            ['Creche', 'Atividades, cronograma e relatórios', '/creche', '251,146,190', $ic['creche']],
+            ['Banco de atividades', 'Tudo o que você já gerou, num só lugar', '/banco-atividades', '129,140,248', $ic['questao']],
+        ];
+    ?>
+    <div class="hm-sec"><h3>O que você quer fazer hoje?</h3></div>
+    <section class="gl-grid hc-grid">
+        <button type="button" class="gl-card hc-card hc-start" id="hc-start" style="--i:0;--g:251,191,36" aria-haspopup="dialog">
+            <span class="gl-tile" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.6 5.6 6.1.8-4.5 4.2 1.2 6L12 16.7 6.6 19.6l1.2-6L3.3 9.4l6.1-.8L12 3Z"/></svg></span>
+            <?= $ondas ?>
+            <strong class="gl-pill">Comece aqui</strong>
+            <small class="gl-ctx">Primeira vez? Vamos te guiar em 1 clique</small>
+            <span class="gl-open">Começar <span aria-hidden="true">↗</span></span>
+        </button>
+        <?php foreach ($acessos as $n => [$titulo, $desc, $url, $rgb, $icone]): ?>
+            <a class="gl-card hc-card" href="<?= $h($url) ?>" style="--i:<?= $n + 1 ?>;--g:<?= $h($rgb) ?>">
+                <span class="gl-tile" aria-hidden="true"><?= $icone ?></span>
+                <?= $ondas ?>
+                <strong class="gl-pill"><?= $h($titulo) ?></strong>
+                <small class="gl-ctx"><?= $h($desc) ?></small>
+                <span class="gl-open">Abrir <span aria-hidden="true">↗</span></span>
+            </a>
         <?php endforeach; ?>
     </section>
 
-    <!-- Acoes rapidas -->
-    <div class="hm-sec"><h3>Ações rápidas</h3></div>
-    <section class="hm-quick">
-        <a href="/escolas" class="hm-q hm-q--green"><span class="hm-q__ico"><?= $ic['atividade'] ?></span><div><strong>Criar atividade</strong><small>Gere questões com IA</small></div><i><?= $seta ?></i></a>
-        <a href="/escolas" class="hm-q hm-q--blue"><span class="hm-q__ico"><?= $ic['plano'] ?></span><div><strong>Criar plano de aula</strong><small>Plano completo em segundos</small></div><i><?= $seta ?></i></a>
-        <a href="/provas" class="hm-q hm-q--violet"><span class="hm-q__ico"><?= $ic['prova'] ?></span><div><strong>Criar prova</strong><small>Questões personalizadas</small></div><i><?= $seta ?></i></a>
-        <a href="/turmas" class="hm-q hm-q--orange"><span class="hm-q__ico"><?= $ic['turma'] ?></span><div><strong>Gerenciar turmas</strong><small>Organize seus alunos</small></div><i><?= $seta ?></i></a>
-        <a href="/calendario" class="hm-q hm-q--pink"><span class="hm-q__ico"><?= $ic['cal'] ?></span><div><strong>Abrir calendário</strong><small>Veja seus compromissos</small></div><i><?= $seta ?></i></a>
-        <a href="/creche" class="hm-q hm-q--teal"><span class="hm-q__ico"><?= $ic['creche'] ?></span><div><strong>Creche</strong><small>Atividades e cronograma</small></div><i><?= $seta ?></i></a>
-    </section>
-
-    <!-- Turmas / Producao / Banco -->
-    <section class="hm-trio">
-        <article class="hm-card">
-            <div class="hm-card__head"><h3>Minhas turmas</h3><a href="/turmas">Ver todas <?= $seta ?></a></div>
-            <?php if (!$turmasResumo): ?>
-                <p class="hm-empty">Você ainda não criou turmas. <a href="/escolas">Comece por uma escola →</a></p>
-            <?php else: ?>
-                <ul class="hm-turmas">
-                    <?php foreach ($turmasResumo as $i => $t):
-                        [$bg, $fg] = $cores[$i % 3];
-                        $sigla = mb_strtoupper(mb_substr(preg_replace('/[^\p{L}\p{N}]/u', '', $t['nome']), 0, 2));
-                    ?>
-                        <li>
-                            <a href="/turmas/<?= (int) $t['id'] ?>">
-                                <span class="hm-sigla" style="background:<?= $bg ?>;color:<?= $fg ?>"><?= $h($sigla) ?></span>
-                                <span class="hm-turma__txt">
-                                    <strong><?= $h($t['nome']) ?></strong>
-                                    <small><?= (int) $t['n_alunos'] ?> <?= (int) $t['n_alunos'] === 1 ? 'aluno' : 'alunos' ?> • <?= (int) $t['n_materias'] ?> <?= (int) $t['n_materias'] === 1 ? 'matéria' : 'matérias' ?></small>
-                                </span>
-                                <span class="hm-chev">›</span>
-                            </a>
-                        </li>
-                    <?php endforeach; ?>
-                </ul>
-            <?php endif; ?>
-        </article>
-
-        <article class="hm-card">
-            <div class="hm-card__head"><h3>Produção este mês</h3><span class="hm-pill"><?= $h(date('m/Y')) ?></span></div>
-            <div class="hm-bars" role="img" aria-label="Produção do mês por tipo">
-                <?php foreach ($producao as [$rot, $val, $cor]): ?>
-                    <div class="hm-bar">
-                        <b><?= $val ?></b>
-                        <span class="hm-bar__col" style="height:<?= max(3, (int) round($val / $maxProducao * 100)) ?>%;background:<?= $cor ?>"></span>
-                        <small><?= $h($rot) ?></small>
-                    </div>
-                <?php endforeach; ?>
-            </div>
-        </article>
-
-        <article class="hm-card">
-            <div class="hm-card__head"><h3>Banco de questões</h3></div>
-            <div class="hm-bank">
-                <div class="hm-donut" style="background:<?= $donut ?>"><div><b><?= $totQ ?></b><small>questões</small></div></div>
-                <ul class="hm-legend">
-                    <li><i style="background:#12a874"></i>Aprovadas <b><?= $aprov ?> (<?= (int) $pctAprov ?>%)</b></li>
-                    <li><i style="background:#f0c14b"></i>Rascunho <b><?= $rasc ?> (<?= $totQ > 0 ? 100 - (int) $pctAprov : 0 ?>%)</b></li>
-                </ul>
-            </div>
-            <a href="/revisar" class="hm-btn hm-btn--ghost">Revisar questões <?= $seta ?></a>
-        </article>
-    </section>
+    <!-- Pergunta do "Comece aqui" -->
+    <dialog class="hc-dialog" id="hc-dialog" aria-labelledby="hc-titulo">
+        <button type="button" class="hc-dialog__x" id="hc-fechar" aria-label="Fechar">×</button>
+        <h3 id="hc-titulo">Você é professor(a) de escola ou de creche?</h3>
+        <p>Escolha o seu caso e levamos você ao lugar certo.</p>
+        <div class="hc-dialog__opcoes">
+            <a href="/escolas#nova-escola" class="gl-card hc-opcao" style="--i:0;--g:251,191,36">
+                <span class="gl-tile" aria-hidden="true"><?= $ic['escola'] ?></span>
+                <strong class="gl-pill">Escola</strong>
+                <small class="gl-ctx">Ensino Fundamental e Médio — vamos cadastrar a sua escola</small>
+            </a>
+            <a href="/creche" class="gl-card hc-opcao" style="--i:1;--g:244,114,182">
+                <span class="gl-tile" aria-hidden="true"><?= $ic['creche'] ?></span>
+                <strong class="gl-pill">Creche</strong>
+                <small class="gl-ctx">Educação Infantil — atividades, cronograma e relatórios</small>
+            </a>
+        </div>
+    </dialog>
+    <script>
+        (function () {
+            var dlg = document.getElementById('hc-dialog');
+            if (!dlg || typeof dlg.showModal !== 'function') {
+                // Navegador sem <dialog>: vai direto para a pagina de escolha.
+                var b = document.getElementById('hc-start');
+                if (b) b.addEventListener('click', function () { location.href = '/escolas#nova-escola'; });
+                return;
+            }
+            document.getElementById('hc-start').addEventListener('click', function () { dlg.showModal(); });
+            document.getElementById('hc-fechar').addEventListener('click', function () { dlg.close(); });
+            dlg.addEventListener('click', function (e) { if (e.target === dlg) dlg.close(); });
+        })();
+    </script>
 
     <!-- Atividade recente / frase / dica -->
     <section class="hm-trio hm-trio--b">
