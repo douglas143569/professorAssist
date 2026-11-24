@@ -139,6 +139,28 @@ class User extends Model
         return (int) $this->db->lastInsertId();
     }
 
+    /** Cria uma conta de professor usando o hash ja guardado no cadastro pendente. */
+    public function criarProfessorComHash(
+        string $nome,
+        string $email,
+        string $passwordHash,
+        ?string $celular
+    ): int {
+        $stmt = $this->db->prepare(
+            'INSERT INTO users (name, email, celular, password_hash, role, ativo)
+             VALUES (:name, :email, :celular, :hash, :role, 1)'
+        );
+        $stmt->execute([
+            'name' => $nome,
+            'email' => $email,
+            'celular' => self::normalizarCelular($celular),
+            'hash' => $passwordHash,
+            'role' => self::ROLE_PROFESSOR,
+        ]);
+
+        return (int) $this->db->lastInsertId();
+    }
+
     /**
      * Cria uma conta de ALUNO. Aluno nao tem e-mail nem celular: entra pelo
      * nome dentro da turma (ver Auth::tentarLoginAluno). Ja nasce ativa.

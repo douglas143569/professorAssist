@@ -21,7 +21,8 @@ class ContaPrivacidade
     private const POR_USER_ID = [
         'escolas', 'turmas', 'disciplinas', 'eventos', 'avisos', 'tarefas', 'provas', 'materiais',
         'creche_atividades', 'creche_cronograma', 'creche_cronograma_mes', 'creche_pacotes',
-        'creche_relatorios', 'subscriptions', 'payments', 'access_logs', 'activity_logs',
+        'creche_relatorios', 'portfolio_criancas', 'portfolio_projetos', 'portfolio_registros', 'portfolio_midias',
+        'portfolio_areas', 'portfolio_avaliacoes', 'subscriptions', 'payments', 'access_logs', 'activity_logs',
     ];
 
     /** Tabelas ligadas ao professor por turma/materia/tema. */
@@ -100,7 +101,11 @@ class ContaPrivacidade
             'SELECT DISTINCT ta.aluno_id FROM turma_alunos ta JOIN turmas t ON t.id = ta.turma_id WHERE t.user_id = :u',
             $userId
         );
+        $criancaIds = self::colunaDeIds($db, 'SELECT id FROM portfolio_criancas WHERE user_id = :u', $userId);
         $base = dirname(__DIR__, 2) . '/storage/uploads';
+        foreach ($criancaIds as $id) {
+            self::apagarPasta($base . '/portfolio/' . (int) $id);
+        }
         foreach ($tarefaIds as $id) {
             self::apagarPasta($base . '/entregas/' . (int) $id);
         }
@@ -115,7 +120,7 @@ class ContaPrivacidade
             //    conteudos, questoes, entregas, matriculas etc. O resto, tabela a tabela.
             foreach (['escolas', 'turmas', 'disciplinas', 'eventos', 'avisos', 'tarefas', 'provas', 'materiais',
                       'creche_atividades', 'creche_cronograma', 'creche_cronograma_mes', 'creche_pacotes',
-                      'creche_relatorios', 'ai_geracoes'] as $tabela) {
+                      'creche_relatorios', 'portfolio_criancas', 'portfolio_projetos', 'ai_geracoes'] as $tabela) {
                 if (in_array($tabela, self::RETIDAS, true)) {
                     continue;
                 }

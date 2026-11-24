@@ -127,6 +127,16 @@ class Payment extends Model
         return $stmt->fetch() ?: null;
     }
 
+    public function findForUser(int $paymentId, int $userId): ?array
+    {
+        $stmt = $this->db->prepare(
+            'SELECT id, status, transaction_id FROM payments WHERE id = :id AND user_id = :user_id LIMIT 1'
+        );
+        $stmt->execute(['id' => $paymentId, 'user_id' => $userId]);
+
+        return $stmt->fetch() ?: null;
+    }
+
     public function setNonApprovedStatus(int $paymentId, string $status, string $providerPaymentId, ?string $method): void
     {
         $allowed = ['pending', 'rejected', 'cancelled', 'refunded', 'charged_back', 'in_process'];

@@ -131,6 +131,108 @@ class Upload
         return ['path' => 'apresentacoes/' . $aprId . '/' . $nomeArquivo];
     }
 
+    /** Documentos aceitos como evidencia no portfolio infantil. */
+    public const EXTENSOES_DOC_PORTFOLIO = ['pdf', 'doc', 'docx', 'odt', 'ppt', 'pptx'];
+
+    /**
+     * Lista os arquivos realmente enviados num campo multiplo ($_FILES['x'] de name="x[]"),
+     * ignorando os campos vazios. Aceita tambem um campo simples.
+     *
+     * @return list<array> itens no formato de $_FILES
+     */
+    public static function arquivosEnviados(string $campo): array
+    {
+        $f = $_FILES[$campo] ?? null;
+        if (!is_array($f) || !isset($f['name'])) {
+            return [];
+        }
+        if (!is_array($f['name'])) {
+            return ($f['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_NO_FILE ? [] : [$f];
+        }
+
+        $lista = [];
+        foreach (array_keys($f['name']) as $i) {
+            if (($f['error'][$i] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_NO_FILE) {
+                continue;
+            }
+            $lista[] = [
+                'name' => $f['name'][$i], 'type' => $f['type'][$i] ?? '', 'tmp_name' => $f['tmp_name'][$i] ?? '',
+                'error' => $f['error'][$i], 'size' => $f['size'][$i] ?? 0,
+            ];
+        }
+
+        return $lista;
+    }
+
+    /**
+     * Guarda uma evidencia do portfolio (foto, video ou documento) em
+     * storage/uploads/portfolio/{crianca}/. O tipo sai da extensao; imagens sao
+     * conferidas de verdade (getimagesize), nao so pelo nome.
+     *
+     * @return array{path:string, nome:string, tipo:string}  tipo: foto|video|arquivo
+     * @throws UploadException
+     */
+    public static function salvarPortfolio(array $file, int $criancaId): array
+    {
+        $erro = $file['error'] ?? UPLOAD_ERR_NO_FILE;
+        $nomeOriginal = mb_substr((string) ($file['name'] ?? 'arquivo'), 0, 255);
+
+        if ($erro === UPLOAD_ERR_INI_SIZE || $erro === UPLOAD_ERR_FORM_SIZE) {
+            throw new UploadException("\"{$nomeOriginal}\" é grande demais.");
+        }
+        if ($erro !== UPLOAD_ERR_OK || !is_uploaded_file($file['tmp_name'] ?? '')) {
+            throw new UploadException("Não foi possível receber \"{$nomeOriginal}\".");
+        }
+
+        $ext = strtolower(pathinfo($nomeOriginal, PATHINFO_EXTENSION));
+        if (in_array($ext, self::EXTENSOES_IMAGEM, true)) {
+            $tipo = 'foto';
+            $limite = self::limiteBytes();
+            if (@getimagesize($file['tmp_name']) === false) {
+                throw new UploadException("\"{$nomeOriginal}\" não é uma imagem válida.");
+            }
+        } elseif (in_array($ext, self::EXTENSOES_VIDEO, true)) {
+            $tipo = 'video';
+            $limite = self::limiteVideoBytes();
+        } elseif (in_array($ext, self::EXTENSOES_DOC_PORTFOLIO, true)) {
+            $tipo = 'arquivo';
+            $limite = self::limiteBytes();
+        } else {
+            throw new UploadException("Tipo de \"{$nomeOriginal}\" não aceito. Use fotos (jpg, png, webp), vídeos (mp4, webm) ou PDF/Word.");
+        }
+
+        if (($file['size'] ?? 0) > $limite) {
+            throw new UploadException("\"{$nomeOriginal}\" passa do limite de " . (int) ($limite / 1024 / 1024) . ' MB.');
+        }
+
+        $dir = self::baseDir() . '/portfolio/' . $criancaId;
+        if (!is_dir($dir) && !mkdir($dir, 0775, true) && !is_dir($dir)) {
+            throw new UploadException('Falha ao preparar a pasta de envio.');
+        }
+
+        $nomeArquivo = bin2hex(random_bytes(10)) . '.' . $ext;
+        if (!move_uploaded_file($file['tmp_name'], $dir . '/' . $nomeArquivo)) {
+            throw new UploadException("Falha ao salvar \"{$nomeOriginal}\".");
+        }
+
+        return ['path' => 'portfolio/' . $criancaId . '/' . $nomeArquivo, 'nome' => $nomeOriginal, 'tipo' => $tipo];
+    }
+
+    /** Apaga toda a pasta de arquivos do portfolio de uma crianca. */
+    public static function removerPastaPortfolio(int $criancaId): void
+    {
+        $dir = self::baseDir() . '/portfolio/' . $criancaId;
+        if (!is_dir($dir)) {
+            return;
+        }
+        foreach ((array) glob($dir . '/*') as $arquivo) {
+            if (is_file($arquivo)) {
+                @unlink($arquivo);
+            }
+        }
+        @rmdir($dir);
+    }
+
     /** Remove a pasta de midias de uma apresentacao inteira. */
     public static function removerPastaApresentacao(int $aprId): void
     {

@@ -442,7 +442,8 @@ class AI
         int $semana,
         array $dias,
         array $jaUsadas = [],
-        ?int $userId = null
+        ?int $userId = null,
+        array $camposPorDia = []
     ): array {
         $n = count($dias);
         $camposBncc = implode('; ', \App\Controllers\CrecheController::CAMPOS);
@@ -450,6 +451,12 @@ class AI
         $usadas = $jaUsadas
             ? 'Atividades JA planejadas nas semanas anteriores (NAO repita): ' . implode(' | ', $jaUsadas) . "\n"
             : '';
+        $camposSolicitados = '';
+        foreach ($dias as $indice => $dia) {
+            if (isset($camposPorDia[$indice])) {
+                $camposSolicitados .= "- {$dia}: use exatamente {$camposPorDia[$indice]}.\n";
+            }
+        }
         $tema = trim((string) ($contexto['tema'] ?? '')) !== '' ? "Tema do mes: {$contexto['tema']}\n" : '';
 
         $prompt = "Crie a SEMANA {$semana} do cronograma mensal de uma turma de creche.\n"
@@ -458,7 +465,9 @@ class AI
             . 'Dias desta semana: ' . implode(', ', $dias) . ".\n{$usadas}"
             . "Distribua tipos variados de atividade ao longo do mes. Tipos possiveis: {$tipos}. "
             . "Em cada dia use um tipo diferente dos outros dias desta semana.\n"
-            . "Campos de experiencia da BNCC (use exatamente um destes nomes por item): {$camposBncc}.\n"
+            . ($camposSolicitados !== ''
+                ? "Campo da BNCC obrigatorio para cada dia:\n{$camposSolicitados}"
+                : "Campos de experiencia da BNCC (use exatamente um destes nomes por item): {$camposBncc}.\n")
             . "Responda um array JSON com exatamente {$n} itens, na ordem dos dias. Cada item: "
             . '"titulo" (atividade principal), "tipo_atividade", "objetivos" (objetivos de aprendizagem), '
             . '"campo_experiencia", "descricao" (desenvolvimento passo a passo), "materiais" (recursos '
@@ -473,11 +482,11 @@ class AI
             : trim(is_array($v) ? implode('; ', array_map('strval', $v)) : (string) $v);
 
         $out = [];
-        foreach ($dados as $a) {
+        foreach ($dados as $indice => $a) {
             if (!is_array($a) || empty($a['titulo'])) {
                 continue;
             }
-            $campo = trim((string) ($a['campo_experiencia'] ?? ''));
+            $campo = trim((string) ($camposPorDia[$indice] ?? $a['campo_experiencia'] ?? ''));
             $campoOk = '';
             if ($campo !== '') {
                 foreach (\App\Controllers\CrecheController::CAMPOS as $c) {
@@ -600,6 +609,49 @@ class AI
             throw new AIException('A IA nao retornou o relatorio. Tente novamente.');
         }
         return $texto;
+    }
+
+    /**
+     * Assistente do Portfolio Pedagogico Infantil. NUNCA recebe nome nem foto da crianca:
+     * so o texto da professora (privacidade de menores).
+     *
+     * @param string $acao  redigir | corrigir | habilidades | avaliacao
+     * @param string $texto observacao/rascunho da professora (ou, em "avaliacao", os registros recentes)
+     * @param string $foco  area de desenvolvimento / secao da avaliacao / titulo (contexto curto)
+     * @param string $idade ex.: "2 anos e 4 meses" (opcional)
+     */
+    public function assistirPortfolio(string $acao, string $texto, string $foco = '', string $idade = '', ?int $userId = null): string
+    {
+        $system = 'Voce e uma pedagoga especialista em Educacao Infantil (creche e pre-escola, BNCC), '
+            . 'com experiencia em portfolios e avaliacao descritiva. Escreve em portugues do Brasil, com '
+            . 'linguagem profissional, acolhedora e positiva. Nunca faz diagnostico nem usa rotulos clinicos, '
+            . 'nunca inventa fatos que nao estejam no texto recebido e nunca cita nomes proprios.';
+
+        $ctx = ($foco !== '' ? "Contexto: {$foco}.\n" : '') . ($idade !== '' ? "Idade da crianca: {$idade}.\n" : '');
+
+        $prompt = match ($acao) {
+            'redigir' => $ctx . "Transforme as observacoes curtas abaixo em um registro pedagogico profissional, em texto corrido "
+                . "(1 a 3 paragrafos, 60 a 140 palavras), na terceira pessoa, usando 'a crianca' ou 'ela/ele' de forma neutra "
+                . "(sem inventar o nome), descrevendo o que foi observado e o significado pedagogico. Sem listas, sem markdown. "
+                . "Retorne apenas o texto.\n\nOBSERVACOES:\n{$texto}",
+            'corrigir' => "Corrija ortografia, acentuacao, pontuacao e concordancia do texto abaixo, mantendo o sentido, o tom e "
+                . "o tamanho. Nao acrescente informacoes. Retorne apenas o texto corrigido.\n\nTEXTO:\n{$texto}",
+            'habilidades' => $ctx . "Com base no registro abaixo, sugira de 3 a 5 habilidades observadas, alinhadas aos campos de "
+                . "experiencia da BNCC para Educacao Infantil. Uma por linha, comecando com verbo no infinitivo ou substantivo "
+                . "curto (ex.: 'Nomear cores primarias'). Sem numeracao, sem markdown, sem explicacoes.\n\nREGISTRO:\n{$texto}",
+            'avaliacao' => $ctx . "Escreva o trecho da avaliacao descritiva abaixo (um unico paragrafo de 70 a 140 palavras, texto "
+                . "corrido, na terceira pessoa neutra), baseado SOMENTE nos registros a seguir. Valorize conquistas e descreva "
+                . "o que ainda sera estimulado de forma construtiva. Se os registros nao trazem informacao para este trecho, "
+                . "escreva uma frase curta dizendo que o aspecto segue em observacao. Retorne apenas o texto.\n\nREGISTROS DO PERIODO:\n{$texto}",
+            default => throw new AIException('Ação de IA desconhecida.'),
+        };
+
+        $resposta = trim($this->gerar('portfolio_' . $acao, $system, $prompt, $userId, false));
+        if ($resposta === '') {
+            throw new AIException('A IA não retornou texto. Tente novamente.');
+        }
+
+        return $resposta;
     }
 
     /**

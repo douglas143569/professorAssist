@@ -101,6 +101,36 @@ class Auth
     }
 
     /**
+     * Abre a sessao da conta recem-criada apos a confirmacao do e-mail.
+     * Use somente depois de validar o codigo do cadastro.
+     */
+    public static function entrarAposVerificacaoEmail(int $userId): bool
+    {
+        self::iniciarSessao();
+
+        $user = (new User())->find($userId);
+        if (
+            $user === null
+            || (int) $user['ativo'] !== 1
+            || !in_array($user['role'], [User::ROLE_PROFESSOR, User::ROLE_ADMIN], true)
+        ) {
+            return false;
+        }
+
+        session_regenerate_id(true);
+        Csrf::esquecer();
+
+        $_SESSION[self::CHAVE] = $userId;
+        $_SESSION['user_id'] = $userId;
+        self::$cache = $user;
+
+        (new User())->registrarLogin($userId);
+        Logger::access('login_success', (string) $user['email'], $userId);
+
+        return true;
+    }
+
+    /**
      * Login do ALUNO: nome + senha DENTRO de uma turma (o aluno nao tem e-mail).
      * Mesmas defesas do login do professor: trava por IP, password_verify
      * sempre, troca do id de sessao.

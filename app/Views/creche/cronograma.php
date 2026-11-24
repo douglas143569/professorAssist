@@ -27,6 +27,9 @@
                 <label style="flex:0 1 180px;">Mês de referência
                     <input type="month" name="mes" value="<?= htmlspecialchars($mes) ?>" required>
                 </label>
+                <label style="flex:0 1 150px;">Quantidade de dias
+                    <input type="number" id="cron-dias-quantidade" name="dias_quantidade" min="1" max="<?= (int) $diasUteisMes ?>" value="<?= (int) $diasUteisMes ?>" required>
+                </label>
                 <label style="flex:0 1 150px;">Nº de crianças
                     <input type="number" name="num_criancas" min="1" max="60" placeholder="Ex: 15">
                 </label>
@@ -40,12 +43,19 @@
             <label>Tema do mês <span class="muted">(opcional)</span>
                 <input type="text" name="tema" placeholder="Ex: Identidade e família, Natureza ao nosso redor, Festa junina…">
             </label>
+            <section class="cron-campos-selecao" style="margin:16px 0;" aria-labelledby="cron-campos-titulo">
+                <h4 id="cron-campos-titulo" style="margin-bottom:4px;">Campo da BNCC para cada dia</h4>
+                <p class="muted">Escolha o campo de experiência que deve orientar a atividade de cada dia útil.</p>
+                <div id="cron-campos-dia" class="form--inline"
+                     data-campos="<?= htmlspecialchars(json_encode($campos, JSON_UNESCAPED_UNICODE | JSON_HEX_APOS | JSON_HEX_QUOT), ENT_QUOTES, 'UTF-8') ?>"></div>
+            </section>
             <?php if ($temItens): ?>
                 <p class="muted" style="font-size:.82rem;margin:0;">Já existe um cronograma neste mês: ao criar de novo, ele será substituído.</p>
             <?php endif; ?>
             <button type="submit" class="btn btn--primary" data-loading="Criando o mês… isso pode levar alguns instantes">✦ Criar cronograma do mês</button>
         </form>
     </div>
+    <script src="/assets/js/cronograma.js" defer></script>
 
     <div class="page-header" style="margin-top:8px;">
         <div class="cal__nav">

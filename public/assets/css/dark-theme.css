@@ -73,4 +73,28 @@ body:has(.app-shell:not(.app-shell--home)) { color:var(--text); background:#0613
 .app-shell:not(.app-shell--home) .content .alternativas { border-color:var(--border); background:rgba(5,20,31,.38); }
 .app-shell:not(.app-shell--home) .content .alternativas legend,.app-shell:not(.app-shell--home) .content .form label { color:#c8dce1; }
 .app-shell:not(.app-shell--home) ::selection { color:#041b20; background:#65eadb; }
+
+/* Texto branco nos campos de pagamento */
+.app-shell:not(.app-shell--home) .pg,
+.app-shell:not(.app-shell--home) .pg .pg-lbl,
+.app-shell:not(.app-shell--home) .pg .pg-in,
+.app-shell:not(.app-shell--home) .pg select,
+.app-shell:not(.app-shell--home) .pg option {
+    color:#fff;
+}
+.app-shell:not(.app-shell--home) .pg .pg-in,
+.app-shell:not(.app-shell--home) .pg .pg-field,
+.app-shell:not(.app-shell--home) .pg select {
+    color:#fff;
+    background:rgba(5,20,31,.72);
+    border-color:rgba(132,205,220,.25);
+}
+.app-shell:not(.app-shell--home) .pg .pg-in::placeholder {
+    color:#fff;
+    opacity:1;
+}
+.app-shell:not(.app-shell--home) .pg option {
+    color:#fff;
+    background:#102938;
+}
 @media (max-width:760px) { .app-shell:not(.app-shell--home) .sidebar { color:#eaf6fa; background:rgba(5,18,28,.98); } }

@@ -9,6 +9,9 @@ $router->get('/login', 'AuthController@formulario');
 $router->post('/login', 'AuthController@entrar');
 $router->get('/cadastro', 'AuthController@formularioCadastro');
 $router->post('/cadastro', 'AuthController@cadastrar');
+$router->get('/verificar-email', 'AuthController@formularioVerificacaoEmail');
+$router->post('/verificar-email', 'AuthController@confirmarEmail');
+$router->post('/verificar-email/reenviar', 'AuthController@reenviarCodigoVerificacao');
 $router->post('/logout', 'AuthController@sair');
 // Recuperacao de senha (professor), por e-mail
 $router->get('/esqueci-senha', 'SenhaController@esqueci');
@@ -19,6 +22,11 @@ $router->post('/redefinir-senha', 'SenhaController@redefinir');
 // Assinaturas: webhook público validado pela assinatura do Mercado Pago.
 $router->get('/assinatura', 'SubscriptionController@index');
 $router->post('/assinatura/checkout', 'SubscriptionController@checkout');
+// Pagamento dentro do sistema (Checkout Transparente): PIX e cartão.
+$router->get('/assinatura/pagar/status', 'PagamentoController@status');
+$router->get('/assinatura/pagar/{plano}', 'PagamentoController@pagina');
+$router->post('/assinatura/pagar/pix', 'PagamentoController@pix');
+$router->post('/assinatura/pagar/cartao', 'PagamentoController@cartao');
 $router->get('/assinatura/retorno', 'SubscriptionController@retorno');
 $router->post('/webhook/mercadopago', 'MercadoPagoWebhookController@receber');
 $router->get('/admin/financeiro', 'AdminBillingController@index');
@@ -111,6 +119,35 @@ $router->post('/conteudos/{id}/aprovar', 'ConteudoController@aprovar');
 // Creche (Educacao Infantil)
 $router->get('/creche', 'CrecheController@index');
 // Cronograma semanal (registrar antes das rotas /creche/atividades/{id})
+// Portfolio Pedagogico Infantil (rotas fixas ANTES das {id})
+$router->get('/creche/portfolio', 'PortfolioController@index');
+$router->get('/creche/portfolio/coordenacao', 'PortfolioController@coordenacao');
+$router->get('/creche/portfolio/nova', 'PortfolioController@nova');
+$router->post('/creche/portfolio/criancas', 'PortfolioController@criar');
+$router->post('/creche/portfolio/ia', 'PortfolioController@ia');
+$router->get('/creche/portfolio/projetos', 'PortfolioController@projetos');
+$router->post('/creche/portfolio/projetos', 'PortfolioController@projetoCriar');
+$router->get('/creche/portfolio/projetos/{id}', 'PortfolioController@projetoShow');
+$router->post('/creche/portfolio/projetos/{id}', 'PortfolioController@projetoUpdate');
+$router->post('/creche/portfolio/projetos/{id}/excluir', 'PortfolioController@projetoExcluir');
+$router->get('/creche/portfolio/registros/{id}', 'PortfolioController@registroShow');
+$router->post('/creche/portfolio/registros/{id}', 'PortfolioController@registroUpdate');
+$router->post('/creche/portfolio/registros/{id}/excluir', 'PortfolioController@registroExcluir');
+$router->get('/creche/portfolio/midias/{id}', 'PortfolioController@midia');
+$router->post('/creche/portfolio/midias/{id}/excluir', 'PortfolioController@midiaExcluir');
+$router->get('/creche/portfolio/avaliacoes/{id}', 'PortfolioController@avaliacaoShow');
+$router->post('/creche/portfolio/avaliacoes/{id}', 'PortfolioController@avaliacaoUpdate');
+$router->post('/creche/portfolio/avaliacoes/{id}/excluir', 'PortfolioController@avaliacaoExcluir');
+$router->get('/creche/portfolio/{id}', 'PortfolioController@show');
+$router->get('/creche/portfolio/{id}/foto', 'PortfolioController@foto');
+$router->get('/creche/portfolio/{id}/relatorio', 'PortfolioController@relatorio');
+$router->post('/creche/portfolio/{id}', 'PortfolioController@atualizar');
+$router->post('/creche/portfolio/{id}/excluir', 'PortfolioController@excluir');
+$router->post('/creche/portfolio/{id}/apresentacao', 'PortfolioController@apresentacao');
+$router->post('/creche/portfolio/{id}/areas', 'PortfolioController@areas');
+$router->post('/creche/portfolio/{id}/mensagem', 'PortfolioController@mensagem');
+$router->post('/creche/portfolio/{id}/registros', 'PortfolioController@registroCriar');
+$router->post('/creche/portfolio/{id}/avaliacoes', 'PortfolioController@avaliacaoCriar');
 $router->get('/creche/cronograma', 'CronogramaController@index');
 $router->post('/creche/cronograma/criar', 'CronogramaController@criar');
 $router->post('/creche/cronograma/limpar', 'CronogramaController@limpar');

@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\UserPromotion;
 use App\Services\Logger;
 use App\Services\MercadoPago;
+use App\Services\PaymentWebhook;
 use Throwable;
 
 class SubscriptionController extends AppController
@@ -99,6 +100,18 @@ class SubscriptionController extends AppController
     {
         $this->exigirProfessor();
         $resultado = (string) ($_GET['resultado'] ?? '');
+
+        // O Mercado Pago devolve payment_id na volta do checkout. Sincronizamos na hora
+        // (consultando a API, nunca confiando na URL) — útil quando o webhook não alcança
+        // o servidor, como em testes locais. O webhook continua sendo a fonte principal.
+        $providerPaymentId = (string) ($_GET['payment_id'] ?? $_GET['collection_id'] ?? '');
+        if ($providerPaymentId !== '' && ctype_digit($providerPaymentId)) {
+            try {
+                (new PaymentWebhook())->handle($providerPaymentId, (int) $this->professor()['id']);
+            } catch (Throwable $e) {
+                Logger::exception($e);
+            }
+        }
         $mensagem = match ($resultado) {
             'sucesso' => 'Recebemos o retorno do checkout. Seu acesso será liberado após a confirmação segura do pagamento.',
             'pendente' => 'Seu pagamento está pendente. O acesso será liberado assim que o Mercado Pago confirmar.',

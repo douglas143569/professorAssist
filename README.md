@@ -154,6 +154,12 @@ migrations, segurança e commits).
 ## Recuperação de senha
 
 - Tela de login → **Esqueci minha senha** (`/esqueci-senha`). Envia um link (válido por 60 min, uso único) para o e-mail do professor; o token é guardado só como hash em `password_resets`.
-- **Produção:** configure `APP_URL` e o SMTP (`MAIL_*` no `.env`). O link é montado a partir do `APP_URL`, nunca do cabeçalho `Host`. Sem SMTP em produção, nada é enviado.
+- **Produção:** configure `APP_URL` para montar os links de redefinição e o SMTP (`MAIL_*` no `.env`). Sem SMTP em produção, nada é enviado.
 - **Desenvolvimento:** sem `MAIL_HOST`, o e-mail (com o link) é gravado em `storage/logs/mail-AAAA-MM-DD.log`.
 - Alunos não têm e-mail: a redefinição é feita pelo professor/administrador.
+
+## Verificação de e-mail no cadastro
+
+- Ao criar uma conta de professor, o sistema envia um código de 6 dígitos. O cadastro só é concluído depois que o código for informado em `/verificar-email`.
+- O código expira em 15 minutos, tem até 5 tentativas e pode ser reenviado após 60 segundos. Os dados ficam temporariamente em `pending_signups`; senha e código são armazenados como hashes.
+- Execute `php database/migrate.php` para criar a tabela da verificação. Em produção, configure o SMTP (`MAIL_*`); em desenvolvimento, sem `MAIL_HOST`, confira o código em `storage/logs/mail-AAAA-MM-DD.log`.

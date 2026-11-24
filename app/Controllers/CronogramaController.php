@@ -29,9 +29,10 @@ class CronogramaController extends AppController
      * Dias uteis (seg-sex) do mes agrupados por semana (comecando na segunda).
      * @return array<int,string[]> lista de semanas, cada uma com datas Y-m-d
      */
-    private function semanasDoMes(string $mesRef): array
+    private function semanasDoMes(string $mesRef, ?int $limiteDias = null): array
     {
         $semanas = [];
+        $contagem = 0;
         $ultimo = (int) date('t', strtotime($mesRef . '-01'));
         for ($d = 1; $d <= $ultimo; $d++) {
             $ts = strtotime(sprintf('%s-%02d', $mesRef, $d));
@@ -39,6 +40,10 @@ class CronogramaController extends AppController
                 continue;
             }
             $semanas[date('o-W', $ts)][] = date('Y-m-d', $ts);
+            $contagem++;
+            if ($limiteDias !== null && $contagem >= $limiteDias) {
+                break;
+            }
         }
         return array_values($semanas);
     }
@@ -65,7 +70,9 @@ class CronogramaController extends AppController
         $this->view('creche.cronograma', [
             'title' => 'Cronograma mensal de atividades',
             'faixas' => CrecheController::FAIXAS,
+            'campos' => CrecheController::CAMPOS,
             'mes' => $mes,
+            'diasUteisMes' => count(array_merge(...array_values($this->semanasDoMes($mes)))),
             'mesNome' => self::nomeDoMes($mes),
             'mesAnterior' => date('Y-m', strtotime($mes . '-01 -1 month')),
             'mesSeguinte' => date('Y-m', strtotime($mes . '-01 +1 month')),
@@ -76,7 +83,7 @@ class CronogramaController extends AppController
         ]);
     }
 
-    /** Cria o cronograma do mes inteiro com a IA (uma chamada por semana + fechamento). */
+    /** Cria atividades para os primeiros dias uteis escolhidos, uma chamada por semana + fechamento. */
     public function criar(): void
     {
         $prof = $this->professor();
@@ -92,6 +99,25 @@ class CronogramaController extends AppController
         $periodo = in_array($_POST['periodo'] ?? '', ['Integral', 'Parcial'], true) ? $_POST['periodo'] : 'Integral';
         $numCriancas = max(0, min(60, (int) ($_POST['num_criancas'] ?? 0)));
         $tema = mb_substr(trim($_POST['tema'] ?? ''), 0, 200);
+        $diasUteisMes = array_merge(...array_values($this->semanasDoMes($mes)));
+        $quantidadeDias = filter_var($_POST['dias_quantidade'] ?? null, FILTER_VALIDATE_INT);
+        if ($quantidadeDias === false || $quantidadeDias < 1 || $quantidadeDias > count($diasUteisMes)) {
+            $this->flash('Informe uma quantidade de dias valida para o mes selecionado.');
+            $this->redirect($volta);
+            return;
+        }
+        $datasSelecionadas = array_slice($diasUteisMes, 0, $quantidadeDias);
+        $camposPost = is_array($_POST['campo_dia'] ?? null) ? $_POST['campo_dia'] : [];
+        $camposPorData = [];
+        foreach ($datasSelecionadas as $data) {
+            $campo = trim((string) ($camposPost[$data] ?? ''));
+            if (!in_array($campo, CrecheController::CAMPOS, true)) {
+                $this->flash('Escolha um campo da BNCC para cada dia selecionado.');
+                $this->redirect($volta);
+                return;
+            }
+            $camposPorData[$data] = $campo;
+        }
 
         $contexto = [
             'faixa' => $faixa,
@@ -107,12 +133,13 @@ class CronogramaController extends AppController
         $gerados = [];
         $titulos = [];
         try {
-            foreach ($this->semanasDoMes($mes) as $i => $datas) {
+            foreach ($this->semanasDoMes($mes, $quantidadeDias) as $i => $datas) {
                 $rotulos = array_map(
                     fn($d) => self::DIAS[(int) date('N', strtotime($d)) - 1] . ' (' . date('d/m', strtotime($d)) . ')',
                     $datas
                 );
-                $itens = $ai->gerarSemanaCronograma($contexto, $i + 1, $rotulos, $titulos, (int) $prof['id']);
+                $camposDaSemana = array_map(fn($data) => $camposPorData[$data], $datas);
+                $itens = $ai->gerarSemanaCronograma($contexto, $i + 1, $rotulos, $titulos, (int) $prof['id'], $camposDaSemana);
                 foreach ($datas as $k => $data) {
                     if (!isset($itens[$k])) {
                         break;

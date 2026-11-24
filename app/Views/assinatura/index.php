@@ -148,16 +148,10 @@ $ico = [
                                 <a class="as-btn as-btn--solid" href="<?= $h($promotion['checkout_url']) ?>">Continuar pagamento</a>
                             <?php endif; ?>
                         <?php else: ?>
-                            <form method="post" action="/assinatura/checkout">
-                                <?= Csrf::campo() ?>
-                                <input type="hidden" name="plan_id" value="<?= (int) $plan['id'] ?>">
-                                <?php if ($promotion): ?>
-                                    <input type="hidden" name="promotion_id" value="<?= (int) $promotion['id'] ?>">
-                                <?php endif; ?>
-                                <button type="submit" class="as-btn <?= $destaque ? 'as-btn--solid' : '' ?>">
-                                    <?= $promotion ? 'Usar minha promoção' : ($assinaturaPaga ? 'Renovar com este plano' : 'Escolher plano') ?>
-                                </button>
-                            </form>
+                            <a class="as-btn <?= $destaque ? 'as-btn--solid' : '' ?>"
+                               href="/assinatura/pagar/<?= (int) $plan['id'] ?><?= $promotion ? '?promocao=' . (int) $promotion['id'] : '' ?>">
+                                <?= $promotion ? 'Usar minha promoção' : ($assinaturaPaga ? 'Renovar com este plano' : 'Escolher plano') ?>
+                            </a>
                         <?php endif; ?>
                         <?php if ($economia > 0): ?>
                             <p class="as-plan__eco">Economize <b><?= $economia ?>%</b> em relação ao plano mensal</p>
@@ -188,7 +182,7 @@ $ico = [
             <div>
                 <small>Pagamento 100% seguro com</small>
                 <strong>Mercado Pago</strong>
-                <p>Você será levado ao checkout do Mercado Pago para pagar. Não guardamos dados do seu cartão.</p>
+                <p>Pague com PIX ou cartão aqui mesmo, sem sair do sistema. Não guardamos dados do seu cartão.</p>
             </div>
         </div>
         <ul class="as-pay__methods">
