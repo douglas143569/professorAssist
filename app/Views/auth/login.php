@@ -87,6 +87,10 @@
         </div>
 
         <p class="login-panel__note">Um espaço feito para quem transforma o futuro.</p>
+        <?php $__contato = \App\Services\Legal::contatoEmail(); ?>
+        <?php if ($__contato): ?>
+            <p class="login-panel__note login-panel__contato">Dúvidas ou suporte? Fale com a gente: <a href="mailto:<?= htmlspecialchars($__contato) ?>"><?= htmlspecialchars($__contato) ?></a></p>
+        <?php endif; ?>
         </section>
     </main>
     <?php require __DIR__ . '/../layouts/cookie_banner.php'; ?>

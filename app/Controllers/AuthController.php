@@ -25,7 +25,7 @@ class AuthController extends Controller
     private const SENHA_MINIMA = 8;
 
     /** Cadastros permitidos por IP por hora. */
-    private const MAX_CADASTROS_POR_IP = 3;
+    private const MAX_CADASTROS_POR_IP = 10;
 
     public function formulario(): void
     {

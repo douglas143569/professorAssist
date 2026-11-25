@@ -2048,3 +2048,21 @@ img, svg, video { max-width:100%; }
 
 /* Home: apenas o cartao "Comece aqui", centralizado */
 .hc-grid { grid-template-columns:repeat(auto-fit,minmax(250px,340px)); justify-content:center; }
+
+/* ---- Imprimir / salvar PDF do conteudo: papel branco, texto escuro, sem tema escuro ---- */
+@media print {
+  html, body, .app-shell, .main, .content { background:#fff !important; color:#000 !important; }
+  .content .page-header h1 { color:#000 !important; }
+  .content .page-header .muted, .content .badge, .content .tag { color:#333 !important; background:none !important; border-color:#bbb !important; }
+  .content .prosa-card { background:#fff !important; border:none !important; box-shadow:none !important; padding:0 !important; }
+  .content .prosa, .content .prosa * { color:#000 !important; background:transparent !important; }
+  .content .prosa h2, .content .prosa h3 { break-after:avoid; }
+  .content .prosa table { border-collapse:collapse; }
+  .content .prosa th, .content .prosa td { border:1px solid #888 !important; }
+  .content .prosa li, .content .prosa tr { break-inside:avoid; }
+  .cookie-banner, .ck-banner { display:none !important; }
+}
+
+.login-panel__contato { margin-top:6px; }
+.login-panel__contato a { color:#078461; font-weight:700; text-decoration:none; }
+.login-panel__contato a:hover { text-decoration:underline; }

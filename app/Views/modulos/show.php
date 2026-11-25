@@ -270,7 +270,7 @@
                 <span class="tool-title">Gerador de atividades<?php if (!empty($questoes)): ?> <span class="tool-count"><?= count($questoes) ?></span><?php endif; ?></span>
                 <span class="tool-desc">Questões de múltipla escolha, V/F e dissertativas</span>
             </span>
-            <span class="tool-cta">gerar / ver questões <b>›</b></span>
+            <span class="tool-cta">gerar / ver atividades <b>›</b></span>
         </summary>
 
         <div class="bloco-toggle__corpo">
@@ -308,27 +308,43 @@
                 </form>
             </div>
 
-            <?php if (empty($questoes)): ?>
+            <?php if (empty($atividades) && empty($questoes)): ?>
                 <div class="card card--empty">
-                    <p>Nenhuma questão ainda. Gere com IA ou adicione manualmente.</p>
+                    <p>Nenhuma atividade gerada ainda. Gere questões acima ou peça sugestões em “Atividades sugeridas”.</p>
                 </div>
             <?php else: ?>
-                <?php $corTipo = ['multipla_escolha' => 0, 'verdadeiro_falso' => 1, 'dissertativa' => 2]; ?>
+                <?php $corFormato = ['grupo' => 0, 'individual' => 1, 'ludica' => 2]; ?>
                 <div class="pkg-grid pkg-grid--wide">
-                    <?php foreach ($questoes as $n => $q): $c = $corTipo[$q['tipo']] ?? 3; ?>
-                        <a class="pkg-card pkg-card--<?= $c ?>" href="/questoes/<?= (int) $q['id'] ?>" style="--i:<?= $n % 12 ?>">
+                    <?php if (!empty($questoes)): ?>
+                        <?php $porTipo = array_count_values(array_column($questoes, 'tipo')); ?>
+                        <a class="pkg-card pkg-card--3" href="/modulos/<?= (int) $modulo['id'] ?>/atividade" style="--i:0">
+                            <span class="pkg-card__top pkg-card__top--item">
+                                <span class="pkg-q-num"><?= count($questoes) ?></span>
+                                <span class="pkg-tags">
+                                    <?php foreach ($porTipo as $t => $qtd): ?><span class="pkg-tag"><?= (int) $qtd ?> · <?= htmlspecialchars($tiposLabel[$t] ?? $t) ?></span><?php endforeach; ?>
+                                </span>
+                                <span class="pkg-q"><strong>Atividade do tema</strong><br>Todas as questões geradas reunidas numa atividade para aplicar, imprimir ou salvar em PDF.</span>
+                            </span>
+                            <span class="pkg-card__foot pkg-card__foot--row">
+                                <span><span class="tag tag--origem"><?= count($questoes) ?> questões</span></span>
+                                <b class="pkg-card__cta">Entrar ›</b>
+                            </span>
+                        </a>
+                    <?php endif; ?>
+                    <?php foreach ($atividades as $n => $a): $c = $corFormato[$a['formato'] ?? ''] ?? ($n % 4); ?>
+                        <a class="pkg-card pkg-card--<?= $c ?>" href="/atividades/<?= (int) $a['id'] ?>" style="--i:<?= $n % 12 ?>">
                             <span class="pkg-card__top pkg-card__top--item">
                                 <span class="pkg-q-num"><?= $n + 1 ?></span>
                                 <span class="pkg-tags">
-                                    <span class="pkg-tag"><?= htmlspecialchars($tiposLabel[$q['tipo']] ?? $q['tipo']) ?></span>
-                                    <span class="pkg-tag"><?= htmlspecialchars($q['dificuldade']) ?></span>
+                                    <?php if (!empty($a['formato'])): ?><span class="pkg-tag"><?= htmlspecialchars($formatosLabel[$a['formato']] ?? $a['formato']) ?></span><?php endif; ?>
+                                    <?php if (!empty($a['duracao'])): ?><span class="pkg-tag"><?= htmlspecialchars($a['duracao']) ?></span><?php endif; ?>
                                 </span>
-                                <span class="pkg-q"><?= htmlspecialchars(mb_strimwidth($q['enunciado'], 0, 160, '…')) ?></span>
+                                <span class="pkg-q"><strong><?= htmlspecialchars($a['titulo']) ?></strong><?php if (!empty($a['descricao'])): ?><br><?= htmlspecialchars(mb_strimwidth(strip_tags((string) $a['descricao']), 0, 110, '…')) ?><?php endif; ?></span>
                             </span>
                             <span class="pkg-card__foot pkg-card__foot--row">
                                 <span>
-                                    <span class="badge badge--<?= htmlspecialchars($q['status']) ?>"><?= htmlspecialchars($q['status']) ?></span>
-                                    <span class="tag tag--origem"><?= $q['origem'] === 'ia' ? 'IA' : 'manual' ?></span>
+                                    <span class="badge badge--<?= htmlspecialchars($a['status']) ?>"><?= htmlspecialchars($a['status']) ?></span>
+                                    <span class="tag tag--origem"><?= $a['origem'] === 'ia' ? 'IA' : 'manual' ?></span>
                                 </span>
                                 <b class="pkg-card__cta">Abrir ›</b>
                             </span>

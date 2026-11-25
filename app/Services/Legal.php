@@ -22,9 +22,12 @@ class Legal
         return self::env('LGPD_CNPJ');
     }
 
+    /** E-mail de contato publico. Pode ser trocado por LGPD_CONTATO_EMAIL no .env. */
+    public const CONTATO_PADRAO = 'contato@profassitent.com.br';
+
     public static function contatoEmail(): ?string
     {
-        return self::env('LGPD_CONTATO_EMAIL');
+        return self::env('LGPD_CONTATO_EMAIL') ?? self::CONTATO_PADRAO;
     }
 
     public static function encarregado(): ?string
